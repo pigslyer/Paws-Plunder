@@ -25,14 +25,15 @@ public class Player : KinematicBody, IBulletHittable
 	private Label _debugLabel;
 	private Area _meleeDetectionArea;
 	private AnimatedSprite _doomPortrait;
+	private CombatLogControl _logControl;
 
-    public override void _Ready()
+	public override void _Ready()
 	{
 		_camera = GetNode<Camera>("Camera");
-		_debugLabel = GetNode<Label>("CanvasLayer/PanelContainer/Label");
+		_debugLabel = GetNode<Label>("CanvasLayer/DebugContainer/PanelContainer/Label");
 		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
 		_doomPortrait = GetNode<AnimatedSprite>("CanvasLayer/CharacterPortrait/MarginContainer/WrappingControl/AnimatedSprite");
-		
+		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_doomPortrait.Play("Idle");
 	}
 
@@ -196,10 +197,11 @@ public class Player : KinematicBody, IBulletHittable
 	}
 
 
-    public void Hit()
-    {
+	public void Hit()
+	{
 		_health -= 1;
-		GD.Print($"new health {_health}");	
+		GD.Print($"new health {_health}");
+		_logControl.SetMsg($"The Player is now at {_health} health!");
 	}
 
 }
