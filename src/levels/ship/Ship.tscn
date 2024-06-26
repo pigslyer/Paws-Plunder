@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/assets/models/ship_top_t2.glb" type="PackedScene" id=1]
+
+[node name="Ship" type="Spatial"]
+
+[node name="Mesh" parent="." instance=ExtResource( 1 )]
