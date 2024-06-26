@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://src/assets/skybox/panorama_image.png" type="Texture" id=1]
+[ext_resource path="res://src/assets/skybox/FS003_Night.png" type="Texture" id=1]
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=3]
+[ext_resource path="res://src/levels/boat/Boat.tscn" type="PackedScene" id=4]
 
 [sub_resource type="PanoramaSky" id=1]
 panorama = ExtResource( 1 )
@@ -9,13 +11,99 @@ panorama = ExtResource( 1 )
 [sub_resource type="Environment" id=2]
 background_mode = 2
 background_sky = SubResource( 1 )
+background_sky_custom_fov = 80.6
+ambient_light_color = Color( 0, 1, 0.937255, 1 )
 fog_enabled = true
+fog_color = Color( 0.180392, 0.839216, 0.941176, 1 )
+fog_sun_color = Color( 0.0156863, 0.745098, 0.682353, 1 )
+fog_depth_begin = 86.2
+fog_depth_end = 442.9
+fog_depth_curve = 0.707108
+fog_height_max = -457.1
+fog_height_curve = 53.8174
+tonemap_exposure = 1.15
+dof_blur_far_distance = 377.49
+dof_blur_far_transition = 67.55
+dof_blur_far_amount = 0.05
+dof_blur_far_quality = 0
+dof_blur_near_distance = 598.04
+dof_blur_near_amount = 0.11
+glow_intensity = 0.23
+glow_strength = 0.8
+glow_bloom = 0.5
+
+[sub_resource type="PhysicsMaterial" id=5]
+
+[sub_resource type="OpenSimplexNoise" id=7]
+
+[sub_resource type="NoiseTexture" id=8]
+seamless = true
+noise = SubResource( 7 )
+
+[sub_resource type="OpenSimplexNoise" id=9]
+
+[sub_resource type="NoiseTexture" id=10]
+seamless = true
+noise = SubResource( 9 )
+
+[sub_resource type="OpenSimplexNoise" id=11]
+
+[sub_resource type="NoiseTexture" id=12]
+seamless = true
+as_normalmap = true
+noise = SubResource( 11 )
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 3 )
+shader_param/speed = 0.0
+shader_param/color = Color( 0.145098, 0.556863, 0.760784, 1 )
+shader_param/deep_water = null
+shader_param/beer_law_factor = 2.0
+shader_param/_distance = 0.0
+shader_param/edge_color = Color( 1, 1, 1, 1 )
+shader_param/edge_scale = 0.25
+shader_param/near = 0.1
+shader_param/far = 100.0
+shader_param/wave_strength = Vector2( 0.5, 0.25 )
+shader_param/wave_frequ = Vector2( 12, 12 )
+shader_param/time_factor = Vector2( 1, 2 )
+shader_param/noise1 = SubResource( 8 )
+shader_param/noise2 = SubResource( 10 )
+shader_param/normalmap = SubResource( 12 )
+
+[sub_resource type="PlaneMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 1024, 1024 )
+subdivide_width = 64
+subdivide_depth = 64
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 100, 1, 100 )
 
 [node name="Main" type="Spatial"]
-
-[node name="MeshInstance" type="MeshInstance" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
 
+[node name="Sun" type="DirectionalLight" parent="."]
+transform = Transform( 0.999963, -0.000473879, 0.00864375, -0.00865673, -0.0547391, 0.998463, 0, -0.998501, -0.0547411, -0.00212622, 10.1638, 0 )
+light_energy = 1.587
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.40741, 0 )
+physics_material_override = SubResource( 5 )
+
+[node name="Sea" type="MeshInstance" parent="Ground"]
+mesh = SubResource( 4 )
+skeleton = NodePath("../..")
+
+[node name="CollisionShape" type="CollisionShape" parent="Ground"]
+shape = SubResource( 6 )
+
 [node name="Player" parent="." instance=ExtResource( 2 )]
+
+[node name="ship_top_t1" parent="." instance=ExtResource( 4 )]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -4.37114e-08, 0.00502653, -0.999987, 0, 0.999987, 0.00502653, 1, 2.19716e-10, -4.37108e-08, -90, 0, 0 )
