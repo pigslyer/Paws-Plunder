@@ -1,9 +1,11 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
 [ext_resource path="res://src/assets/cat pirate-Sheet.png" type="Texture" id=3]
 [ext_resource path="res://src/bullet/Bullet.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/scripts/CombatLogControl.cs" type="Script" id=5]
+[ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=6]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 0.9
@@ -109,12 +111,32 @@ shape = SubResource( 2 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
-margin_right = 14.0
-margin_bottom = 14.0
+[node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
+margin_right = 100.0
+margin_bottom = 56.0
+
+[node name="CombatLogControl" type="Control" parent="CanvasLayer/DebugContainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 100.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 24 )
+mouse_filter = 2
+script = ExtResource( 5 )
+
+[node name="Msg" type="RichTextLabel" parent="CanvasLayer/DebugContainer/CombatLogControl"]
+margin_right = 1920.0
+margin_bottom = 57.0
+theme = ExtResource( 6 )
+text = "This is the combat log."
+scroll_active = false
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+margin_top = 28.0
+margin_right = 100.0
+margin_bottom = 56.0
 rect_min_size = Vector2( 100, 0 )
 
-[node name="Label" type="Label" parent="CanvasLayer/PanelContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/DebugContainer/PanelContainer"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 93.0
