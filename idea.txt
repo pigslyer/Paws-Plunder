@@ -1,0 +1,50 @@
+chaos:
+
+cats invade mouse ships
+ship gets more fucked up over time
+modifiers?
+
+open top of the ship -> go inside -> more cramped corridors + some open rooms
+
+for a start:
+projectiles
+single ship, sinking, a couple of enemies
+billboarded sprites for all interactables
+
+perpetual dual wielding: one hand claw, other hand gun
+whenever you have a gun, you get 1 shot
+need log (you picked up mouse's gun)
+health as 3 hearts
+
+start with a strong one
+
+enemies:
+big tringular rat with a blunderbuss
+grunt rats with normal pistol
+sniper rats in the rafters
+adhd trader mice (how do they impact scoring)
+
+ship sections can be damaged over time? have callouts for which part is about to be hit?
+shoot in and out (control where you die?)
+when you die, new cat gets sent in (new stats, 9 per playthrough?)
+
+kris handles visuals
+music is good
+hermi handles ship
+matej handles enemy sprites (including animations)
+
+minimum required score to escape via cannon
+
+cat themed treasures for score (lasagna worth less once covered in water)
+as you're more submerged, you get stressed cat sounds as water level rises, then start taking damage (no altered controls)
+
+you play as "cat", with pool of cat names
+main menu you're in the cannon that launches you, new game launches you
+
+use a discord channel for todo, threads for followups
+jodi works
+matej neeta
+mišel v redu (petek je ni)
+kris večino dni čas
+ermi 28. ga ni
+shiloh :3 dopusting
