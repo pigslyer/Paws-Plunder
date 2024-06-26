@@ -16,7 +16,7 @@ whenever you have a gun, you get 1 shot
 need log (you picked up mouse's gun)
 health as 3 hearts
 
-start with a strong one
+start with a strong gun? 
 
 enemies:
 big tringular rat with a blunderbuss
@@ -43,7 +43,7 @@ main menu you're in the cannon that launches you, new game launches you
 
 use a discord channel for todo, threads for followups
 jodi works
-matej neeta
+matej je free
 mišel v redu (petek je ni)
 kris večino dni čas
 ermi 28. ga ni
