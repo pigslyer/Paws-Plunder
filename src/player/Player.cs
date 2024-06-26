@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public class Player : KinematicBody, ISquadTarget, IBulletHittable
+public class Player : KinematicBody, IBulletHittable
 {
 	[Export] private PackedScene _bulletScene;
 
-	private Vector3 GravityAcceleration => new Vector3(0, -98.1f, 0);
-	private Vector3 JumpVelocity => new Vector3(0, 30, 0);
-	private float JumpHorizontalVelocityBoost => 0.1f;
+	private Vector3 GravityAcceleration => new Vector3(0, -120f, 0);
+	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
+	private float JumpHorizontalVelocityBoost => 0.25f;
 	private const float MaxNaturalSpeed = 10;
 	private const float MaxSprintSpeed = 20;
 	private const float SensitivityMult = 4f;
@@ -32,9 +32,7 @@ public class Player : KinematicBody, ISquadTarget, IBulletHittable
 		_debugLabel = GetNode<Label>("CanvasLayer/PanelContainer/Label");
 		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
 		_doomPortrait = GetNode<AnimatedSprite>("CanvasLayer/CharacterPortrait/MarginContainer/WrappingControl/AnimatedSprite");
-
-		Globals.GetSquadController().SetGlobalSquadTarget(this);
-
+		
 		_doomPortrait.Play("Idle");
 	}
 
@@ -197,10 +195,6 @@ public class Player : KinematicBody, ISquadTarget, IBulletHittable
 		}
 	}
 
-    public bool CanSeeCombatant(ISquadCombatant combatant)
-    {
-        throw new NotImplementedException();
-    }
 
     public void Hit()
     {
