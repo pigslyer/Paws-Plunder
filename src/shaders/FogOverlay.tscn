@@ -1,19 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 
-[sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0, 0.290323, 0.56129, 0.76129, 1 )
-colors = PoolColorArray( 0.572549, 1, 0.639216, 0, 0.968627, 0.411765, 1, 0.647059, 0.980606, 0.636364, 1, 0.781818, 0.989447, 0.802139, 1, 0.881283, 1, 0.517647, 0.517647, 1 )
-
-[sub_resource type="GradientTexture" id=4]
-gradient = SubResource( 3 )
-
 [sub_resource type="ShaderMaterial" id=1]
+render_priority = 1
 shader = ExtResource( 1 )
-shader_param/fog_intensity = 0.1
-shader_param/fog_amount = 0.011
-shader_param/gradient = SubResource( 4 )
+shader_param/fog_start = 7.03
+shader_param/fog_end = 100.0
+shader_param/fog_color = Color( 0, 1, 0.133333, 1 )
 
 [sub_resource type="QuadMesh" id=2]
 material = SubResource( 1 )
