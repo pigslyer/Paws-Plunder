@@ -13,8 +13,6 @@ public class SquadController : Node
     private readonly DetectionTracker<Gunner> _gunnerTracker;
     private readonly DetectionTracker<TraderMouse> _traderTracker;
 
-    private readonly List<SafePoint> _mouseSafePoints = new List<SafePoint>();
-
     private readonly RandomOrderQueue<RatGrunt> _gruntMovementQueue;
     private readonly RandomOrderQueue<Gunner> _gunnerMovementQueue;
     private readonly RandomOrderQueue<TraderMouse> _traderMovementQueue;
@@ -104,10 +102,6 @@ public class SquadController : Node
                 _traderTracker.AddEnemy(trader);
 
                 trader.Died += () => OnTraderDied(trader);
-            }
-            else if (child is SafePoint safePoint)
-            {
-                _mouseSafePoints.Add(safePoint);
             }
         }
     }
