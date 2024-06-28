@@ -14,19 +14,33 @@ void vertex()
 void fragment() 
 {
     vec3 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
+    float screen_alpha = texture(SCREEN_TEXTURE, SCREEN_UV).a;
     float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r; // depth from 0 to 1
+
     vec3 ndc = vec3(SCREEN_UV, depth * 2.0 - 1.0); // Convert to NDC (in OpenGL, depth is -1 to 1)
     vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0); // Convert to view space, z gives us distance to point
     view.xyz /= view.w; // Perspective division
     float linear_depth = -view.z; // Camera is facing -z
 
+    // Display depth buffer
+    // ALBEDO = vec3(linear_depth / 1000.f);
+
+
+    if (depth > 0.999999) // leave skybox alone
+    {
+        ALBEDO = screen_color.rgb;
+        ALPHA = screen_alpha;
+    }
+    else
+    {
+       
     // Calculate fog factor
     float depth_mask_inv = clamp((linear_depth - (fog_distance - fog_fade_range)) / fog_fade_range, 0.0, 1.0);
 
     // Mix fog color with fragment color
     ALBEDO = mix(screen_color.rgb, fog_color.rgb, depth_mask_inv);
+    ALPHA = screen_alpha;
+    }
 }
 
 // https://docs.godotengine.org/en/3.5/tutorials/shaders/advanced_postprocessing.html
-
-// Avoid frustum culling

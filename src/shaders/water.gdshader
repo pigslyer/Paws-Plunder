@@ -18,10 +18,10 @@ uniform float edge_scale = 0.25;
 uniform float near = 0.1;
 uniform float far = 100.f;
 
-float rim(float depth)
+float rim(float d)
 {
-	depth = 2.f * depth - 1.f;
-	return near * far / (far + depth * (near - far));
+	d = 2.f * d - 1.f;
+	return near * far / (far + d * (near - far));
 }
 
 float waves(vec2 pos, float time)
@@ -32,41 +32,48 @@ float waves(vec2 pos, float time)
 void vertex()
 {
 	VERTEX.y += waves(VERTEX.xz, TIME);
+
 }
 
 void fragment(){
+
 	// Sample noise textures
 	float time = TIME * speed;
 	vec3 n1 = texture(noise1, UV + time).rgb;
 	vec3 n2 = texture(noise2, UV - time * 0.2).rgb;
 	float noise_sum = (n1.r + n2.r) - 1.f;
+
 	// Toon shading of water
 	float value = 0.0;
 	if (noise_sum > 0.0 && noise_sum < 0.4) value = 0.1;
 	if (noise_sum > 0.4 && noise_sum < 0.8) value = 0.0;
 	if (noise_sum > 0.8) value = 1.f;
+	
 	// Sample normal map
 	vec2 uv_movement = UV * 4.f;
 	uv_movement += TIME * speed * 4.f;
 	// Refraction
-	float z_depth = rim(texture(DEPTH_TEXTURE, SCREEN_UV).x);
-	float z_pos = rim(FRAGCOORD.z);
-	float diff = z_depth - z_pos;
+	//float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r;
+	//float z_depth = rim(texture(DEPTH_TEXTURE, SCREEN_UV).x);
+	//float z_pos = rim(FRAGCOORD.z);
+	//float diff = z_depth - z_pos;
+		
+	//vec2 displacement = vec2(noise_sum * refraction);
+	//diff += displacement.x * 50.f;
 	
-	vec2 displacement = vec2(noise_sum * refraction);
-	diff += displacement.x * 50.f;
 	
-	
-	vec4 col = mix(foam_color, water_color, step(edge_scale, diff));
+	//vec4 col = mix(foam_color, water_color, step(edge_scale, diff));
 	
 	vec4 alpha = vec4(1.0);
-	alpha = texture(SCREEN_TEXTURE, SCREEN_UV + displacement);
-	
-	
+	//alpha = texture(SCREEN_TEXTURE, SCREEN_UV + displacement);
 
-	
-	ALBEDO = vec3(value) + mix(alpha.rgb, col.rgb, water_color.a);
+	ALBEDO = vec3(value) + mix(alpha.rgb, water_color.rgb, water_color.a);
 	NORMALMAP = texture(normalmap, uv_movement).rgb;
 	ROUGHNESS = 0.1;
 	SPECULAR = 1.f;
+	//DEPTH = FRAGCOORD.z;
+	/*
+	ALBEDO = vec3(value) + mix(alpha.rgb, col.rgb, water_color.a);
+
+	*/
 }
