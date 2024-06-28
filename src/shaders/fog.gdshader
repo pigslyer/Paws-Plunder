@@ -24,12 +24,13 @@ void fragment()
 
     // Display depth buffer
     // ALBEDO = vec3(linear_depth / 1000.f);
+    //ALPHA = 1.f;
 
 
     if (depth > 0.999999) // leave skybox alone
     {
         ALBEDO = screen_color.rgb;
-        ALPHA = screen_alpha;
+        //ALPHA = screen_alpha;
     }
     else
     {
@@ -39,7 +40,7 @@ void fragment()
 
     // Mix fog color with fragment color
     ALBEDO = mix(screen_color.rgb, fog_color.rgb, depth_mask_inv);
-    ALPHA = screen_alpha;
+    //ALPHA = screen_alpha;
     }
 }
 

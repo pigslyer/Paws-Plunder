@@ -18,10 +18,16 @@ uniform float edge_scale = 0.25;
 uniform float near = 0.1;
 uniform float far = 100.f;
 
-float rim(float d)
+// fog
+uniform float fog_distance : hint_range(1.0, 1000.0) = 100.0;
+uniform float fog_fade_range : hint_range(1.0, 1000.0) = 50.0;
+uniform vec4 fog_color : hint_color = vec4(0.5, 0.5, 0.5, 1.0);
+uniform float fog_intensity : hint_range(1.0, 10.0) = 5.0;
+
+float rim(float depth)
 {
-	d = 2.f * d - 1.f;
-	return near * far / (far + d * (near - far));
+	depth = 2.f * depth - 1.f;
+	return near * far / (far + depth * (near - far));
 }
 
 float waves(vec2 pos, float time)
@@ -36,6 +42,14 @@ void vertex()
 }
 
 void fragment(){
+    vec3 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
+    float screen_alpha = texture(SCREEN_TEXTURE, SCREEN_UV).a;
+    float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r; // depth from 0 to 1
+
+    vec3 ndc = vec3(SCREEN_UV, depth * 2.0 - 1.0); // Convert to NDC (in OpenGL, depth is -1 to 1)
+    vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0); // Convert to view space, z gives us distance to point
+    view.xyz /= view.w; // Perspective division
+    float linear_depth = -view.z; // Camera is facing -z
 
 	// Sample noise textures
 	float time = TIME * speed;
@@ -53,27 +67,22 @@ void fragment(){
 	vec2 uv_movement = UV * 4.f;
 	uv_movement += TIME * speed * 4.f;
 	// Refraction
-	//float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-	//float z_depth = rim(texture(DEPTH_TEXTURE, SCREEN_UV).x);
-	//float z_pos = rim(FRAGCOORD.z);
-	//float diff = z_depth - z_pos;
-		
-	//vec2 displacement = vec2(noise_sum * refraction);
-	//diff += displacement.x * 50.f;
-	
-	
-	//vec4 col = mix(foam_color, water_color, step(edge_scale, diff));
-	
+	float z_depth = rim(depth);
+	float z_pos = rim(FRAGCOORD.z);
+	float diff = z_depth - z_pos;		
+	vec2 displacement = vec2(noise_sum * refraction);
+	diff += displacement.x * 50.f;
 	vec4 alpha = vec4(1.0);
-	//alpha = texture(SCREEN_TEXTURE, SCREEN_UV + displacement);
+	alpha = texture(SCREEN_TEXTURE, SCREEN_UV + displacement);
 
-	ALBEDO = vec3(value) + mix(alpha.rgb, water_color.rgb, water_color.a);
+	vec4 col = mix(foam_color, water_color, step(edge_scale, diff));
+	vec3 water_c = vec3(value) + mix(alpha.rgb, col.rgb, water_color.a);
+	float fog_factor = clamp((z_pos - (fog_distance - fog_fade_range)) / fog_fade_range, 0.0, 1.0);
+    vec3 final_color = mix(water_c, fog_color.rgb, fog_factor * fog_intensity);
+	
+	ALBEDO = final_color;
+	ALPHA = clamp(value + water_color.a, 0.0, 1.0);
 	NORMALMAP = texture(normalmap, uv_movement).rgb;
 	ROUGHNESS = 0.1;
 	SPECULAR = 1.f;
-	//DEPTH = FRAGCOORD.z;
-	/*
-	ALBEDO = vec3(value) + mix(alpha.rgb, col.rgb, water_color.a);
-
-	*/
 }
