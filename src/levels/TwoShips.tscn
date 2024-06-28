@@ -1,0 +1,139 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/shaders/FogOverlay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/levels/ship/Ship.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/levels/TwoShips.cs" type="Script" id=5]
+[ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
+[ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
+[ext_resource path="res://src/shaders/catapult_main_menu.gdshader" type="Shader" id=8]
+
+[sub_resource type="PhysicsMaterial" id=5]
+
+[sub_resource type="OpenSimplexNoise" id=7]
+
+[sub_resource type="NoiseTexture" id=8]
+seamless = true
+noise = SubResource( 7 )
+
+[sub_resource type="OpenSimplexNoise" id=9]
+
+[sub_resource type="NoiseTexture" id=10]
+seamless = true
+noise = SubResource( 9 )
+
+[sub_resource type="OpenSimplexNoise" id=11]
+
+[sub_resource type="NoiseTexture" id=12]
+seamless = true
+as_normalmap = true
+bump_strength = 4.0
+noise = SubResource( 11 )
+
+[sub_resource type="ShaderMaterial" id=3]
+render_priority = 1
+shader = ExtResource( 6 )
+shader_param/water_color = Color( 0, 0.788235, 1, 0.768627 )
+shader_param/wave_strength = Vector2( 2, 3 )
+shader_param/wave_frequency = Vector2( 12, 12 )
+shader_param/time_factor = Vector2( 1, 2 )
+shader_param/speed = 0.024
+shader_param/refraction = 0.044
+shader_param/foam_color = Color( 1, 1, 1, 1 )
+shader_param/edge_scale = 0.2
+shader_param/near = 0.1
+shader_param/far = 100.0
+shader_param/fog_distance = 169.278
+shader_param/fog_fade_range = 139.143
+shader_param/fog_color = Color( 0.060318, 0.130249, 0.261719, 1 )
+shader_param/fog_intensity = 3.0
+shader_param/noise1 = SubResource( 8 )
+shader_param/noise2 = SubResource( 10 )
+shader_param/normalmap = SubResource( 12 )
+
+[sub_resource type="PlaneMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 2048, 2048 )
+subdivide_width = 64
+subdivide_depth = 64
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 4096, 1, 4096 )
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 1 )
+shader_param/fog_distance = 455.44
+shader_param/fog_fade_range = 198.075
+shader_param/fog_color = Color( 0.133333, 0.54902, 0.752941, 1 )
+
+[sub_resource type="QuadMesh" id=14]
+material = SubResource( 13 )
+size = Vector2( 2, 2 )
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 8 )
+shader_param/projector_power = 0.257
+shader_param/vignette_param = 20.0
+
+[node name="TwoShips" type="Spatial"]
+script = ExtResource( 5 )
+
+[node name="Level" type="Spatial" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Level"]
+environment = ExtResource( 7 )
+
+[node name="Sun" type="DirectionalLight" parent="Level"]
+transform = Transform( 0.999963, -0.000473879, 0.00864375, -0.00865673, -0.0547391, 0.998463, 0, -0.998501, -0.0547411, -0.00212622, 10.1638, 0 )
+light_energy = 1.587
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+physics_material_override = SubResource( 5 )
+
+[node name="Sea" type="MeshInstance" parent="Level/Ground"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40741, 0 )
+mesh = SubResource( 4 )
+skeleton = NodePath("../../..")
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Ground"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+shape = SubResource( 6 )
+
+[node name="ShipCat" parent="Level" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 15.5087, -225.128 )
+
+[node name="ShipMouse" parent="Level" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 10, 0 )
+
+[node name="Player" parent="Level" instance=ExtResource( 2 )]
+transform = Transform( -0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, 355.532, 16.7941, -277.526 )
+
+[node name="FogOverlay" parent="Level" instance=ExtResource( 3 )]
+extra_cull_margin = 16384.0
+mesh = SubResource( 14 )
+skeleton = NodePath("../..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CatapultEffect" type="ColorRect" parent="CanvasLayer"]
+visible = false
+material = SubResource( 15 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 1, 0, 0, 0 )
+
+[node name="DebugContainer" type="PanelContainer" parent="CanvasLayer"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -118.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 100, 0 )
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer/DebugContainer"]
+margin_left = 7.0
+margin_top = 9.0
+margin_right = 111.0
+margin_bottom = 23.0
