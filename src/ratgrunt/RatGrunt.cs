@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
+public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable
 {
     public event Action Died;
 
@@ -82,6 +82,15 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
     }
 
     private void DestroyModel()
+    {
+        Died?.Invoke();
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
+        QueueFree();
+    }
+
+    void IDeathPlaneEnterable.EnteredDeathPlane()
     {
         Died?.Invoke();
         QueueFree();

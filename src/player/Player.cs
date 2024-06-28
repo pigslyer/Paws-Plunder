@@ -24,6 +24,7 @@ public class Player : KinematicBody, IBulletHittable
 	private Vector2 _mouseMotion = Vector2.Zero;
 
 	public Vector3 Velocity => _previousVelocity;
+	public bool JustFired { get; private set;} = false;
 
 	private Camera _camera;
 	private Label _debugLabel;
@@ -42,6 +43,8 @@ public class Player : KinematicBody, IBulletHittable
 
 	public override void _PhysicsProcess(float delta)
 	{
+		JustFired = false;
+
 		if (_health > 0 || true)
 		{
 			ApplyMovement(delta);
@@ -158,6 +161,7 @@ public class Player : KinematicBody, IBulletHittable
 			return;
 		}
 
+		JustFired = true;
 		Godot.Collections.Array bodies = _meleeDetectionArea.GetOverlappingBodies();
 
 		if (bodies.Count == 0) {
@@ -178,6 +182,8 @@ public class Player : KinematicBody, IBulletHittable
 		{
 			return;
 		}
+		
+		JustFired = true;
 
 		Bullet bullet = _bulletScene.Instance<Bullet>();
 		GetTree().Root.AddChild(bullet);

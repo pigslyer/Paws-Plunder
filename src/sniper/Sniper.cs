@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Sniper : KinematicBody, IBulletHittable
+public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 {
     public event Action Died;
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
@@ -82,6 +82,16 @@ public class Sniper : KinematicBody, IBulletHittable
         Died?.Invoke();
         
         //_sprite.Play("Died");
+        QueueFree();
+    }
+
+    void IDeathPlaneEnterable.EnteredDeathPlane()
+    {
+        Died?.Invoke();
+
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
         QueueFree();
     }
 }

@@ -10,8 +10,14 @@ public class SquadController : Node
 {
     private readonly DetectionTracker<RatGrunt> _gruntTracker;
     private readonly DetectionTracker<Sniper> _sniperTracker;
+    private readonly DetectionTracker<Gunner> _gunnerTracker;
+    private readonly DetectionTracker<TraderMouse> _traderTracker;
+
+    private readonly List<SafePoint> _mouseSafePoints = new List<SafePoint>();
 
     private readonly RandomOrderQueue<RatGrunt> _gruntMovementQueue;
+    private readonly RandomOrderQueue<Gunner> _gunnerMovementQueue;
+    private readonly RandomOrderQueue<TraderMouse> _traderMovementQueue;
 
     private readonly Distro _updatePositionsInterval = (2.0f, 1.0f);
     private readonly Distro _distanceToPlayerRatGrunt = (8.0f, 3.0f);
@@ -20,6 +26,7 @@ public class SquadController : Node
 
     // chance that, during any given attack cycle, a sniper fires
     private const float ChanceOfSniperShot = 0.8f;
+    private const float ChanceOfBlunderbussShot = 0.8f;
 
     private RandomNumberGenerator _rng;
     private Player _player;
@@ -44,7 +51,21 @@ public class SquadController : Node
                 CanPointBeSeen(sniper.CenterOfMass, _player.GlobalTranslation)
         );
 
+        _gunnerTracker = new DetectionTracker<Gunner>(
+            canSeeTarget: gunner =>
+                _player != null &&
+                CanPointBeSeen(gunner.CenterOfMass, _player.GlobalTranslation)
+        );
+
+        _traderTracker = new DetectionTracker<TraderMouse>(
+            canSeeTarget: trader =>
+                _player != null &&
+                CanPointBeSeen(trader.CenterOfMass, _player.GlobalTranslation)
+        );
+
         _gruntMovementQueue = new RandomOrderQueue<RatGrunt>(_rng);
+        _gunnerMovementQueue = new RandomOrderQueue<Gunner>(_rng);
+        _traderMovementQueue = new RandomOrderQueue<TraderMouse>(_rng);
     }
 
     public override void _Ready()
@@ -72,12 +93,27 @@ public class SquadController : Node
 
                 sniper.Died += () => OnSniperDied(sniper);
             }
+            else if (child is Gunner gunner)
+            {
+                _gunnerTracker.AddEnemy(gunner);
+
+                gunner.Died += () => OnGunnerDied(gunner);
+            }
+            else if (child is TraderMouse trader)
+            {
+                _traderTracker.AddEnemy(trader);
+
+                trader.Died += () => OnTraderDied(trader);
+            }
+            else if (child is SafePoint safePoint)
+            {
+                _mouseSafePoints.Add(safePoint);
+            }
         }
     }
 
     private void OnRatGruntDied(RatGrunt grunt)
     {
-        GD.Print("someone died");
         _gruntTracker.RemoveEnemy(grunt);
         _gruntMovementQueue.RemoveElement(grunt);
     }
@@ -85,6 +121,18 @@ public class SquadController : Node
     private void OnSniperDied(Sniper sniper)
     {
         _sniperTracker.RemoveEnemy(sniper);
+    }
+
+    private void OnGunnerDied(Gunner gunner)
+    {
+        _gunnerTracker.RemoveEnemy(gunner);
+        _gunnerMovementQueue.RemoveElement(gunner);
+    }
+
+    private void OnTraderDied(TraderMouse trader)
+    {
+        _traderTracker.RemoveEnemy(trader);
+        _traderMovementQueue.RemoveElement(trader);
     }
 
     public override void _PhysicsProcess(float delta)
@@ -109,7 +157,10 @@ public class SquadController : Node
     {
         _gruntTracker.UpdateVisibility();
         _sniperTracker.UpdateVisibility();
+        _gunnerTracker.UpdateVisibility();
+        _traderTracker.UpdateVisibility();
 
+        // can't wait for when this has to be updated for more than just combat people
         foreach (RatGrunt justEntered in _gruntTracker.JustEnteredCombat)
         {
             _gruntMovementQueue.AddElement(justEntered);
@@ -118,6 +169,26 @@ public class SquadController : Node
         foreach (RatGrunt justLeft in _gruntTracker.JustLeftCombat)
         {
             _gruntMovementQueue.RemoveElement(justLeft);
+        }
+
+        foreach (Gunner justEntered in _gunnerTracker.JustEnteredCombat)
+        {
+            _gunnerMovementQueue.AddElement(justEntered);
+        }
+        
+        foreach (Gunner justLeft in _gunnerTracker.JustLeftCombat)
+        {
+            _gunnerMovementQueue.RemoveElement(justLeft);
+        }
+
+        foreach (TraderMouse justEntered in _traderTracker.JustEnteredCombat)
+        {
+            _traderMovementQueue.AddElement(justEntered);
+        }
+
+        foreach (TraderMouse justLeft in _traderTracker.JustLeftCombat)
+        {
+            _traderMovementQueue.RemoveElement(justLeft);
         }
     }
 
@@ -141,28 +212,48 @@ public class SquadController : Node
     {
         _updatePositionsTimer = null;
 
-        if (_gruntTracker.ActiveEnemies.Count == 0)
-        {
-            return;
-        }
-
         Vector3 playerPosition = _player.GlobalTranslation;
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
         // can't determine without testing
-        int moveEnemies = (int)Math.Ceiling(_gruntTracker.ActiveEnemies.Count / 3.0f) + _rng.RandiRange(-1, 1);
-        for (int i = 0; i < moveEnemies; i++)
+        int movedGrunts = (int)Math.Ceiling(_gruntTracker.ActiveEnemies.Count / 3.0f) + _rng.RandiRange(-1, 1);
+        movedGrunts = Math.Max(movedGrunts, _gruntTracker.ActiveEnemies.Count);
+
+        for (int i = 0; i < movedGrunts; i++)
         {
             RatGrunt grunt = _gruntMovementQueue.NextElement();
             float angle = _rng.RandfRange(0, Mathf.Tau);
             float distance = _rng.Randfn(_distanceToPlayerRatGrunt);
 
             Vector3 newPosition = playerPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
-            if (grunt == null)
-            {
-                GD.Print("null");
-            }
             grunt.GoTo(newPosition);
+        }
+
+        if (_gunnerTracker.ActiveEnemies.Count > 0)
+        {
+            Gunner gunner = _gunnerMovementQueue.NextElement();
+
+            float angle = _rng.RandfRange(0, Mathf.Tau);
+            float distance = _rng.Randfn(_distanceToPlayerRatGrunt);
+
+            Vector3 newPosition = playerPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
+            gunner.GoTo(newPosition);
+        }
+
+        int movedTraders = _traderTracker.ActiveEnemies.Count * 2 / 3;
+        for (int i = 0; i < movedTraders; i++)
+        {
+            TraderMouse trader = _traderMovementQueue.NextElement();
+
+            Vector3 currentPosition = trader.GlobalTranslation;
+            Distro traderMoveDistro = (5.0f, 2.0f);
+
+            float angle = _rng.RandfRange(0, Mathf.Tau);
+            float distance = _rng.Randfn(traderMoveDistro);
+
+            Vector3 newPosition = currentPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
+
+            trader.GoTo(newPosition);
         }
     }
 
@@ -209,6 +300,15 @@ public class SquadController : Node
             Sniper sniper = _rng.RandEl(_sniperTracker.ActiveEnemies);  
             
             sniper.AttackTarget(_player);
+        }
+
+        float gunnerFireShot = _rng.Randf();
+
+        if (_gunnerTracker.ActiveEnemies.Count > 0 && gunnerFireShot > -1)
+        {
+            Gunner gunner = _rng.RandEl(_gunnerTracker.ActiveEnemies);
+
+            gunner.AttackTarget(_player);
         }
     }
 
