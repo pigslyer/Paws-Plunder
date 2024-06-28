@@ -11,6 +11,10 @@ public class Globals : Node
         // generic
         "Blackfur",
         "Catbeard",
+        "Fishbone",
+
+        // asi who else
+        "Yarrfield",
 
         // holmes
         "Kocl",

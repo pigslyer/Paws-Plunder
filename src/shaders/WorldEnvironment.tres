@@ -1,0 +1,28 @@
+[gd_resource type="Environment" load_steps=3 format=2]
+
+[ext_resource path="res://src/assets/skybox/FS003_Night.png" type="Texture" id=1]
+
+[sub_resource type="PanoramaSky" id=1]
+panorama = ExtResource( 1 )
+
+[resource]
+background_mode = 2
+background_sky = SubResource( 1 )
+ambient_light_color = Color( 0, 1, 0.937255, 1 )
+ambient_light_energy = 0.46
+fog_enabled = true
+fog_color = Color( 0.203922, 0.490196, 0.698039, 1 )
+fog_depth_begin = 314.7
+fog_depth_end = 823.8
+fog_depth_curve = 0.707108
+fog_height_max = 1447.7
+fog_height_curve = 53.8174
+dof_blur_far_distance = 377.49
+dof_blur_far_transition = 67.55
+dof_blur_far_amount = 0.05
+dof_blur_far_quality = 0
+dof_blur_near_distance = 598.04
+dof_blur_near_amount = 0.11
+glow_intensity = 0.23
+glow_strength = 0.8
+glow_bloom = 0.5
