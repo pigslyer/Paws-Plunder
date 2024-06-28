@@ -1,31 +1,112 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://src/assets/left_paw.png" type="Texture" id=3]
+[ext_resource path="res://src/bullet/Bullet.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/scripts/CombatLogControl.cs" type="Script" id=5]
+[ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=6]
+[ext_resource path="res://src/player/DoomPortrait.tscn" type="PackedScene" id=7]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 0.9
 
-[node name="Player" type="KinematicBody"]
+[sub_resource type="CylinderShape" id=3]
+height = 2.5
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 0.3, 0.275, 1 )
+
+[node name="Player" type="KinematicBody" groups=["PLAYER"]]
+collision_layer = 2
 script = ExtResource( 1 )
+_bulletScene = ExtResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.45, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.368243, 0 )
 shape = SubResource( 1 )
 
+[node name="CollisionShape2" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.238999, 0 )
+shape = SubResource( 3 )
+disabled = true
+
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.696, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.426739, 0 )
 current = true
+fov = 90.0
 far = 10000.0
+
+[node name="Claw" type="Sprite3D" parent="Camera"]
+transform = Transform( 0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, -0.85, -0.75, -0.7 )
+pixel_size = 0.008
+no_depth_test = true
+texture = ExtResource( 3 )
+hframes = 2
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Gun" type="Sprite3D" parent="Camera"]
+transform = Transform( 0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, 0.6, -0.5, -0.7 )
+no_depth_test = true
+texture = ExtResource( 2 )
+
+[node name="MeleeTargetDetection" type="Area" parent="Camera"]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Camera/MeleeTargetDetection"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.07483 )
+shape = SubResource( 2 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer"]
-margin_right = 14.0
-margin_bottom = 14.0
+[node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
+margin_right = 100.0
+margin_bottom = 56.0
+
+[node name="CombatLogControl" type="Control" parent="CanvasLayer/DebugContainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 100.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 100, 24 )
+mouse_filter = 2
+script = ExtResource( 5 )
+
+[node name="Msg" type="RichTextLabel" parent="CanvasLayer/DebugContainer/CombatLogControl"]
+margin_right = 1920.0
+margin_bottom = 57.0
+theme = ExtResource( 6 )
+text = "This is the combat log."
+scroll_active = false
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+margin_top = 28.0
+margin_right = 100.0
+margin_bottom = 56.0
 rect_min_size = Vector2( 100, 0 )
 
-[node name="Label" type="Label" parent="CanvasLayer/PanelContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/DebugContainer/PanelContainer"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 93.0
 margin_bottom = 21.0
+
+[node name="Crosshair" type="TextureRect" parent="CanvasLayer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -32.0
+margin_top = -32.0
+margin_right = 32.0
+margin_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+
+[node name="DoomPortrait" parent="CanvasLayer" instance=ExtResource( 7 )]
+anchor_left = 0.44
+anchor_top = 0.8
+anchor_right = 0.56
