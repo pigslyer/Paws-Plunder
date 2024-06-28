@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://src/levels/TwoShips.cs" type="Script" id=5]
 [ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
 [ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
+[ext_resource path="res://src/shaders/catapult_main_menu.gdshader" type="Shader" id=8]
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -70,6 +71,11 @@ shader_param/fog_color = Color( 0.133333, 0.54902, 0.752941, 1 )
 material = SubResource( 13 )
 size = Vector2( 2, 2 )
 
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 8 )
+shader_param/projector_power = 0.257
+shader_param/vignette_param = 20.0
+
 [node name="TwoShips" type="Spatial"]
 script = ExtResource( 5 )
 
@@ -97,13 +103,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 shape = SubResource( 6 )
 
 [node name="ShipCat" parent="Level" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 9.71398, -225.128 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 15.5087, -225.128 )
 
 [node name="ShipMouse" parent="Level" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 10, 0 )
 
 [node name="Player" parent="Level" instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 125.608, 25.9257, -246.413 )
+transform = Transform( -0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, 355.532, 16.7941, -277.526 )
 
 [node name="FogOverlay" parent="Level" instance=ExtResource( 3 )]
 extra_cull_margin = 16384.0
@@ -111,6 +117,13 @@ mesh = SubResource( 14 )
 skeleton = NodePath("../..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CatapultEffect" type="ColorRect" parent="CanvasLayer"]
+visible = false
+material = SubResource( 15 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 1, 0, 0, 0 )
 
 [node name="DebugContainer" type="PanelContainer" parent="CanvasLayer"]
 anchor_left = 1.0
