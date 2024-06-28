@@ -1,106 +1,79 @@
+using System;
 using Godot;
 
 public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
 {
-    [Export] private PackedScene _bulletScene;
+    public event Action Died;
 
-    private float _speed = 1.0f;
-    private bool _isInCombat = false;
+    [Export] private PackedScene _bulletScene;
+    private float _bulletSpeed = 30.0f;
+
+    private const float FarAwaySpeed = 12.0f;
+    private const float NearbySpeed = 4.0f;
+    private const float WhatIsNearby = 5.0f;
 
     private NavigationAgent _agent;
-    private RayCast _playerSeekingRay;
-    private Timer _outOfCombatTimer;
-    private Timer _refreshPathTimer;
+    private AnimatedSprite3D _sprite;
+    private Spatial _centerOfMass;
+
+    public Vector3 CenterOfMass => _centerOfMass.GlobalTranslation;
+    bool _hasMoveTarget = false;
 
     public override void _Ready()
     {
         _agent = GetNode<NavigationAgent>("NavigationAgent");
-        _playerSeekingRay = GetNode<RayCast>("RayCast");
-        _outOfCombatTimer = GetNode<Timer>("OutOfCombatTimer");
-        _refreshPathTimer = GetNode<Timer>("RefreshPathTimer");
+        _centerOfMass = GetNode<Spatial>("CenterOfMass");
+        _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
 
-        _outOfCombatTimer.Connect("timeout", this, nameof(OnCombatTimerEnded));
-        _refreshPathTimer.Connect("timeout", this, nameof(OnRefreshPath));
+        _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount());
+        _sprite.Playing = true;
     }
 
     public override void _PhysicsProcess(float delta)
     {
-        UpdateInCombat();
         FollowPath(delta);
-
-        _playerSeekingRay.CastTo = _playerSeekingRay.ToLocal(Globals.GetPlayer().GetGlobalPosition());
-    }
-
-    private void UpdateInCombat()
-    {
-        bool canSeePlayer = !_playerSeekingRay.IsColliding();
-
-        if (_isInCombat != canSeePlayer)
-        {
-            if (_isInCombat)
-            {
-                if (!_outOfCombatTimer.IsStopped())
-                {
-                    _outOfCombatTimer.Start();
-                }
-            }
-            else
-            {
-                //Globals.GetSquadController().EnterCombat(this);
-                _isInCombat = true;
-
-                _outOfCombatTimer.Stop();
-            }
-        }
     }
 
     private void FollowPath(float delta)
     {
-        if (_isInCombat && _refreshPathTimer.IsStopped())
+        if (!_hasMoveTarget)
         {
-            _refreshPathTimer.Start();
-            _agent.SetTargetLocation(Globals.GetPlayer().GetGlobalPosition());
+             return;
         }
-        else if (!_isInCombat && !_refreshPathTimer.IsStopped())
-        {
-            _refreshPathTimer.Stop();
-        }
-
-        if (!_isInCombat)
-        {
-            return;
-        }        
 
         Vector3 nextPosition = _agent.GetNextLocation();
+        Vector3 targetPosition = _agent.GetTargetLocation();
 
-        GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, _speed * delta);
+        bool isNearby = GlobalTranslation.DistanceTo(targetPosition) < WhatIsNearby;
+
+        float speed = isNearby ? NearbySpeed : FarAwaySpeed; 
+        GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, speed * delta);
+
+        _hasMoveTarget = !_agent.IsNavigationFinished();
     }
 
-    private void OnCombatTimerEnded()
+    public void GoTo(Vector3 point)
     {
-//        Globals.GetSquadController().LeaveCombat(this);
-        _isInCombat = false;
+        _hasMoveTarget = true;
+        _agent.SetTargetLocation(point);
     }
 
-    private void OnRefreshPath()
+    public void AttackTarget(Player target)
     {
-        _agent.SetTargetLocation(Globals.GetPlayer().GetGlobalPosition());
+        ShootBulletWithVelocity(CenterOfMass.DirectionTo(target.GlobalTranslation) * _bulletSpeed);
     }
 
-
-    public void Target(MeleeTargetInfo info)
+    private void ShootBulletWithVelocity(Vector3 velocity)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void AttackTarget()
-    {
-        Spatial spatial = (Spatial)null;
-
         Bullet bullet = _bulletScene.Instance<Bullet>();        
         GetTree().Root.AddChild(bullet);
-        bullet.SetGlobalPosition(this.GetGlobalPosition());
-        bullet.Initialize((spatial.GetGlobalPosition() - this.GetGlobalPosition()).Normalized() * 20f, PhysicsLayers3D.World | PhysicsLayers3D.Player);
+        bullet.GlobalTranslation = CenterOfMass;
+        bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
+    }
+
+    void IMeleeTargettable.Target(MeleeTargetInfo info)
+    {
+        DestroyModel();
     }
 
     void IBulletHittable.Hit()
@@ -110,7 +83,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
 
     private void DestroyModel()
     {
-        //Globals.GetSquadController().LeaveCombat(this);
+        Died?.Invoke();
         QueueFree();
     }
 }

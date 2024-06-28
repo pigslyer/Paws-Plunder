@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 4, 1, 4 )
+
+[node name="Box" type="CollisionShape"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.18444, 2.00015, 7.22511 )
+shape = SubResource( 5 )
+
+[node name="Mesh" type="CSGBox" parent="."]
+width = 8.0
+depth = 8.0

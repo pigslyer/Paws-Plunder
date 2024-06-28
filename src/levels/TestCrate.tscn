@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 10, 2.5, 10 )
+
+[node name="Crate" type="CollisionShape"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.4326, 4.00001, 17.5699 )
+shape = SubResource( 5 )
+
+[node name="Mesh" type="CSGBox" parent="."]
+width = 20.0
+height = 5.0
+depth = 20.0

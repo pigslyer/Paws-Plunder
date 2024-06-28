@@ -8,6 +8,6 @@ public class BillboardedSpatial : Spatial
 
         GlobalRotation = activeCamera.GlobalRotation;
 
-        Rotation -= Rotation.x();
+        Rotation -= Rotation.x00();
     }
 }
