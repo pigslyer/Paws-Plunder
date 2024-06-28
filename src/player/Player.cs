@@ -30,6 +30,7 @@ public class Player : KinematicBody, IBulletHittable
 	private Area _meleeDetectionArea;
 	private DoomPortrait _doomPortrait;
 	private CombatLogControl _logControl;
+	private HealthContainer _healthContainer;
 
 	public override void _Ready()
 	{
@@ -38,6 +39,7 @@ public class Player : KinematicBody, IBulletHittable
 		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -221,6 +223,7 @@ public class Player : KinematicBody, IBulletHittable
 		_health -= 1;
 		GD.Print($"new health {_health}");
 		_logControl.SetMsg($"The Player is now at {_health} health!");
+		_healthContainer.SetHealth(_health);
 	}
 
 }
