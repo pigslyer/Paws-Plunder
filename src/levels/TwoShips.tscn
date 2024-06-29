@@ -61,6 +61,12 @@ subdivide_depth = 64
 [sub_resource type="BoxShape" id=6]
 extents = Vector3( 4096, 1, 4096 )
 
+[sub_resource type="ShaderMaterial" id=17]
+shader = ExtResource( 8 )
+shader_param/alpha = 1.0
+shader_param/inner_radius = 0.868
+shader_param/outer_radius = 0.821
+
 [sub_resource type="ShaderMaterial" id=13]
 render_priority = -1
 shader = ExtResource( 1 )
@@ -77,12 +83,6 @@ _data = {
 "points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -201.61, 85.2266, -472.205 ),
 "tilts": PoolRealArray( 0, 0 )
 }
-
-[sub_resource type="ShaderMaterial" id=17]
-shader = ExtResource( 8 )
-shader_param/alpha = 1.0
-shader_param/inner_radius = 0.868
-shader_param/outer_radius = 0.821
 
 [node name="TwoShips" type="Spatial"]
 script = ExtResource( 5 )
@@ -116,6 +116,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 15.5087, -225.128 )
 [node name="ShipMouse" parent="Level" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 10, 0 )
 
+[node name="CatapultEffect" type="ColorRect" parent="Level"]
+unique_name_in_owner = true
+material = SubResource( 17 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 1, 0.890196, 0, 1 )
+
 [node name="FogOverlay" parent="Level" instance=ExtResource( 3 )]
 extra_cull_margin = 16384.0
 mesh = SubResource( 14 )
@@ -138,13 +146,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 unique_name_in_owner = true
 
 [node name="SFX" type="CanvasLayer" parent="."]
-
-[node name="CatapultEffect" type="ColorRect" parent="SFX"]
-unique_name_in_owner = true
-material = SubResource( 17 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color( 1, 0.890196, 0, 1 )
+visible = false
 
 [node name="MainMenu" parent="." instance=ExtResource( 9 )]
 
