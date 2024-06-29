@@ -6,7 +6,7 @@ public class Player : KinematicBody, IBulletHittable
 {
 	[Export] private PackedScene _bulletScene;
 
-	private Vector3 GravityAcceleration => new Vector3(0, -120f, 0);
+	private Vector3 GravityAcceleration => new Vector3(0, -115f, 0);
 	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
