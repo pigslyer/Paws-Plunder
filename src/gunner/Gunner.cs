@@ -9,6 +9,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private const int ParallelShots = 4;
     private static readonly float TotalSpreadRad = Mathf.Deg2Rad(30);
     private const float BulletSpeed = 30.0f;
+    private const int ShootFrame = 1;
 
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
     
@@ -19,6 +20,8 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private NavigationAgent _agent;
     private Spatial _centerOfMassNode;
     private bool _hasMoveOrder = false;
+
+    private Vector3? _queuedAttackDirection = null;
 
     public override void _Ready()
     {
@@ -42,6 +45,11 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
             return;
         }
 
+        if (_queuedAttackDirection != null)
+        {
+            return;
+        }
+
         Vector3 nextPosition = _agent.GetNextLocation();
         GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, WalkSpeed * delta);
 
@@ -58,10 +66,33 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     {
         Vector3 forwardBulletVelocity = CenterOfMass.DirectionTo(player.GlobalTranslation) * BulletSpeed;
         
+        _queuedAttackDirection = forwardBulletVelocity;
+        _sprite.Play("Shoot");
+    }
+
+    private void OnAnimationFrameChanged()
+    {
+        if (_sprite.Animation == "Shoot" && _sprite.Frame == ShootFrame && _queuedAttackDirection != null)
+        {
+            FireBlunderbuss(_queuedAttackDirection.Value);
+        }
+    }
+
+    private void OnAnimationFinished()
+    {
+        if (_sprite.Animation == "Shoot")
+        {
+            _queuedAttackDirection = null;            
+            _sprite.Play("Idle");
+        }
+    }
+
+    private void FireBlunderbuss(Vector3 direction)
+    {
         for (int i = 0; i < ParallelShots; i++)
         {
             float currentAngleOffset = -TotalSpreadRad / 2 + i * (TotalSpreadRad / (ParallelShots - 1));
-            Vector3 currentVelocity = forwardBulletVelocity.Rotated(Vector3.Up, currentAngleOffset);
+            Vector3 currentVelocity = direction.Rotated(Vector3.Up, currentAngleOffset);
 
             ShootBulletWithVelocity(currentVelocity);
         }
@@ -91,9 +122,9 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
         CollisionLayer = 0;
         CollisionMask = 0;
-
-        // swap with animation change
-        QueueFree();
+        _hasMoveOrder = false;
+    
+        _sprite.Play("Death");
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()
