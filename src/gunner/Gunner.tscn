@@ -51,7 +51,6 @@ animations = [ {
 
 [node name="Gunner" type="KinematicBody"]
 collision_layer = 4
-collision_mask = 0
 script = ExtResource( 14 )
 _bulletScene = ExtResource( 15 )
 
