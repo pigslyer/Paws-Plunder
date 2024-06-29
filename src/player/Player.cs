@@ -1,7 +1,14 @@
+using System.Linq;
 using Godot;
 
 public class Player : KinematicBody, IBulletHittable
 {
+	private enum GunTypes
+	{
+		Single,
+		Quad,
+	}
+
 	[Export] private PackedScene _bulletScene;
 
 	private Vector3 GravityAcceleration => new Vector3(0, -115f, 0);
@@ -12,13 +19,17 @@ public class Player : KinematicBody, IBulletHittable
 	private const float MaxSprintSpeed = 20;
 	private const float SensitivityMult = 4f;
 	private const float InvulPeriod = 2.0f;
+	private const float Acceleration = 100;
+	private const float EnamoredByTreasureTime = 2.0f;
 
 	private float Sensitivity => 1.0f;
 
 	private const int MaxHealth = 3;
 	private int _health = MaxHealth;
 
-	private float _speed = 100;
+	private GunTypes _currentGun = GunTypes.Single;
+	private int _remainingAmmo = 1;
+
 	private Vector3 _previousVelocity = Vector3.Zero;
 	private Vector2 _mouseMotion = Vector2.Zero;
 
@@ -26,9 +37,11 @@ public class Player : KinematicBody, IBulletHittable
 	public bool JustFired { get; private set;} = false;
 
 	private Camera _camera;
+	private Sprite3D _gun;
 	private Label _debugLabel;
 	private TextureRect _crosshair;
 	private Area _meleeDetectionArea;
+	private Area _pickupDetectionArea;
 	private DoomPortrait _doomPortrait;
 	private CombatLogControl _logControl;
 	private HealthContainer _healthContainer;
@@ -36,12 +49,15 @@ public class Player : KinematicBody, IBulletHittable
 	private DeathInfo _deathInfo = null;
 
 	private CustomTimer _invulTimer;
+	private CustomTimer _enamoredTimer;
 
 	public override void _Ready()
 	{
 		_camera = GetNode<Camera>("Camera");
+		_gun = GetNode<Sprite3D>("Camera/Gun");
 		_debugLabel = GetNode<Label>("CanvasLayer/DebugContainer/PanelContainer/Label");
 		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
+		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
@@ -64,6 +80,8 @@ public class Player : KinematicBody, IBulletHittable
 			
 			MeleeAttack();
 			ShootAttack();
+		
+			PickUpItems();
 		}
 		else if (_deathInfo != null)
 		{
@@ -122,7 +140,7 @@ public class Player : KinematicBody, IBulletHittable
 				}
 			}
 
-			velocityXz += globalizedInput * _speed * delta;
+			velocityXz += globalizedInput * Acceleration * delta;
 			velocityXz = velocityXz.LimitLength(currentNaturalMaxSpeed);
 
 			velocity += velocityXz;
@@ -209,20 +227,106 @@ public class Player : KinematicBody, IBulletHittable
 
 	private void ShootAttack()
 	{
+		if (_remainingAmmo <= 0)
+		{
+			return;
+		}
+
 		bool shootAttack = Input.IsActionJustPressed("plr_shoot");
 
 		if (!shootAttack)
 		{
 			return;
 		}
-		
+
+		_remainingAmmo -= 1;
+
 		JustFired = true;
 
+		Vector3 shotDirection = -_camera.GlobalTransform.basis.z;
+
+		// include muzzle flash?
+		if (_currentGun == GunTypes.Single)
+		{
+			FireBullet(shotDirection * 20);
+		}
+		else if (_currentGun == GunTypes.Quad)
+		{
+			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 4, 20))
+			{
+				FireBullet(bulletVelocity);
+			}
+		}
+
+		if (_remainingAmmo == 0)
+		{
+			// include actual animation here
+			_gun.Visible = false;
+		}
+	}
+
+	private void FireBullet(Vector3 velocity)
+	{
 		Bullet bullet = _bulletScene.Instance<Bullet>();
 		GetTree().Root.AddChild(bullet);
 		bullet.GlobalTranslation = GlobalTranslation;
 
-		bullet.Initialize(this, -_camera.GlobalTransform.basis.z * 20, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
+		bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
+	}
+
+	private void PickUpItems()
+	{
+		Godot.Collections.Array pickupables = _pickupDetectionArea.GetOverlappingBodies();
+
+		void PickupItem(Item item)
+		{
+			// include add score
+			_logControl.SetMsg($"Picked up a {item.DisplayName}!");
+			item.QueueFree();
+		}
+
+		foreach (Item item in pickupables.OfType<Item>())
+		{
+			switch (item.ItemName)
+			{
+				case "GunnerGun":
+				{
+					if (_remainingAmmo > 0)
+					{
+						continue;
+					}
+
+					_remainingAmmo = 1;
+					_currentGun = GunTypes.Quad;
+					_gun.Visible = true;
+					_gun.Frame = 1;
+
+					PickupItem(item);
+				}
+				break;
+
+				case "Treasure":
+				{
+					_doomPortrait.SetAnimation(DoomPortraitType.Treasure);
+
+					if (_enamoredTimer != null)
+					{
+						_enamoredTimer.Start(EnamoredByTreasureTime);
+					}
+					else
+					{
+						_enamoredTimer = CustomTimer.Start(this, EnamoredByTreasureTime);
+						_enamoredTimer.Timeout += () => {
+							_enamoredTimer = null;
+							_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+						};
+					}
+
+					PickupItem(item);
+				}
+				break;
+			}
+		}
 	}
 
 	private void RestartOnRequest()
@@ -258,6 +362,8 @@ public class Player : KinematicBody, IBulletHittable
 		_health -= 1;
 		GD.Print($"new health {_health}");
 		_logControl.SetMsg($"The Player is now at {_health} health!");
+		_enamoredTimer?.Stop();
+		_enamoredTimer = null;
 
 		_healthContainer.SetHealth(_health);
 
