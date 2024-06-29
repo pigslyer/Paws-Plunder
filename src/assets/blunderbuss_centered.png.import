@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/gunner.png-d08957d56aa91ea896a52fe18a75c4da.stex"
+path="res://.import/blunderbuss_centered.png-de64ee4564c8c310dd7a991ad3f8207a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/assets/gunner.png"
-dest_files=[ "res://.import/gunner.png-d08957d56aa91ea896a52fe18a75c4da.stex" ]
+source_file="res://src/assets/blunderbuss_centered.png"
+dest_files=[ "res://.import/blunderbuss_centered.png-de64ee4564c8c310dd7a991ad3f8207a.stex" ]
 
 [params]
 

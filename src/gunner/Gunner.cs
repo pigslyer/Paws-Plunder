@@ -14,6 +14,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     
     private const float WalkSpeed = 8.0f;
     [Export] private PackedScene _bulletScene;
+    [Export] private PackedScene _droppedGunScene;
 
     private AnimatedSprite3D _sprite;
     private NavigationAgent _agent;
@@ -88,12 +89,9 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
     private void FireBlunderbuss(Vector3 direction)
     {
-        for (int i = 0; i < ParallelShots; i++)
+        foreach (Vector3 velocity in Globals.CalculateShotgunDirections(direction, TotalSpreadRad, ParallelShots, BulletSpeed))
         {
-            float currentAngleOffset = -TotalSpreadRad / 2 + i * (TotalSpreadRad / (ParallelShots - 1));
-            Vector3 currentVelocity = direction.Rotated(Vector3.Up, currentAngleOffset);
-
-            ShootBulletWithVelocity(currentVelocity);
+            ShootBulletWithVelocity(velocity);
         }
     }
 
@@ -124,6 +122,10 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         _hasMoveOrder = false;
     
         _sprite.Play("Death");
+
+        Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
+        GetParent().AddChild(droppedGun);
+        droppedGun.GlobalTranslation = CenterOfMass;
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()
