@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=6]
 [ext_resource path="res://src/player/DoomPortrait.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/scripts/HealthContainer.cs" type="Script" id=8]
+[ext_resource path="res://src/assets/ui heart.png" type="Texture" id=9]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 0.9
@@ -45,9 +46,10 @@ __meta__ = {
 }
 
 [node name="Gun" type="Sprite3D" parent="Camera"]
-transform = Transform( 0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, 0.6, -0.5, -0.7 )
+transform = Transform( 0.150384, -0.0868241, -0.984808, 0.5, 0.866025, 0, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 )
+pixel_size = 0.009
 no_depth_test = true
-texture = ExtResource( 2 )
+hframes = 2
 
 [node name="MeleeTargetDetection" type="Area" parent="Camera"]
 collision_layer = 0
@@ -117,29 +119,35 @@ script = ExtResource( 8 )
 
 [node name="Health1" type="MarginContainer" parent="CanvasLayer/HealthContainer"]
 margin_right = 70.0
-margin_bottom = 64.0
+margin_bottom = 69.0
+size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/HealthContainer/Health1"]
 margin_right = 70.0
-margin_bottom = 64.0
-texture = ExtResource( 2 )
+margin_bottom = 69.0
+texture = ExtResource( 9 )
+stretch_mode = 6
 
 [node name="Health2" type="MarginContainer" parent="CanvasLayer/HealthContainer"]
-margin_top = 68.0
+margin_top = 73.0
 margin_right = 70.0
-margin_bottom = 132.0
+margin_bottom = 142.0
+size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/HealthContainer/Health2"]
 margin_right = 70.0
-margin_bottom = 64.0
-texture = ExtResource( 2 )
+margin_bottom = 69.0
+texture = ExtResource( 9 )
+stretch_mode = 6
 
 [node name="Health3" type="MarginContainer" parent="CanvasLayer/HealthContainer"]
-margin_top = 136.0
+margin_top = 146.0
 margin_right = 70.0
-margin_bottom = 200.0
+margin_bottom = 216.0
+size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/HealthContainer/Health3"]
 margin_right = 70.0
-margin_bottom = 64.0
-texture = ExtResource( 2 )
+margin_bottom = 70.0
+texture = ExtResource( 9 )
+stretch_mode = 6
