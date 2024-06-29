@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
 [ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
 [ext_resource path="res://src/shaders/catapult_main_menu.gdshader" type="Shader" id=8]
+[ext_resource path="res://src/globals/Styling.tres" type="Theme" id=9]
+[ext_resource path="res://src/assets/img/logo.png" type="Texture" id=10]
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -32,7 +34,6 @@ bump_strength = 4.0
 noise = SubResource( 11 )
 
 [sub_resource type="ShaderMaterial" id=3]
-render_priority = 1
 shader = ExtResource( 6 )
 shader_param/water_color = Color( 0, 0.788235, 1, 0.768627 )
 shader_param/wave_strength = Vector2( 2, 3 )
@@ -62,6 +63,7 @@ subdivide_depth = 64
 extents = Vector3( 4096, 1, 4096 )
 
 [sub_resource type="ShaderMaterial" id=13]
+render_priority = -1
 shader = ExtResource( 1 )
 shader_param/fog_distance = 455.44
 shader_param/fog_fade_range = 198.075
@@ -71,10 +73,17 @@ shader_param/fog_color = Color( 0.133333, 0.54902, 0.752941, 1 )
 material = SubResource( 13 )
 size = Vector2( 2, 2 )
 
+[sub_resource type="Curve3D" id=16]
+_data = {
+"points": PoolVector3Array(  ),
+"tilts": PoolRealArray(  )
+}
+
 [sub_resource type="ShaderMaterial" id=15]
 shader = ExtResource( 8 )
-shader_param/projector_power = 0.257
-shader_param/vignette_param = 20.0
+shader_param/alpha = 1.0
+shader_param/inner_radius = 0.868
+shader_param/outer_radius = 0.821
 
 [node name="TwoShips" type="Spatial"]
 script = ExtResource( 5 )
@@ -109,21 +118,69 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 15.5087, -225.128 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 10, 0 )
 
 [node name="Player" parent="Level" instance=ExtResource( 2 )]
-transform = Transform( -0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, 355.532, 16.7941, -277.526 )
+transform = Transform( -0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, 335.164, 16.7941, -274.716 )
 
 [node name="FogOverlay" parent="Level" instance=ExtResource( 3 )]
 extra_cull_margin = 16384.0
 mesh = SubResource( 14 )
 skeleton = NodePath("../..")
 
+[node name="Path" type="Path" parent="Level"]
+curve = SubResource( 16 )
+
+[node name="PathFollow" type="PathFollow" parent="Level/Path"]
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="CatapultEffect" type="ColorRect" parent="CanvasLayer"]
-visible = false
 material = SubResource( 15 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 1, 0, 0, 0 )
+color = Color( 1, 0.890196, 0, 1 )
+
+[node name="LogoRect" type="TextureRect" parent="CanvasLayer"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -289.0
+margin_top = 34.0
+margin_right = 339.0
+margin_bottom = 534.0
+texture = ExtResource( 10 )
+expand = true
+stretch_mode = 5
+
+[node name="MainMenuContainer" type="MarginContainer" parent="CanvasLayer"]
+anchor_left = 0.345
+anchor_top = 0.583
+anchor_right = 0.674
+anchor_bottom = 0.652
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenuContainer"]
+margin_right = 631.0
+margin_bottom = 398.0
+rect_min_size = Vector2( 300, 300 )
+custom_constants/separation = 64
+
+[node name="PlayButton" type="Button" parent="CanvasLayer/MainMenuContainer/VBoxContainer"]
+margin_right = 631.0
+margin_bottom = 90.0
+theme = ExtResource( 9 )
+text = "Play"
+
+[node name="OptionsButton" type="Button" parent="CanvasLayer/MainMenuContainer/VBoxContainer"]
+margin_top = 154.0
+margin_right = 631.0
+margin_bottom = 244.0
+theme = ExtResource( 9 )
+text = "Options"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/MainMenuContainer/VBoxContainer"]
+margin_top = 308.0
+margin_right = 631.0
+margin_bottom = 398.0
+theme = ExtResource( 9 )
+text = "Exit"
 
 [node name="DebugContainer" type="PanelContainer" parent="CanvasLayer"]
 anchor_left = 1.0
