@@ -13,6 +13,7 @@ public class Player : KinematicBody, IBulletHittable
 	private const float MaxNaturalSpeed = 15;
 	private const float MaxSprintSpeed = 20;
 	private const float SensitivityMult = 4f;
+	private const float InvulPeriod = 3.0f;
 
 	private float Sensitivity => 1.0f;
 
@@ -33,6 +34,8 @@ public class Player : KinematicBody, IBulletHittable
 	private CombatLogControl _logControl;
 	private HealthContainer _healthContainer;
 
+	private CustomTimer _invulTimer;
+
 	public override void _Ready()
 	{
 		_camera = GetNode<Camera>("Camera");
@@ -41,6 +44,8 @@ public class Player : KinematicBody, IBulletHittable
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
+		
+		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -56,8 +61,6 @@ public class Player : KinematicBody, IBulletHittable
 			ShootAttack();
 		}
 
-		UpdateDoomPortrait();		
-		
 		RestartOnRequest();
 
 		_mouseMotion = Vector2.Zero;
@@ -201,18 +204,6 @@ public class Player : KinematicBody, IBulletHittable
 		bullet.Initialize(-_camera.GlobalTransform.basis.z * 20, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
 	}
 
-	private void UpdateDoomPortrait()
-	{
-		if (_health <= 0)
-		{
-			_doomPortrait.SetAnimation(DoomPortraitType.Death);
-		}
-		else
-		{
-			_doomPortrait.SetAnimation(DoomPortraitType.Idle);
-		}
-	}
-
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
@@ -231,12 +222,32 @@ public class Player : KinematicBody, IBulletHittable
 	}
 
 
-	public void Hit()
+	void IBulletHittable.Hit()
 	{
+		if (_invulTimer != null)
+		{
+			return;
+		}
+
 		_health -= 1;
 		GD.Print($"new health {_health}");
 		_logControl.SetMsg($"The Player is now at {_health} health!");
-		_healthContainer.SetHealth(_health);
-	}
 
+		_healthContainer.SetHealth(_health);
+
+		if (_health > 0)
+		{
+			_doomPortrait.SetAnimation(DoomPortraitType.Pain);
+			_invulTimer = CustomTimer.Start(this, InvulPeriod);
+
+			_invulTimer.Timeout += () => {
+				_invulTimer = null;
+				_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+			};
+		}
+		else
+		{
+			_doomPortrait.SetAnimation(DoomPortraitType.Death);
+		}
+	}
 }
