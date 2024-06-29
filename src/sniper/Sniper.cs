@@ -81,8 +81,10 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
     {
         Died?.Invoke();
         
-        //_sprite.Play("Died");
-        QueueFree();
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
+        _sprite.Play("Death");
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()
