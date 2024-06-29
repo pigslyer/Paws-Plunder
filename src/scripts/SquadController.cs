@@ -216,7 +216,7 @@ public class SquadController : Node
 
     private void UpdateEnemyPositions()
     {
-        if (_gruntTracker.ActiveEnemies.Count == 0)
+        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count == 0)
         {
             _updatePositionsTimer?.Stop();
             _updatePositionsTimer = null;
