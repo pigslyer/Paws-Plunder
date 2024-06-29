@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable
+public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker
 {
     public event Action Died;
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
@@ -51,7 +51,7 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
         Bullet bullet = _bulletScene.Instance<Bullet>();        
-        GetTree().Root.AddChild(bullet);
+        GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
         bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }

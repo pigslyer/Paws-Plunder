@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable, IMeleeTargettable
+public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable, IMeleeTargettable, IMoveable
 {
     public event Action Died;
     private const float Speed = 30.0f;

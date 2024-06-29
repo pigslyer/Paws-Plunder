@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable
+public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
 {
     public event Action Died;
 
@@ -68,6 +68,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
 
     public void AttackTarget(Player target)
     {
+        _queuedAttackDirection = CenterOfMass.DirectionTo(target.GlobalTranslation) * BulletSpeed;
         _sprite.Play("Shoot");
     }
 
@@ -104,7 +105,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
         Bullet bullet = _bulletScene.Instance<Bullet>();        
-        GetTree().Root.AddChild(bullet);
+        GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
         bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }

@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-/// <summary>
-/// Another one of those wonderful "controller" hacks because thisified systems require it.
-/// </summary> 
+public interface IMoveable
+{
+    void GoTo(Vector3 point);
+}
+
+public interface IPlayerAttacker
+{
+    void AttackTarget(Player player);
+}
+
 public class SquadController : Node
 {
     private readonly DetectionTracker<RatGrunt> _gruntTracker;
@@ -17,14 +24,27 @@ public class SquadController : Node
     private readonly RandomOrderQueue<Gunner> _gunnerMovementQueue;
     private readonly RandomOrderQueue<TraderMouse> _traderMovementQueue;
 
+    private readonly DelayedQueue<(IMoveable, Vector3)> _queuedMovers;
+    private readonly DelayedQueue<IPlayerAttacker> _queuedAttackers;
+
     private readonly Distro _updatePositionsInterval = (2.0f, 1.0f);
+    private readonly float _totalMovementTime = 1.0f;
+
+    private readonly Distro _percentageOfMovingRatGrunts = (0.6f, 0.3f);
     private readonly Distro _distanceToPlayerRatGrunt = (8.0f, 3.0f);
 
-    private readonly Distro _attackInterval = (4.0f, 2.0f);
+    private readonly Distro _percentageOfMovingGunners = (-0.1f, 0.3f);
+    private readonly Distro _distanceToPlayerGunner = (8.0f, 3.0f);
 
-    // chance that, during any given attack cycle, a sniper fires
-    private const float ChanceOfSniperShot = 0.8f;
-    private const float ChanceOfBlunderbussShot = 0.8f;
+    private readonly Distro _percentageOfMovingTraders = (0.7f, 0.2f);
+    private readonly Distro _distanceTraderMovement = (10.0f, 4.0f);
+
+    private readonly Distro _attackInterval = (4.0f, 2.0f);
+    private readonly float _totalAttackTime = 0.5f;
+
+    private readonly Distro _percentageAttackingGrunts = (0.3333f, 0.1f);
+    private readonly Distro _percentageAttackingSnipers = (0.5f, 0.2f);
+    private readonly Distro _percentageAttackingGunners = (0.3f, 0.1f);
 
     private RandomNumberGenerator _rng;
     private Player _player;
@@ -64,6 +84,11 @@ public class SquadController : Node
         _gruntMovementQueue = new RandomOrderQueue<RatGrunt>(_rng);
         _gunnerMovementQueue = new RandomOrderQueue<Gunner>(_rng);
         _traderMovementQueue = new RandomOrderQueue<TraderMouse>(_rng);
+
+        // possible use after free avoided by clearing both of these when anyone dies
+        // this causes a break in the fighting, which might be a cool effect
+        _queuedMovers = new DelayedQueue<(IMoveable, Vector3)>();
+        _queuedAttackers = new DelayedQueue<IPlayerAttacker>();
     }
 
     public override void _Ready()
@@ -110,41 +135,44 @@ public class SquadController : Node
     {
         _gruntTracker.RemoveEnemy(grunt);
         _gruntMovementQueue.RemoveElement(grunt);
+        
+        _queuedAttackers.Clear();
+        _queuedMovers.Clear();
     }
 
     private void OnSniperDied(Sniper sniper)
     {
         _sniperTracker.RemoveEnemy(sniper);
+
+        _queuedAttackers.Clear();
     }
 
     private void OnGunnerDied(Gunner gunner)
     {
         _gunnerTracker.RemoveEnemy(gunner);
         _gunnerMovementQueue.RemoveElement(gunner);
+
+        _queuedAttackers.Clear();
+        _queuedMovers.Clear();
     }
 
     private void OnTraderDied(TraderMouse trader)
     {
         _traderTracker.RemoveEnemy(trader);
         _traderMovementQueue.RemoveElement(trader);
+
+        _queuedMovers.Clear();
     }
 
     public override void _PhysicsProcess(float delta)
     {
-        if (_player != null)
-        {
-            PerformCombatTasks();
-        }
-    }
-
-    // all of these presuppose player exists
-    private void PerformCombatTasks()
-    {
         UpdateInCombatEnemies();
-
         UpdateEnemyPositions();
 
         UpdateEnemyAttacking();
+        
+        RunQueuedMovers(delta);
+        RunQueuedAttackers(delta);
     }
 
     private void UpdateInCombatEnemies()
@@ -210,50 +238,49 @@ public class SquadController : Node
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
         // can't determine without testing
-        int movedGrunts = (int)Math.Ceiling(_gruntTracker.ActiveEnemies.Count / 3.0f) + _rng.RandiRange(-1, 1);
-        movedGrunts = Math.Max(movedGrunts, _gruntTracker.ActiveEnemies.Count);
-
+        int movedGrunts = GetNormClamped(_percentageOfMovingRatGrunts, _gruntTracker.ActiveEnemies.Count);
         for (int i = 0; i < movedGrunts; i++)
         {
             RatGrunt grunt = _gruntMovementQueue.NextElement();
-            float angle = _rng.RandfRange(0, Mathf.Tau);
+            float angle = _rng.RandfRange(Range.Circle);
             float distance = _rng.Randfn(_distanceToPlayerRatGrunt);
 
             Vector3 newPosition = playerPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
-            grunt.GoTo(newPosition);
+            _queuedMovers.AddElement((grunt, newPosition));
         }
 
-        if (_gunnerTracker.ActiveEnemies.Count > 0)
+        int movedGunners = GetNormClamped(_percentageOfMovingGunners, _gunnerTracker.ActiveEnemies.Count);
+        for (int i = 0; i < movedGunners; i++)
         {
             Gunner gunner = _gunnerMovementQueue.NextElement();
 
-            float angle = _rng.RandfRange(0, Mathf.Tau);
-            float distance = _rng.Randfn(_distanceToPlayerRatGrunt);
+            float angle = _rng.RandfRange(Range.Circle);
+            float distance = _rng.Randfn(_distanceToPlayerGunner);
 
             Vector3 newPosition = playerPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
-            gunner.GoTo(newPosition);
+            _queuedMovers.AddElement((gunner, newPosition));
         }
 
-        int movedTraders = _traderTracker.ActiveEnemies.Count * 2 / 3;
+        int movedTraders = GetNormClamped(_percentageOfMovingTraders, _traderTracker.ActiveEnemies.Count);
         for (int i = 0; i < movedTraders; i++)
         {
             TraderMouse trader = _traderMovementQueue.NextElement();
 
             Vector3 currentPosition = trader.GlobalTranslation;
-            Distro traderMoveDistro = (5.0f, 2.0f);
-
-            float angle = _rng.RandfRange(0, Mathf.Tau);
-            float distance = _rng.Randfn(traderMoveDistro);
+            
+            float angle = _rng.RandfRange(Range.Circle);
+            float distance = _rng.Randfn(_distanceTraderMovement);
 
             Vector3 newPosition = currentPosition + new Vector3(distance, 0, 0).Rotated(Vector3.Up, angle);
-
-            trader.GoTo(newPosition);
+            _queuedMovers.AddElement((trader, newPosition));
         }
+
+        _queuedMovers.RedistributeOver(_rng, _totalMovementTime);
     }
 
     private void UpdateEnemyAttacking()
     {
-        if (_gruntTracker.ActiveEnemies.Count == 0)
+        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count == 0)
         {
             _runAttackRoutine?.Stop();
             _runAttackRoutine = null;
@@ -271,39 +298,52 @@ public class SquadController : Node
     {
         _runAttackRoutine = null;
 
-        // safety
+        int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Count);
+        foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers))
+        {
+            _queuedAttackers.AddElement(grunt);
+        }
+
+        int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Count);
+        foreach (Sniper sniper in _rng.RandEls(_sniperTracker.ActiveEnemies, sniperAttackers))
+        {
+            _queuedAttackers.AddElement(sniper);
+        }
+
+        int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Count);
+        foreach (Gunner gunner in _rng.RandEls(_gunnerTracker.ActiveEnemies, gunnerAttackers))
+        {
+            _queuedAttackers.AddElement(gunner);
+        }
+
+        _queuedAttackers.RedistributeOver(_rng, _totalAttackTime);
+    }
+
+    private void RunQueuedMovers(float delta)
+    {
+        foreach ((IMoveable movable, Vector3 targetPosition) in _queuedMovers.PopElements(delta))
+        {
+            movable.GoTo(targetPosition);
+        }        
+    }
+
+    private void RunQueuedAttackers(float delta)
+    {
         if (_player == null)
         {
             return;
         }
 
-        if (_gruntTracker.ActiveEnemies.Count > 0)
+        foreach (IPlayerAttacker attacker in _queuedAttackers.PopElements(delta))
         {
-            int gruntAttackers = (int)Math.Ceiling(_gruntTracker.ActiveEnemies.Count / 3.0);
-
-            foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers))
-            {
-                grunt.AttackTarget(_player);
-            }
+            attacker.AttackTarget(_player);
         }
+    }
 
-        float sniperFireShot = _rng.Randf();
-
-        if (_sniperTracker.ActiveEnemies.Count > 0 && sniperFireShot < ChanceOfSniperShot)
-        {
-            Sniper sniper = _rng.RandEl(_sniperTracker.ActiveEnemies);  
-            
-            sniper.AttackTarget(_player);
-        }
-
-        float gunnerFireShot = _rng.Randf();
-
-        if (_gunnerTracker.ActiveEnemies.Count > 0 && gunnerFireShot > -1)
-        {
-            Gunner gunner = _rng.RandEl(_gunnerTracker.ActiveEnemies);
-
-            gunner.AttackTarget(_player);
-        }
+    private int GetNormClamped(Distro distro, int max)
+    {
+        float percentage = _rng.Randfn(distro);
+        return Mathf.Clamp(Mathf.CeilToInt(percentage * max), 0, max);
     }
 
     public static Vector3 GetProjectileVelocity(Vector3 targetPosition, Vector3 targetVelocity, Vector3 startingPoint, float projectileSpeed, float delay = 0f)
@@ -345,6 +385,60 @@ public class SquadController : Node
             _updatePositionsTimer = null;
             _runAttackRoutine?.Stop();
             _runAttackRoutine = null;
+        }
+    }
+
+    private class DelayedQueue<T>
+    {
+        private readonly List<T> _elements = new List<T>();
+        private readonly List<float> _times = new List<float>();
+        private float _currentTime;
+
+        public void AddElement(T element)
+        {
+            _elements.Add(element);
+        }
+
+        public IReadOnlyList<T> PopElements(float delta)
+        {
+            _currentTime += delta;
+
+            if (_times.Count == 0 || _times[0] > _currentTime)
+            {
+                return Array.Empty<T>();
+            }
+
+            List<T> ret = new List<T>();
+            int poppedCount = 0;
+            while (poppedCount < _times.Count && _times[poppedCount] < _currentTime)            
+            {
+                ret.Add(_elements[poppedCount]);
+                poppedCount += 1;
+            }
+
+            _elements.RemoveRange(0, poppedCount);
+            _times.RemoveRange(0, poppedCount);
+
+            return ret;
+        }
+        
+        public void RedistributeOver(RandomNumberGenerator rng, float time)
+        {
+            _currentTime = 0.0f;
+            _times.Clear();
+
+            for (int i = 0; i < _elements.Count; i++)
+            {
+                _times.Add(rng.Randf() * time);
+            }
+
+            _times.Sort();
+        }
+
+        public void Clear()
+        {
+            _elements.Clear();
+            _times.Clear();   
         }
     }
 

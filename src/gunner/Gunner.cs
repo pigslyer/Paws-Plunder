@@ -1,8 +1,7 @@
 using System;
-using System.Threading.Tasks;
 using Godot;
 
-public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathPlaneEnterable
+public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
 {
     public event Action Died;
 
@@ -101,7 +100,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
         Bullet bullet = _bulletScene.Instance<Bullet>();        
-        GetTree().Root.AddChild(bullet);
+        GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
         bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
