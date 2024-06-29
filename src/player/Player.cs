@@ -27,6 +27,7 @@ public class Player : KinematicBody, IBulletHittable
 
 	private Camera _camera;
 	private Label _debugLabel;
+	private TextureRect _crosshair;
 	private Area _meleeDetectionArea;
 	private DoomPortrait _doomPortrait;
 	private CombatLogControl _logControl;
@@ -44,7 +45,8 @@ public class Player : KinematicBody, IBulletHittable
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
-		
+		_crosshair = GetNode<TextureRect>("CanvasLayer/Crosshair");
+
 		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
 	}
 
@@ -274,6 +276,7 @@ public class Player : KinematicBody, IBulletHittable
 			_doomPortrait.SetAnimation(DoomPortraitType.Death);
 
 			_deathInfo = new DeathInfo(info.Source);
+			_crosshair.Visible = false;
 		}
 	}
 
