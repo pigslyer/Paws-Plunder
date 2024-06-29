@@ -1,17 +1,23 @@
 using Godot;
 
+public struct BulletHitInfo
+{
+    public Spatial Source;
+}
+
 public interface IBulletHittable
 {
-    void Hit();
+    void Hit(BulletHitInfo bulletHittable);
 }
 
 public class Bullet : KinematicBody
 {
     private Vector3 _velocity;
+    private Spatial _source;
 
-    public void Initialize(Vector3 velocity, PhysicsLayers3D mask)
+    public void Initialize(Spatial source, Vector3 velocity, PhysicsLayers3D mask)
     {
-        (_velocity, CollisionMask) = (velocity, (uint)mask);   
+        (_source, _velocity, CollisionMask) = (source, velocity, (uint)mask);   
     }
 
     public override void _PhysicsProcess(float delta)
@@ -22,7 +28,14 @@ public class Bullet : KinematicBody
         {
             if (collision.Collider is IBulletHittable hittable)
             {
-                hittable.Hit();
+                BulletHitInfo info = new BulletHitInfo();
+
+                if (_source != null && IsInstanceValid(_source))
+                {
+                    info.Source = _source;
+                }
+
+                hittable.Hit(info);
             }
 
             QueueFree();

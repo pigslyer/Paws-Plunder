@@ -102,15 +102,15 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         Bullet bullet = _bulletScene.Instance<Bullet>();        
         GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
-        bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
+        bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
-    void IMeleeTargettable.Target(MeleeTargetInfo info)
+    void IMeleeTargettable.Target(MeleeHitInfo info)
     {
         DestroyModel();
     }
 
-    void IBulletHittable.Hit()
+    void IBulletHittable.Hit(BulletHitInfo info)
     {
         DestroyModel();
     }

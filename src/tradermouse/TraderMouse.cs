@@ -44,12 +44,12 @@ public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable,
         _agent.SetTargetLocation(point);
     }
 
-    void IBulletHittable.Hit()
+    void IBulletHittable.Hit(BulletHitInfo info)
     {
         DestroyModel();
     }
 
-    void IMeleeTargettable.Target(MeleeTargetInfo info)
+    void IMeleeTargettable.Target(MeleeHitInfo info)
     {
         DestroyModel();
     }
