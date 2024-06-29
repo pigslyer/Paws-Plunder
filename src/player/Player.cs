@@ -7,10 +7,10 @@ public class Player : KinematicBody, IBulletHittable
 	[Export] private PackedScene _bulletScene;
 
 	private Vector3 GravityAcceleration => new Vector3(0, -115f, 0);
-	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
+	private Vector3 JumpVelocity => new Vector3(0, 45, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
-	private const float MaxNaturalSpeed = 10;
+	private const float MaxNaturalSpeed = 15;
 	private const float MaxSprintSpeed = 20;
 	private const float SensitivityMult = 4f;
 
@@ -69,7 +69,7 @@ public class Player : KinematicBody, IBulletHittable
 		Vector3 snap = Vector3.Down;
 
 		Vector2 inputVector = new Vector2(Input.GetActionStrength("plr_right") - Input.GetActionStrength("plr_left"), Input.GetActionStrength("plr_back") - Input.GetActionStrength("plr_forward")).Normalized();
-		bool jump = Input.IsActionJustPressed("plr_jump");
+		bool jump = Input.IsActionPressed("plr_jump");
 		bool sprint = Input.IsActionPressed("plr_sprint");
 
 		// xz speed		
@@ -159,19 +159,26 @@ public class Player : KinematicBody, IBulletHittable
 	{
 		bool meleeAttack = Input.IsActionJustPressed("plr_melee");
 
-		if (!meleeAttack) {
+		if (!meleeAttack) 
+		{
 			return;
 		}
 
 		JustFired = true;
 		Godot.Collections.Array bodies = _meleeDetectionArea.GetOverlappingBodies();
 
-		if (bodies.Count == 0) {
+		if (bodies.Count == 0) 
+		{
 			return;
 		} 
 
 		// determine targetting heuristic based on closeness to crosshair and distance?
-		IMeleeTargettable target = (IMeleeTargettable)bodies[0];
+		IMeleeTargettable target = bodies[0] as IMeleeTargettable;
+
+		if (target == null)
+		{
+			return;
+		}
 
 		target.Target(default);			
 	}
