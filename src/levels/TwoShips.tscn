@@ -74,8 +74,8 @@ size = Vector2( 2, 2 )
 
 [sub_resource type="Curve3D" id=18]
 _data = {
-"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, -488, -5.958, 244.425, 0, 0, 0, 0, 0, 0, 70.5017, 13.5877, -11.5908, 0, 0, 0, 0, 0, 0, -488, -5.958, 244.425 ),
-"tilts": PoolRealArray( 0, 0, 0 )
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -201.61, 85.2266, -472.205 ),
+"tilts": PoolRealArray( 0, 0 )
 }
 
 [sub_resource type="ShaderMaterial" id=17]
@@ -121,21 +121,26 @@ extra_cull_margin = 16384.0
 mesh = SubResource( 14 )
 skeleton = NodePath("../..")
 
-[node name="Player" parent="Level" instance=ExtResource( 2 )]
-transform = Transform( 1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, -130.365, 10.8361, -30.9278 )
-
 [node name="CatapultPath" type="Path" parent="Level"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 335.164, 16.7941, -274.716 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -130.365, 10.8361, -30.9278 )
 curve = SubResource( 18 )
 
 [node name="CatapultPathFollow" type="PathFollow" parent="Level/CatapultPath"]
-transform = Transform( 0.731208, 0.405393, -0.548626, -0.587228, -0.0351863, -0.808656, -0.347128, 0.913465, 0.21233, -488, -5.958, 244.425 )
+transform = Transform( 0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.0109215, 0.0960283, 0.0894165 )
 rotation_mode = 0
 loop = false
+
+[node name="Player" parent="Level/CatapultPath/CatapultPathFollow" instance=ExtResource( 2 )]
+unique_name_in_owner = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="CatapultTween" type="Tween" parent="Level/CatapultPath/CatapultPathFollow"]
+unique_name_in_owner = true
 
 [node name="SFX" type="CanvasLayer" parent="."]
 
 [node name="CatapultEffect" type="ColorRect" parent="SFX"]
+unique_name_in_owner = true
 material = SubResource( 17 )
 anchor_right = 1.0
 anchor_bottom = 1.0
