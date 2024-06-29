@@ -38,6 +38,20 @@ public class Player : KinematicBody, IBulletHittable
 		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+
+		// Disable UI elements and cursor in main menu until the game starts
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
+		GetNode<Sprite3D>("Camera/Claw").Visible = false;
+		GetNode<Sprite3D>("Camera/Gun").Visible = false;
+	}
+
+	public void Initialize()
+	{
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
+		GetNode<Sprite3D>("Camera/Claw").Visible = true;
+		GetNode<Sprite3D>("Camera/Gun").Visible = true;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -197,12 +211,17 @@ public class Player : KinematicBody, IBulletHittable
 			_doomPortrait.SetAnimation(DoomPortraitType.Idle);
 		}
 	}
+	private void Restart()
+	{
+		GetTree().ReloadCurrentScene();
+		Initialize();
+	}
 
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
 		{
-			GetTree().ReloadCurrentScene();
+			Restart();
 		}
 	}
 
@@ -214,8 +233,6 @@ public class Player : KinematicBody, IBulletHittable
 			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
 	}
-
-
 	public void Hit()
 	{
 		_health -= 1;
