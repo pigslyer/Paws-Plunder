@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Security.Cryptography.X509Certificates;
 
 public class Player : KinematicBody, IBulletHittable
 {
@@ -13,7 +11,7 @@ public class Player : KinematicBody, IBulletHittable
 	private const float MaxNaturalSpeed = 15;
 	private const float MaxSprintSpeed = 20;
 	private const float SensitivityMult = 4f;
-	private const float InvulPeriod = 3.0f;
+	private const float InvulPeriod = 2.0f;
 
 	private float Sensitivity => 1.0f;
 
@@ -34,6 +32,8 @@ public class Player : KinematicBody, IBulletHittable
 	private CombatLogControl _logControl;
 	private HealthContainer _healthContainer;
 
+	private DeathInfo _deathInfo = null;
+
 	private CustomTimer _invulTimer;
 
 	public override void _Ready()
@@ -52,13 +52,20 @@ public class Player : KinematicBody, IBulletHittable
 	{
 		JustFired = false;
 
-		if (_health > 0 || true)
+		bool isAlive = _health > 0;
+
+		ApplyMovement(delta, hasControls: isAlive);
+
+		if (isAlive)
 		{
-			ApplyMovement(delta);
-			RotateCamera(delta);
+			MouseRotateCamera(delta);
 			
 			MeleeAttack();
 			ShootAttack();
+		}
+		else if (_deathInfo != null)
+		{
+			RotateCameraTowards(_deathInfo.GetKillerPosition());
 		}
 
 		RestartOnRequest();
@@ -66,14 +73,21 @@ public class Player : KinematicBody, IBulletHittable
 		_mouseMotion = Vector2.Zero;
 	}
 
-	private void ApplyMovement(float delta)
+	private void ApplyMovement(float delta, bool hasControls)
 	{
 		Vector3 velocity = Vector3.Zero;
 		Vector3 snap = Vector3.Down;
 
-		Vector2 inputVector = new Vector2(Input.GetActionStrength("plr_right") - Input.GetActionStrength("plr_left"), Input.GetActionStrength("plr_back") - Input.GetActionStrength("plr_forward")).Normalized();
-		bool jump = Input.IsActionPressed("plr_jump");
-		bool sprint = Input.IsActionPressed("plr_sprint");
+		Vector2 inputVector = Vector2.Zero;
+		bool jump = false; 
+		bool sprint = false;
+
+		if (hasControls)
+		{
+			inputVector = new Vector2(Input.GetActionStrength("plr_right") - Input.GetActionStrength("plr_left"), Input.GetActionStrength("plr_back") - Input.GetActionStrength("plr_forward")).Normalized();
+			jump = Input.IsActionPressed("plr_jump");
+			sprint = Input.IsActionPressed("plr_sprint");
+		}
 
 		// xz speed		
 		{
@@ -145,17 +159,22 @@ public class Player : KinematicBody, IBulletHittable
 			}
 		}
 
-		_previousVelocity = MoveAndSlide(velocity, Vector3.Up, true);
+		_previousVelocity = MoveAndSlideWithSnap(velocity, snap, Vector3.Up, true);
 		_debugLabel.Text = $"Velocity: {velocity}\nSpeed: {velocity.Length()}\nSpeed xz: {velocity.x0z().Length()}";
 	}
 
-	private void RotateCamera(float delta)
+	private void MouseRotateCamera(float delta)
 	{
 		Vector3 rotation = _camera.RotationDegrees;
 		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Sensitivity;
 
 		rotation.x = Mathf.Clamp(rotation.x, -85.0f, 85.0f);
 		_camera.RotationDegrees = rotation;
+	}
+
+	private void RotateCameraTowards(Vector3 targetPosition)
+	{
+		_camera.LookAt(targetPosition, Vector3.Up);
 	}
 
 	private void MeleeAttack()
@@ -201,7 +220,7 @@ public class Player : KinematicBody, IBulletHittable
 		GetTree().Root.AddChild(bullet);
 		bullet.GlobalTranslation = GlobalTranslation;
 
-		bullet.Initialize(-_camera.GlobalTransform.basis.z * 20, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
+		bullet.Initialize(this, -_camera.GlobalTransform.basis.z * 20, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
 	}
 
 	private void RestartOnRequest()
@@ -222,8 +241,13 @@ public class Player : KinematicBody, IBulletHittable
 	}
 
 
-	void IBulletHittable.Hit()
+	void IBulletHittable.Hit(BulletHitInfo info)
 	{
+		if (_health <= 0)
+		{
+			return;
+		}
+
 		if (_invulTimer != null)
 		{
 			return;
@@ -248,6 +272,29 @@ public class Player : KinematicBody, IBulletHittable
 		else
 		{
 			_doomPortrait.SetAnimation(DoomPortraitType.Death);
+
+			_deathInfo = new DeathInfo(info.Source);
+		}
+	}
+
+	private class DeathInfo
+	{
+		private Spatial _killer;
+		private Vector3 _lastKillerPosition;
+
+		public DeathInfo(Spatial killer)
+		{
+			(_killer, _lastKillerPosition) = (killer, killer.GlobalTranslation);
+		}
+
+		public Vector3 GetKillerPosition()
+		{
+			if (IsInstanceValid(_killer))
+			{
+				_lastKillerPosition = _killer.GlobalTranslation;
+			}
+
+			return _lastKillerPosition;
 		}
 	}
 }
