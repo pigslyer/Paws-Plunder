@@ -272,6 +272,7 @@ public class Player : KinematicBody, IBulletHittable
 		bullet.GlobalTranslation = GlobalTranslation;
 
 		bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
+		GlobalSignals.GetInstance().EmitSignal(nameof(GlobalSignals.AddToPlayerScore), 100);
 	}
 
 	private void PickUpItems()

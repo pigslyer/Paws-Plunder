@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://src/scripts/HealthContainer.cs" type="Script" id=8]
 [ext_resource path="res://src/assets/ui heart.png" type="Texture" id=9]
 [ext_resource path="res://src/assets/right_paw.png" type="Texture" id=10]
+[ext_resource path="res://src/scripts/ScoreDisplay.cs" type="Script" id=11]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 0.9
@@ -162,3 +163,18 @@ margin_right = 70.0
 margin_bottom = 70.0
 texture = ExtResource( 9 )
 stretch_mode = 6
+
+[node name="ScoreDisplay" type="Control" parent="CanvasLayer"]
+margin_left = 1075.0
+margin_top = 864.0
+margin_right = 1275.0
+margin_bottom = 909.0
+rect_scale = Vector2( 2, 2 )
+script = ExtResource( 11 )
+
+[node name="Number" type="RichTextLabel" parent="CanvasLayer/ScoreDisplay"]
+margin_right = 200.0
+margin_bottom = 45.0
+theme = ExtResource( 6 )
+text = "25121"
+scroll_active = false

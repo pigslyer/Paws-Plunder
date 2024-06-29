@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://src/scripts/Globals.cs"
+GlobalSignals="*res://src/scripts/GlobalSignals.cs"
 
 [display]
 
