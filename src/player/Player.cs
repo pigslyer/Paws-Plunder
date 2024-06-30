@@ -10,6 +10,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		Quad,
 	}
 
+	[Export] private bool _initializeOnStartup = false;
 	[Export] private PackedScene _bulletScene;
 
 	private const float GravityConst = -120f;
@@ -25,6 +26,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private const float InvulPeriod = 2.0f;
 	private const float Acceleration = 100;
 	private const float EnamoredByTreasureTime = 2.0f;
+	private const float SingleBulletVelocity = 200.0f;
+	private const float QuadBulletVelocity = 200.0f;
 
 	private float Sensitivity => 1.0f;
 
@@ -66,18 +69,22 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 
-		// Disable UI elements and cursor in main menu until the game starts
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
 		GetNode<Sprite3D>("Camera/Claw").Visible = false;
 		GetNode<Sprite3D>("Camera/Gun").Visible = false;
+
+		if (_initializeOnStartup)
+		{
+			Initialize();
+		}
 	}
 
 	public void Initialize()
 	{
-		Input.MouseMode = Input.MouseModeEnum.Captured;
 		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
 		GetNode<Sprite3D>("Camera/Claw").Visible = true;
 		GetNode<Sprite3D>("Camera/Gun").Visible = true;
@@ -271,11 +278,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		// include muzzle flash?
 		if (_currentGun == GunTypes.Single)
 		{
-			FireBullet(shotDirection * 20);
+			FireBullet(shotDirection * SingleBulletVelocity);
 		}
 		else if (_currentGun == GunTypes.Quad)
 		{
-			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 4, 20))
+			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 4, QuadBulletVelocity))
 			{
 				FireBullet(bulletVelocity);
 			}
@@ -291,8 +298,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private void FireBullet(Vector3 velocity)
 	{
 		Bullet bullet = _bulletScene.Instance<Bullet>();
-		GetTree().Root.AddChild(bullet);
-		bullet.GlobalTranslation = GlobalTranslation;
+		GetParent().AddChild(bullet);
+		bullet.GlobalTranslation = CenterOfMass;
 
 		bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
 		GlobalSignals.GetInstance().EmitSignal(nameof(GlobalSignals.AddToPlayerScore), 100);
@@ -360,7 +367,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void KillIfBelowWorld()
 	{
-		if (GlobalTranslation.y < -20)
+		if (GlobalTranslation.y < -200)
 		{
 			KillWithCameraUpPan();
 		}
@@ -430,7 +437,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void KillWithCameraUpPan()
 	{
-		throw new NotImplementedException();
+		Restart();
 	}
 
     private class DeathInfo
