@@ -43,7 +43,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	public Vector3 Velocity => _previousVelocity;
 	public bool JustFired { get; private set;} = false;
 	public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
-
+	private Spatial _head;
 	private Camera _camera;
 	private Sprite3D _gun;
 	private Label _debugLabel;
@@ -62,10 +62,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	public override void _Ready()
 	{
-		_camera = GetNode<Camera>("Camera");
-		_gun = GetNode<Sprite3D>("Camera/Gun");
+		_head = GetNode<Spatial>("Head");
+		_camera = GetNode<Camera>("%Camera");
+		_gun = GetNode<Sprite3D>("%Camera/Gun");
 		_debugLabel = GetNode<Label>("CanvasLayer/DebugContainer/PanelContainer/Label");
-		_meleeDetectionArea = GetNode<Area>("Camera/MeleeTargetDetection");
+		_meleeDetectionArea = GetNode<Area>("%Camera/MeleeTargetDetection");
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
@@ -74,8 +75,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
-		GetNode<Sprite3D>("Camera/Claw").Visible = false;
-		GetNode<Sprite3D>("Camera/Gun").Visible = false;
+		GetNode<Sprite3D>("%Camera/Claw").Visible = false;
+		GetNode<Sprite3D>("%Camera/Gun").Visible = false;
 
 		if (_initializeOnStartup)
 		{
@@ -86,8 +87,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	public void Initialize()
 	{
 		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
-		GetNode<Sprite3D>("Camera/Claw").Visible = true;
-		GetNode<Sprite3D>("Camera/Gun").Visible = true;
+		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
+		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -175,6 +176,23 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 			velocity += velocityXz;
 		}
+		// camera offset
+		Vector3 headOffset = Vector3.Zero;
+		Vector3 headRotation = new Vector3(
+			_head.RotationDegrees.x,
+			_head.RotationDegrees.y,
+			Mathf.Clamp(_head.Rotation.z, -0.05f, 0.05f));
+		{
+			float bobOffset = Mathf.Sin(delta) * 1f;
+			headOffset.y = bobOffset;
+		}
+		{
+			float swayRad = Mathf.Sign(inputVector.x) * -0.05f;
+			headRotation.z = Mathf.LerpAngle(headRotation.z, swayRad, 0.05f);
+		}
+		_head.Translation = headOffset;
+		_head.Rotation = headRotation;
+		GD.Print(_head.RotationDegrees.z);
 
 		// gravity
 		{

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -11,12 +11,17 @@
 [ext_resource path="res://src/assets/ui heart.png" type="Texture" id=9]
 [ext_resource path="res://src/assets/right_paw.png" type="Texture" id=10]
 [ext_resource path="res://src/scripts/ScoreDisplay.cs" type="Script" id=11]
+[ext_resource path="res://src/ui/Deus EX Console.ttf" type="DynamicFontData" id=12]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 1.3
 
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 0.3, 0.275, 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 36
+font_data = ExtResource( 12 )
 
 [node name="Player" type="KinematicBody" groups=["PLAYER"]]
 collision_layer = 2
@@ -28,6 +33,7 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.65
 shape = SubResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
+unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7322, 0 )
 current = true
 far = 20000.0
@@ -74,7 +80,6 @@ shape = SubResource( 1 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-visible = false
 
 [node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
 margin_right = 100.0
@@ -125,12 +130,37 @@ stretch_mode = 6
 anchor_left = 0.44
 anchor_top = 0.8
 anchor_right = 0.56
+margin_left = 6.10352e-05
+margin_top = -48.0
+margin_bottom = -48.0
+
+[node name="ScoreDisplay" type="Control" parent="CanvasLayer/DoomPortrait"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 226.4
+margin_bottom = 212.0
+script = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Number" type="Label" parent="CanvasLayer/DoomPortrait/ScoreDisplay"]
+anchor_right = 1.0
+margin_left = -4.0
+margin_top = -58.0
+margin_right = -3.3999
+margin_bottom = -17.0
+theme = ExtResource( 6 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "25121"
+align = 1
 
 [node name="HealthContainer" type="VBoxContainer" parent="CanvasLayer"]
-margin_left = 775.0
-margin_top = 864.0
-margin_right = 845.0
-margin_bottom = 1080.0
+margin_left = 736.0
+margin_top = 816.0
+margin_right = 806.0
+margin_bottom = 1032.0
 script = ExtResource( 8 )
 
 [node name="Health1" type="MarginContainer" parent="CanvasLayer/HealthContainer"]
@@ -168,17 +198,4 @@ margin_bottom = 70.0
 texture = ExtResource( 9 )
 stretch_mode = 6
 
-[node name="ScoreDisplay" type="Control" parent="CanvasLayer"]
-margin_left = 1075.0
-margin_top = 864.0
-margin_right = 1275.0
-margin_bottom = 909.0
-rect_scale = Vector2( 2, 2 )
-script = ExtResource( 11 )
-
-[node name="Number" type="RichTextLabel" parent="CanvasLayer/ScoreDisplay"]
-margin_right = 200.0
-margin_bottom = 45.0
-theme = ExtResource( 6 )
-text = "25121"
-scroll_active = false
+[node name="Head" type="Spatial" parent="."]
