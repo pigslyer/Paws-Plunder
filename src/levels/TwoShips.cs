@@ -11,6 +11,10 @@ public class TwoShips : Spatial
 		_player = GetNode<Player>("%Player");
 		_catapultPathFollow = GetNode<PathFollow>("Level/CatapultPath/CatapultPathFollow");
 		_catapultPath = GetNode<Path>("Level/CatapultPath");
+		var catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
+		catapultOverlay.Material.Set("shader_param/alpha", 1f);
+		catapultOverlay.Material.Set("shader_param/inner_radius", 0.9f);
+		catapultOverlay.Material.Set("shader_param/outer_radius", 0.9f);
 	}
 
 	public override void _Process(float delta)

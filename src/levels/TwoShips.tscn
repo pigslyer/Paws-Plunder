@@ -44,9 +44,9 @@ shader_param/foam_color = Color( 1, 1, 1, 1 )
 shader_param/edge_scale = 0.2
 shader_param/near = 0.1
 shader_param/far = 100.0
-shader_param/fog_distance = 169.278
-shader_param/fog_fade_range = 139.143
-shader_param/fog_color = Color( 0.060318, 0.130249, 0.261719, 1 )
+shader_param/fog_distance = 179.169
+shader_param/fog_fade_range = 178.707
+shader_param/fog_color = Color( 0.14902, 0.545098, 0.74902, 1 )
 shader_param/fog_intensity = 3.0
 shader_param/noise1 = SubResource( 8 )
 shader_param/noise2 = SubResource( 10 )
@@ -70,7 +70,7 @@ shader_param/outer_radius = 0.821
 [sub_resource type="ShaderMaterial" id=13]
 render_priority = -1
 shader = ExtResource( 1 )
-shader_param/fog_distance = 455.44
+shader_param/fog_distance = 435.658
 shader_param/fog_fade_range = 198.075
 shader_param/fog_color = Color( 0.133333, 0.54902, 0.752941, 1 )
 
@@ -110,11 +110,11 @@ skeleton = NodePath("../../..")
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 shape = SubResource( 6 )
 
-[node name="ShipCat" parent="Level" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 15.5087, -225.128 )
-
 [node name="ShipMouse" parent="Level" instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 10, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 345.29, 53.1714, -225.128 )
+
+[node name="ShipCat" parent="Level" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
 
 [node name="CatapultEffect" type="ColorRect" parent="Level"]
 unique_name_in_owner = true
@@ -130,7 +130,7 @@ mesh = SubResource( 14 )
 skeleton = NodePath("../..")
 
 [node name="CatapultPath" type="Path" parent="Level"]
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -130.365, 10.8361, -30.9278 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -118.815, 51.0688, -30.9278 )
 curve = SubResource( 18 )
 
 [node name="CatapultPathFollow" type="PathFollow" parent="Level/CatapultPath"]
@@ -140,7 +140,6 @@ loop = false
 
 [node name="Player" parent="Level/CatapultPath/CatapultPathFollow" instance=ExtResource( 2 )]
 unique_name_in_owner = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="CatapultTween" type="Tween" parent="Level/CatapultPath/CatapultPathFollow"]
 unique_name_in_owner = true
