@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -11,6 +12,10 @@ public class Globals : Node
         // generic
         "Blackfur",
         "Catbeard",
+        "Fishbone",
+
+        // asi who else
+        "Yarrfield",
 
         // holmes
         "Kocl",
@@ -57,6 +62,17 @@ public class Globals : Node
         if (_instance == this)
         {
             _instance = null;
+        }
+    }
+    
+    public static IEnumerable<Vector3> CalculateShotgunDirections(Vector3 baseDirection, float spread, int shotCount, float speed)
+    {
+        for (int i = 0; i < shotCount; i++)
+        {
+            float currentAngleOffset = -spread / 2 + i * (spread / (shotCount - 1));
+            Vector3 currentVelocity = baseDirection.Rotated(Vector3.Up, currentAngleOffset);
+
+            yield return currentVelocity;
         }
     }
 }

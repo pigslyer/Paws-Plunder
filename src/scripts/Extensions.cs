@@ -19,6 +19,24 @@ public struct Distro
     }
 }
 
+public struct Range
+{
+    public static Range Circle => new Range(0, Mathf.Tau);
+
+    public float Min;
+    public float Max;
+
+    public Range(float min, float max)
+    {
+        (Min, Max) = (min, max);
+    }
+
+    public static implicit operator Range((float min, float max) vals)
+    {
+        return new Range(vals.min, vals.max);
+    }
+}
+
 public static class Extensions {
     public static Vector3 x0z(this Vector3 vec) => new Vector3(vec.x, 0, vec.z); 
     public static Vector3 x00(this Vector3 vec) => new Vector3(vec.x, 0, 0); 
@@ -51,6 +69,11 @@ public static class Extensions {
     public static float Randfn(this RandomNumberGenerator rng, Distro distro)
     {
         return rng.Randfn(distro.Mean, distro.Deviation);
+    }
+
+    public static float RandfRange(this RandomNumberGenerator rng, Range range)
+    {
+        return rng.RandfRange(range.Min, range.Max);
     }
 
     public static T RandEl<T>(this RandomNumberGenerator rng, IReadOnlyList<T> list)

@@ -1,23 +1,26 @@
 using System;
 using Godot;
 
-public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
+public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
 {
     public event Action Died;
 
     [Export] private PackedScene _bulletScene;
-    private float _bulletSpeed = 30.0f;
+    private const float BulletSpeed = 30.0f;
 
     private const float FarAwaySpeed = 12.0f;
     private const float NearbySpeed = 4.0f;
     private const float WhatIsNearby = 5.0f;
+    private const float ChanceForIdleSwing = 0.2f;
+    private const int ShootFrame = 1;
 
     private NavigationAgent _agent;
     private AnimatedSprite3D _sprite;
     private Spatial _centerOfMass;
 
     public Vector3 CenterOfMass => _centerOfMass.GlobalTranslation;
-    bool _hasMoveTarget = false;
+    private bool _hasMoveTarget = false;
+    private Vector3? _queuedAttackDirection = null;
 
     public override void _Ready()
     {
@@ -41,6 +44,11 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
              return;
         }
 
+        if (_queuedAttackDirection != null)
+        {
+            return;
+        }
+
         Vector3 nextPosition = _agent.GetNextLocation();
         Vector3 targetPosition = _agent.GetTargetLocation();
 
@@ -60,28 +68,71 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable
 
     public void AttackTarget(Player target)
     {
-        ShootBulletWithVelocity(CenterOfMass.DirectionTo(target.GlobalTranslation) * _bulletSpeed);
+        _queuedAttackDirection = CenterOfMass.DirectionTo(target.CenterOfMass) * BulletSpeed;
+        _sprite.Play("Shoot");
+    }
+
+    private void OnAnimationFrameChanged()
+    {
+        if (_sprite.Animation == "Shoot" && _sprite.Frame == ShootFrame && _queuedAttackDirection != null)
+        {
+            ShootBulletWithVelocity(_queuedAttackDirection.Value);
+        }
+    }
+
+    private void OnAnimationFinished()
+    {
+        if (_sprite.Animation == "Idle")
+        {
+            float chanceToSwing = Globals.Rng.Randf();
+
+            if (chanceToSwing < ChanceForIdleSwing)
+            {
+                _sprite.Play("IdleSwordSwing");                
+            }
+        }
+        else if (_sprite.Animation == "IdleSwordSwing")
+        {
+            _sprite.Play("Idle");
+        }
+        else if (_sprite.Animation == "Shoot")
+        {
+            _sprite.Play("Idle");
+            _queuedAttackDirection = null;
+        }
     }
 
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
         Bullet bullet = _bulletScene.Instance<Bullet>();        
-        GetTree().Root.AddChild(bullet);
+        GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
-        bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
+        bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
-    void IMeleeTargettable.Target(MeleeTargetInfo info)
+    void IMeleeTargettable.Target(MeleeHitInfo info)
     {
         DestroyModel();
     }
 
-    void IBulletHittable.Hit()
+    void IBulletHittable.Hit(BulletHitInfo info)
     {
         DestroyModel();
     }
 
     private void DestroyModel()
+    {
+        Died?.Invoke();
+
+        CollisionLayer = 0;
+        CollisionMask = 0;
+        _hasMoveTarget = false;
+
+        // replace with death
+        QueueFree();
+    }
+
+    void IDeathPlaneEnterable.EnteredDeathPlane()
     {
         Died?.Invoke();
         QueueFree();

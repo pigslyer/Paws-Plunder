@@ -30,7 +30,7 @@ public class DoomPortrait : Node
         },
         // Death
         new (int, float, int)[] {
-            (7, 0.5f, 0), (-1, 0.5f, 0),
+            (7, 2.0f, 0), (-1, 2.0f, 0),
         },
         // Flying
         new (int, float, int)[] {

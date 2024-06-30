@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Sniper : KinematicBody, IBulletHittable
+public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker
 {
     public event Action Died;
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
@@ -36,7 +36,7 @@ public class Sniper : KinematicBody, IBulletHittable
         float delayUntilShot = (ShootFrame - 1) / _sprite.Frames.GetAnimationSpeed("Shoot");
 
         Vector3 bulletVelocity = SquadController.GetProjectileVelocity(
-            target.GlobalTranslation, 
+            target.CenterOfMass, 
             target.Velocity.x0z(), 
             CenterOfMass, 
             ProjectileVelocity,
@@ -51,12 +51,12 @@ public class Sniper : KinematicBody, IBulletHittable
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
         Bullet bullet = _bulletScene.Instance<Bullet>();        
-        GetTree().Root.AddChild(bullet);
+        GetParent().AddChild(bullet);
         bullet.GlobalTranslation = CenterOfMass;
-        bullet.Initialize(velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
+        bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
-    void IBulletHittable.Hit()
+    void IBulletHittable.Hit(BulletHitInfo info)
     {
         DestroyModel();
     }
@@ -81,7 +81,19 @@ public class Sniper : KinematicBody, IBulletHittable
     {
         Died?.Invoke();
         
-        //_sprite.Play("Died");
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
+        _sprite.Play("Death");
+    }
+
+    void IDeathPlaneEnterable.EnteredDeathPlane()
+    {
+        Died?.Invoke();
+
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
         QueueFree();
     }
 }
