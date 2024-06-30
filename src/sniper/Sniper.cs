@@ -36,7 +36,7 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
         float delayUntilShot = (ShootFrame - 1) / _sprite.Frames.GetAnimationSpeed("Shoot");
 
         Vector3 bulletVelocity = SquadController.GetProjectileVelocity(
-            target.GlobalTranslation, 
+            target.CenterOfMass, 
             target.Velocity.x0z(), 
             CenterOfMass, 
             ProjectileVelocity,

@@ -60,25 +60,25 @@ public class SquadController : Node
         _gruntTracker = new DetectionTracker<RatGrunt>(
             canSeeTarget: grunt => 
                 _player != null && 
-                CanPointBeSeen(grunt.CenterOfMass, _player.GlobalTranslation)
+                CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)
         );
         
         _sniperTracker = new DetectionTracker<Sniper>(
             canSeeTarget: sniper => 
                 _player != null && 
-                CanPointBeSeen(sniper.CenterOfMass, _player.GlobalTranslation)
+                CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass)
         );
 
         _gunnerTracker = new DetectionTracker<Gunner>(
             canSeeTarget: gunner =>
                 _player != null &&
-                CanPointBeSeen(gunner.CenterOfMass, _player.GlobalTranslation)
+                CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)
         );
 
         _traderTracker = new DetectionTracker<TraderMouse>(
             canSeeTarget: trader =>
                 _player != null &&
-                CanPointBeSeen(trader.CenterOfMass, _player.GlobalTranslation)
+                CanPointBeSeen(trader.CenterOfMass, _player.CenterOfMass)
         );
 
         _gruntMovementQueue = new RandomOrderQueue<RatGrunt>(_rng);
@@ -364,6 +364,7 @@ public class SquadController : Node
         _wallDetection.CastTo = _wallDetection.ToLocal(to);
         _wallDetection.ForceRaycastUpdate();
 
+GD.Print(_wallDetection.GetCollider());
         return !_wallDetection.IsColliding();
     }
 

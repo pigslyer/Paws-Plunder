@@ -68,7 +68,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
 
     public void AttackTarget(Player target)
     {
-        _queuedAttackDirection = CenterOfMass.DirectionTo(target.GlobalTranslation) * BulletSpeed;
+        _queuedAttackDirection = CenterOfMass.DirectionTo(target.CenterOfMass) * BulletSpeed;
         _sprite.Play("Shoot");
     }
 

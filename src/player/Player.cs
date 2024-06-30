@@ -1,7 +1,8 @@
+using System;
 using System.Linq;
 using Godot;
 
-public class Player : KinematicBody, IBulletHittable
+public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 {
 	private enum GunTypes
 	{
@@ -38,6 +39,7 @@ public class Player : KinematicBody, IBulletHittable
 
 	public Vector3 Velocity => _previousVelocity;
 	public bool JustFired { get; private set;} = false;
+	public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
 
 	private Camera _camera;
 	private Sprite3D _gun;
@@ -48,6 +50,7 @@ public class Player : KinematicBody, IBulletHittable
 	private DoomPortrait _doomPortrait;
 	private CombatLogControl _logControl;
 	private HealthContainer _healthContainer;
+	private Spatial _centerOfMassNode;
 
 	private DeathInfo _deathInfo = null;
 
@@ -63,6 +66,7 @@ public class Player : KinematicBody, IBulletHittable
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 
 		// Disable UI elements and cursor in main menu until the game starts
 		Input.MouseMode = Input.MouseModeEnum.Visible;
@@ -102,6 +106,7 @@ public class Player : KinematicBody, IBulletHittable
 		}
 
 		RestartOnRequest();
+		KillIfBelowWorld();
 
 		_mouseMotion = Vector2.Zero;
 	}
@@ -111,7 +116,7 @@ public class Player : KinematicBody, IBulletHittable
 		GravityAcceleration.y = enable ? GravityConst : 0;	
 	}
 
-	private void ApplyMovement(float delta)
+	private void ApplyMovement(float delta, bool hasControls)
 	{
 		Vector3 velocity = Vector3.Zero;
 		Vector3 snap = Vector3.Down;
@@ -353,6 +358,14 @@ public class Player : KinematicBody, IBulletHittable
 		Initialize();
 	}
 
+	private void KillIfBelowWorld()
+	{
+		if (GlobalTranslation.y < -20)
+		{
+			KillWithCameraUpPan();
+		}
+	}
+
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
@@ -410,7 +423,17 @@ public class Player : KinematicBody, IBulletHittable
 		}
 	}
 
-	private class DeathInfo
+    void IDeathPlaneEnterable.EnteredDeathPlane()
+    {
+		KillWithCameraUpPan();
+    }
+
+	private void KillWithCameraUpPan()
+	{
+		throw new NotImplementedException();
+	}
+
+    private class DeathInfo
 	{
 		private Spatial _killer;
 		private Vector3 _lastKillerPosition;
