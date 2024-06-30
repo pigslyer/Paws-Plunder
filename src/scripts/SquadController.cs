@@ -364,7 +364,6 @@ public class SquadController : Node
         _wallDetection.CastTo = _wallDetection.ToLocal(to);
         _wallDetection.ForceRaycastUpdate();
 
-GD.Print(_wallDetection.GetCollider());
         return !_wallDetection.IsColliding();
     }
 
