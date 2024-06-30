@@ -41,7 +41,8 @@ void vertex()
 
 }
 
-void fragment(){
+void fragment()
+{
     vec3 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
     float screen_alpha = texture(SCREEN_TEXTURE, SCREEN_UV).a;
     float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r; // depth from 0 to 1

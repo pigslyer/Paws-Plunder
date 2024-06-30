@@ -11,8 +11,11 @@ public class Player : KinematicBody, IBulletHittable
 
 	[Export] private PackedScene _bulletScene;
 
-	private Vector3 GravityAcceleration => new Vector3(0, -115f, 0);
-	private Vector3 JumpVelocity => new Vector3(0, 45, 0);
+	private const float GravityConst = -120f;
+
+	private Vector3 GravityAcceleration = new Vector3(0, GravityConst, 0);
+
+	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
 	private const float MaxNaturalSpeed = 15;
@@ -60,10 +63,20 @@ public class Player : KinematicBody, IBulletHittable
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
-		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
-		_crosshair = GetNode<TextureRect>("CanvasLayer/Crosshair");
 
-		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+		// Disable UI elements and cursor in main menu until the game starts
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
+		GetNode<Sprite3D>("Camera/Claw").Visible = false;
+		GetNode<Sprite3D>("Camera/Gun").Visible = false;
+	}
+
+	public void Initialize()
+	{
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
+		GetNode<Sprite3D>("Camera/Claw").Visible = true;
+		GetNode<Sprite3D>("Camera/Gun").Visible = true;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -93,7 +106,12 @@ public class Player : KinematicBody, IBulletHittable
 		_mouseMotion = Vector2.Zero;
 	}
 
-	private void ApplyMovement(float delta, bool hasControls)
+	public void ToggleGravity(bool enable)
+	{
+		GravityAcceleration.y = enable ? GravityConst : 0;	
+	}
+
+	private void ApplyMovement(float delta)
 	{
 		Vector3 velocity = Vector3.Zero;
 		Vector3 snap = Vector3.Down;
@@ -329,12 +347,17 @@ public class Player : KinematicBody, IBulletHittable
 			}
 		}
 	}
+	private void Restart()
+	{
+		GetTree().ReloadCurrentScene();
+		Initialize();
+	}
 
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
 		{
-			GetTree().ReloadCurrentScene();
+			Restart();
 		}
 	}
 

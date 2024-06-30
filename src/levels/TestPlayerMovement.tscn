@@ -29,6 +29,7 @@ navmesh = SubResource( 3 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 41.196, 12.8183, 1.41542 )
+_bulletScene = null
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 0.278168, 0.332062, 0.901309, -0.883187, 0.457325, 0.104086, -0.377628, -0.824978, 0.420486, 0, 0, 0 )

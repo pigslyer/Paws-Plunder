@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
+[ext_resource path="res://src/assets/img/logo.png" type="Texture" id=2]
+[ext_resource path="res://src/levels/MainMenu.cs" type="Script" id=4]
+
+[node name="MainMenu" type="CanvasLayer"]
+script = ExtResource( 4 )
+
+[node name="MouseCapture" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 1, 1, 1, 0 )
+
+[node name="LogoRect" type="TextureRect" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -289.0
+margin_top = 34.0
+margin_right = 339.0
+margin_bottom = 534.0
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 5
+
+[node name="MainMenuContainer" type="MarginContainer" parent="."]
+anchor_left = 0.345
+anchor_top = 0.583
+anchor_right = 0.674
+anchor_bottom = 0.652
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuContainer"]
+margin_right = 631.0
+margin_bottom = 398.0
+rect_min_size = Vector2( 300, 300 )
+custom_constants/separation = 64
+
+[node name="PlayButton" type="Button" parent="MainMenuContainer/VBoxContainer"]
+margin_right = 631.0
+margin_bottom = 90.0
+theme = ExtResource( 1 )
+text = "Play"
+
+[node name="OptionsButton" type="Button" parent="MainMenuContainer/VBoxContainer"]
+margin_top = 154.0
+margin_right = 631.0
+margin_bottom = 244.0
+theme = ExtResource( 1 )
+text = "Options"
+
+[node name="ExitButton" type="Button" parent="MainMenuContainer/VBoxContainer"]
+margin_top = 308.0
+margin_right = 631.0
+margin_bottom = 398.0
+theme = ExtResource( 1 )
+text = "Exit"
+
+[connection signal="pressed" from="MainMenuContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
+[connection signal="pressed" from="MainMenuContainer/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]

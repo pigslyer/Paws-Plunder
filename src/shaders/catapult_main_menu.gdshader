@@ -4,7 +4,8 @@ uniform float alpha : hint_range(0.f, 1.f) = 1.0;
 uniform float inner_radius : hint_range(0.f, 1.f) = 0.0;
 uniform float outer_radius : hint_range(0.f, 1.f) = 1.0;
 
-void fragment() {
+void fragment() 
+{
 	float x = abs(UV.r - .5) * 2.0;
 	float y = abs(UV.g - .5) * 2.0;
 	float q = clamp(1.0 - (1.0 - sqrt(x*x+y*y) /outer_radius) / (1.0-inner_radius), 0, 1);
