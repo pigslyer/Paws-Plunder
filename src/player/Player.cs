@@ -430,17 +430,17 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 	}
 
-    void IDeathPlaneEnterable.EnteredDeathPlane()
-    {
+	void IDeathPlaneEnterable.EnteredDeathPlane()
+	{
 		KillWithCameraUpPan();
-    }
+	}
 
 	private void KillWithCameraUpPan()
 	{
 		Restart();
 	}
 
-    private class DeathInfo
+	private class DeathInfo
 	{
 		private Spatial _killer;
 		private Vector3 _lastKillerPosition;

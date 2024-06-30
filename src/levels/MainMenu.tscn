@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
 [ext_resource path="res://src/assets/img/logo.png" type="Texture" id=2]
 [ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=3]
 [ext_resource path="res://src/levels/MainMenu.cs" type="Script" id=4]
 [ext_resource path="res://src/scripts/VolumeSlider.cs" type="Script" id=5]
-[ext_resource path="res://Mafia 2 - Louis Prima - Che La Luna.mp3" type="AudioStream" id=6]
 [ext_resource path="res://src/scripts/Options.cs" type="Script" id=7]
 
 [node name="MainMenu" type="CanvasLayer"]
@@ -223,7 +222,6 @@ theme = ExtResource( 1 )
 text = "Back"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 6 )
 autoplay = true
 bus = "Music"
 
