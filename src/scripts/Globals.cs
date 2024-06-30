@@ -33,6 +33,7 @@ public class Globals : Node
     };
 
     private static Globals _instance;
+    public static float MouseSensitivity = 1.0F;
 
     private Player _player;
     public static Player GetPlayer()
