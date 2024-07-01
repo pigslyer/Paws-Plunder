@@ -99,6 +99,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_health = MaxHealth;
 		GetNode<Label>("%DeathLabel").Visible = false;
 		_camera.RotationDegrees = Vector3.Zero;
+		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
 	}
 
 	public override void _PhysicsProcess(float delta)
