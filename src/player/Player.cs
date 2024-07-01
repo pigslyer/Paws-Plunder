@@ -29,7 +29,6 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private const float SingleBulletVelocity = 200.0f;
 	private const float QuadBulletVelocity = 200.0f;
 
-	private float Sensitivity => 1.0f;
 
 	private const int MaxHealth = 3;
 	private int _health = MaxHealth;
@@ -216,7 +215,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private void MouseRotateCamera(float delta)
 	{
 		Vector3 rotation = _camera.RotationDegrees;
-		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Sensitivity;
+		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Globals.MouseSensitivity;
 
 		rotation.x = Mathf.Clamp(rotation.x, -85.0f, 85.0f);
 		_camera.RotationDegrees = rotation;
@@ -311,7 +310,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		void PickupItem(Item item)
 		{
-			// include add score
+			if (item.AssociatedScore != 0)
+			{
+				GlobalSignals.AddScore(item.AssociatedScore);
+			}
+
 			_logControl.SetMsg($"Picked up a {item.DisplayName}!");
 			item.QueueFree();
 		}
