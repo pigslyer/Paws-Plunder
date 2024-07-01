@@ -1,9 +1,8 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://src/levels/MainMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/levels/TwoShips.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/shaders/damage.gdshader" type="Shader" id=4]
 [ext_resource path="res://src/levels/FinalLevel.cs" type="Script" id=5]
 [ext_resource path="res://src/scripts/DeathPlane.cs" type="Script" id=6]
 
@@ -35,12 +34,6 @@ shader = SubResource( 7 )
 shader_param/alpha = 1.0
 shader_param/inner_radius = 0.868
 shader_param/outer_radius = 0.821
-
-[sub_resource type="ShaderMaterial" id=8]
-shader = ExtResource( 4 )
-shader_param/vignette_intensity = 0.4
-shader_param/vignette_opacity = 0.5
-shader_param/vignette_rgb = Color( 0.8, 0, 0, 1 )
 
 [sub_resource type="BoxShape" id=3]
 extents = Vector3( 40, 1, 200 )
@@ -78,14 +71,6 @@ unique_name_in_owner = true
 [node name="CatapultEffect" type="ColorRect" parent="."]
 unique_name_in_owner = true
 material = SubResource( 2 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color( 1, 0.890196, 0, 1 )
-
-[node name="CatapultEffect2" type="ColorRect" parent="."]
-unique_name_in_owner = true
-material = SubResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2

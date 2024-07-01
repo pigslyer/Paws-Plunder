@@ -54,6 +54,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private CombatLogControl _logControl;
 	private HealthContainer _healthContainer;
 	private Spatial _centerOfMassNode;
+	private ColorRect _damageEffect;
 
 	private DeathInfo _deathInfo = null;
 
@@ -72,6 +73,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
+		_damageEffect = GetNode<ColorRect>("%DamageEffect");
 
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
@@ -432,10 +434,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		if (_health > 0)
 		{
 			_doomPortrait.SetAnimation(DoomPortraitType.Pain);
+			_damageEffect.Material.Set("shader_param/enable", true);
 			_invulTimer = CustomTimer.Start(this, InvulPeriod);
 
 			_invulTimer.Timeout += () => {
 				_invulTimer = null;
+				_damageEffect.Material.Set("shader_param/enable", false);
 				_doomPortrait.SetAnimation(DoomPortraitType.Idle);
 			};
 		}
