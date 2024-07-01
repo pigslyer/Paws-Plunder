@@ -62,15 +62,15 @@ public class SquadController : Node
                 _player != null && 
                 CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass),
             cantSeeTarget: grunt => 
-                _player != null
+                _player == null
         );
-        
+
         _sniperTracker = new DetectionTracker<Sniper>(
             canSeeTarget: sniper => 
-                _player != null && 
+                _player == null && 
                 CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass),
             cantSeeTarget: sniper => 
-                _player != null
+                _player == null 
         );
 
         _gunnerTracker = new DetectionTracker<Gunner>(
@@ -78,7 +78,7 @@ public class SquadController : Node
                 _player != null &&
                 CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass),
             cantSeeTarget: gunner => 
-                _player != null
+                _player == null
         );
 
         _traderTracker = new DetectionTracker<TraderMouse>(
@@ -180,6 +180,11 @@ public class SquadController : Node
 
     public override void _PhysicsProcess(float delta)
     {
+        if (_player != null && _player.Health <= 0)
+        {
+            _player = null;
+        }
+
         UpdateInCombatEnemies();
         UpdateEnemyPositions();
 
