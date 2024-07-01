@@ -30,6 +30,12 @@ public class Globals : Node
 
         // hermi
         "Feliks",
+
+        // matej
+        "Kiki",
+
+        // nudl
+        "Mini",
     };
 
     private static Globals _instance;

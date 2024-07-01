@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 [ext_resource path="res://src/scripts/SquadController.cs" type="Script" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://src/ratgrunt/RatGrunt.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
 [ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
+[ext_resource path="res://src/gunner/Gunner.tscn" type="PackedScene" id=8]
+[ext_resource path="res://src/levels/HideWater.gd" type="Script" id=9]
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -70,6 +72,9 @@ agent_max_slope = 60.0
 [sub_resource type="BoxShape" id=16]
 extents = Vector3( 100, 100, 200 )
 
+[sub_resource type="BoxShape" id=17]
+extents = Vector3( 40, 30, 200 )
+
 [sub_resource type="ShaderMaterial" id=13]
 render_priority = -1
 shader = ExtResource( 1 )
@@ -97,6 +102,7 @@ physics_material_override = SubResource( 5 )
 
 [node name="Sea" type="MeshInstance" parent="Ground"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40741, 0 )
+visible = false
 mesh = SubResource( 4 )
 skeleton = NodePath("../..")
 
@@ -124,6 +130,20 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 38.2651, 0 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 59.805, 0 )
 shape = SubResource( 16 )
 
+[node name="Gunner" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8463, 38.0498, 0 )
+
+[node name="HideWater" type="Area" parent="ShipMouse"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -57.4336, 0 )
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource( 9 )
+_water = NodePath("../../Ground/Sea")
+
+[node name="CollisionShape" type="CollisionShape" parent="ShipMouse/HideWater"]
+shape = SubResource( 17 )
+
 [node name="ShipCat" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
 
@@ -134,3 +154,5 @@ mesh = SubResource( 14 )
 
 [connection signal="body_entered" from="ShipMouse/Area" to="ShipMouse/Area" method="PlayerEnteredArea"]
 [connection signal="body_exited" from="ShipMouse/Area" to="ShipMouse/Area" method="PlayerExitedArea"]
+[connection signal="body_entered" from="ShipMouse/HideWater" to="ShipMouse/HideWater" method="_on_HideWater_body_entered"]
+[connection signal="body_exited" from="ShipMouse/HideWater" to="ShipMouse/HideWater" method="_on_HideWater_body_exited"]

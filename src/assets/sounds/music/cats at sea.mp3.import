@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/cats at sea.mp3-b97f03da357ae7c900146a3428633707.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/music/cats at sea.mp3"
+dest_files=[ "res://.import/cats at sea.mp3-b97f03da357ae7c900146a3428633707.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

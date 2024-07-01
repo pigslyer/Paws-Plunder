@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/gunner_attack.mp3-c0f21c2a2af87e372718c7853443b96f.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/enemies/gunner_attack.mp3"
+dest_files=[ "res://.import/gunner_attack.mp3-c0f21c2a2af87e372718c7853443b96f.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -12,6 +12,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	[Signal]
 	public delegate void RespawnPlayer();
+
+	[Signal]
+	public delegate void PlayerDied();
+
 	[Export] private bool _initializeOnStartup = false;
 	[Export] private PackedScene _bulletScene;
 
@@ -31,6 +35,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private const float SingleBulletVelocity = 200.0f;
 	private const float QuadBulletVelocity = 200.0f;
 
+	private const float WalkPitchScale = 1.0f;
+	private const float SprintPitchScale = 1.3f;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -55,11 +61,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private Area _pickupDetectionArea;
 	private AnimationPlayer _bothHandsOrClawAnimationPlayer;
 	private AnimationPlayer _gunAnimationPlayer;
-	private DoomPortrait _doomPortrait;
+	public DoomPortrait DoomPortrait;
 	public CombatLogControl LogControl;
 	private HealthContainer _healthContainer;
 	private Spatial _centerOfMassNode;
 	private ColorRect _damageEffect;
+	private PlayerSounds _sounds;
 
 	private DeathInfo _deathInfo = null;
 
@@ -77,11 +84,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_bothHandsOrClawAnimationPlayer = GetNode<AnimationPlayer>("BothHandsOrClaw");
 		_gunAnimationPlayer = GetNode<AnimationPlayer>("Gun");
-		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
+		DoomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
 		LogControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 		_damageEffect = GetNode<ColorRect>("%DamageEffect");
+		_sounds = GetNode<PlayerSounds>("Sounds");
 
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
@@ -127,19 +135,29 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		if (isAlive)
 		{
 			MouseRotateCamera(delta);
-			
-			MeleeAttack();
-			ShootAttack();
-		
-			PickUpItems();
+
+			if (!LockInPlace)
+			{
+				MeleeAttack();
+				ShootAttack();
+
+				PickUpItems();
+			}	
 		}
 		else if (_deathInfo != null)
 		{
 			RotateCameraTowards(_deathInfo.GetKillerPosition());
 		}
 
-		RestartOnRequest();
-		KillIfBelowWorld();
+		if (!LockInPlace)
+		{
+			KillIfBelowWorld();
+		}
+		
+		if (!LockInPlace || Health <= 0)
+		{
+			RestartOnRequest();
+		}
 
 		_mouseMotion = Vector2.Zero;
 	}
@@ -239,6 +257,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				velocity += jumpVelocity;
 				velocity += velocity.x0z() * JumpHorizontalVelocityBoost;
 				snap = Vector3.Zero;
+
+				_sounds.Jumping.Play();
+				_sounds.Landing.FadeOut(0.2f);
 			}
 		}
 
@@ -251,8 +272,17 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			}
 		}
 
+		bool wasOnFloor = IsOnFloor();
 		_previousVelocity = MoveAndSlideWithSnap(velocity, snap, Vector3.Up, true);
 		_debugLabel.Text = $"Velocity: {velocity}\nSpeed: {velocity.Length()}\nSpeed xz: {velocity.x0z().Length()}";
+
+		_sounds.Footsteps.SetPlaying(IsOnFloor() && hasControls && inputVector.LengthSquared() > 0.001f);	
+		_sounds.Footsteps.PitchScale = sprint ? SprintPitchScale : WalkPitchScale;
+
+		if (!wasOnFloor && IsOnFloor() && !_sounds.Landing.Playing)
+		{
+			_sounds.Landing.Play();
+		}
 	}
 
 	private void MouseRotateCamera(float delta)
@@ -322,11 +352,15 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		if (_currentGun == GunTypes.Single)
 		{
 			_gunAnimationPlayer.Play("ShootSingle");
+			_sounds.ShootSingle.Play();
+
 			FireBullet(shotDirection * SingleBulletVelocity);
 		}
 		else if (_currentGun == GunTypes.Quad)
 		{
 			_gunAnimationPlayer.Play("ShootQuad");
+			_sounds.ShootQuad.Play();
+
 			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 5, QuadBulletVelocity))
 			{
 				FireBullet(bulletVelocity);
@@ -382,6 +416,26 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 					_remainingAmmo = 1;
 					_currentGun = GunTypes.Quad;
 					_gun.Frame = 1;
+
+					_sounds.PickupQuad.Play();
+					_gunAnimationPlayer.PlayBackwards("Drop");
+
+					PickupItem(item);
+				}
+				break;
+
+				case "GruntGun":
+				{
+					if (_remainingAmmo > 0)
+					{
+						continue;
+					}
+
+					_remainingAmmo = 1;
+					_currentGun = GunTypes.Single;
+					_gun.Frame = 0;
+
+					_sounds.PickupSingle.Play();
 					_gunAnimationPlayer.PlayBackwards("Drop");
 
 					PickupItem(item);
@@ -390,7 +444,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 				case "Treasure":
 				{
-					_doomPortrait.SetAnimation(DoomPortraitType.Treasure);
+					DoomPortrait.SetAnimation(DoomPortraitType.Treasure);
 
 					if (_enamoredTimer != null)
 					{
@@ -401,8 +455,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 						_enamoredTimer = CustomTimer.Start(this, EnamoredByTreasureTime);
 						_enamoredTimer.Timeout += () => {
 							_enamoredTimer = null;
-							_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+							DoomPortrait.SetAnimation(DoomPortraitType.Idle);
 						};
+						_sounds.PickupTreasure.Play();
 					}
 
 					PickupItem(item);
@@ -459,14 +514,15 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (Health > 0)
 		{
-			_doomPortrait.SetAnimation(DoomPortraitType.Pain);
+			DoomPortrait.SetAnimation(DoomPortraitType.Pain);
 			_damageEffect.Material.Set("shader_param/enable", true);
 			_invulTimer = CustomTimer.Start(this, InvulPeriod);
+			_sounds.Hurt.Play();
 
 			_invulTimer.Timeout += () => {
 				_invulTimer = null;
 				_damageEffect.Material.Set("shader_param/enable", false);
-				_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+				DoomPortrait.SetAnimation(DoomPortraitType.Idle);
 			};
 		}
 		else
@@ -492,7 +548,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		bool isDead = Health <= 0;
 
 		_healthContainer.SetHealth(Health);
-		_doomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
+		DoomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
 		_damageEffect.Material.Set("shader_param/enable", isDead);
 		GetNode<Label>("%DeathLabel").Visible = isDead;
 		_crosshair.Visible = !isDead;
@@ -500,6 +556,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		if (isDead && !_hasEmittedDeathScreech)
 		{
 			LogControl.SetMsg($"{Globals.ProtagonistName} has died!");
+			_sounds.Death.Play();
+			EmitSignal(nameof(PlayerDied));
 			_hasEmittedDeathScreech = true;
 		}
 	}

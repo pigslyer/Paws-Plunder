@@ -128,4 +128,80 @@ public static class Extensions {
     {
         return sprite.Frames.GetFrameCount(sprite.Animation);
     }
+
+    public static void FadeOut(this AudioStreamPlayer player, float duration)
+    {
+        SceneTreeTween tween = player.CreateTween();
+
+        tween.TweenProperty(player, "volume_db", -60, duration).SetTrans(Tween.TransitionType.Expo);
+        tween.TweenCallback(player, "stop");
+        tween.TweenCallback(player, "set", new Godot.Collections.Array(new object[]{"volume_db", player.VolumeDb}));
+    }
+
+    public static void SetPlaying(this AudioStreamPlayer player, bool playing, float? fadeOut = null)
+    {
+        if (playing == player.Playing)
+        {
+            return;
+        }
+
+        if (playing)
+        {
+            player.Play();
+        }
+        else
+        {
+            if (fadeOut.HasValue)
+            {
+                player.FadeOut(fadeOut.Value); 
+            }
+            else
+            {
+                player.Stop();
+            }
+        }
+    }
+    
+    public static void SetPlaying(this AudioStreamPlayer3D player, bool playing, Distro? pitchScale = null, RandomNumberGenerator rng = null)
+    {
+        if (playing == player.Playing)
+        {
+            return;
+        }
+
+        if (playing)
+        {
+            if (pitchScale.HasValue)
+            {
+                if (rng == null)
+                {
+                    rng = Globals.Rng;
+                }
+
+                player.PitchScale = rng.Randfn(pitchScale.Value);
+            }
+
+            player.Play();
+        }
+        else
+        {
+            player.Stop();
+        }
+    }
+
+    public static void PlayPitched(this AudioStreamPlayer3D player, Distro distribution, RandomNumberGenerator rng = null)
+    {
+        if (player.Playing)
+        {
+            return;
+        }
+
+        if (rng == null)
+        {
+            rng = Globals.Rng;
+        }
+
+        player.PitchScale = rng.Randfn(distribution);
+        player.Play();
+    }
 }

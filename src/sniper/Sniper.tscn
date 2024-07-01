@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://src/assets/sniper idle/Sniper_idle0008.png" type="Texture" id=1]
 [ext_resource path="res://src/assets/sniper idle/Sniper_idle0009.png" type="Texture" id=2]
@@ -32,6 +32,7 @@
 [ext_resource path="res://src/assets/sniper dead/Sniper_dead0004.png" type="Texture" id=30]
 [ext_resource path="res://src/assets/sniper dead/Sniper_dead0005.png" type="Texture" id=31]
 [ext_resource path="res://src/assets/sniper dead/Sniper_dead0001.png" type="Texture" id=32]
+[ext_resource path="res://src/sniper/SniperSounds.cs" type="Script" id=33]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -72,6 +73,17 @@ shape = SubResource( 2 )
 
 [node name="CenterOfMass" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3265, 0 )
+
+[node name="Sounds" type="Spatial" parent="."]
+script = ExtResource( 33 )
+
+[node name="Death" type="AudioStreamPlayer3D" parent="Sounds"]
+
+[node name="Shoot" type="AudioStreamPlayer3D" parent="Sounds"]
+
+[node name="AttackBarkFront" type="AudioStreamPlayer3D" parent="Sounds"]
+
+[node name="AttackBarkBack" type="AudioStreamPlayer3D" parent="Sounds"]
 
 [connection signal="animation_finished" from="AnimatedSprite3D" to="." method="OnAnimationEnded"]
 [connection signal="frame_changed" from="AnimatedSprite3D" to="." method="OnAnimationFrameChanged"]

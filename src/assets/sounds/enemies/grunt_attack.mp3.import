@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/grunt_attack.mp3-c246ac78427a0d745a1392de08ee7ddc.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/enemies/grunt_attack.mp3"
+dest_files=[ "res://.import/grunt_attack.mp3-c246ac78427a0d745a1392de08ee7ddc.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
