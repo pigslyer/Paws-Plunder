@@ -88,6 +88,8 @@ public class FinalLevel : Spatial
 		_SpawnPlayer();		
 
 		_player.LogControl.SetMsg($"Good luck {Globals.ProtagonistName}!");
+		GlobalSignals.AddScore(-1000);
+
 		_musicDeath.Stop();
 		_musicGameplay.Play();
 	}

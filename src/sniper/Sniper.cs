@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker
+public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMeleeTargettable
 {
     public event Action Died;
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
@@ -95,6 +95,11 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
         {
             _sprite.Play("Idle");
         }
+    }
+
+    void IMeleeTargettable.Target(MeleeHitInfo info)
+    {
+        DestroyModel();
     }
 
     private void DestroyModel()

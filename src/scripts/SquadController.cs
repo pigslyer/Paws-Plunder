@@ -67,10 +67,10 @@ public class SquadController : Node
 
         _sniperTracker = new DetectionTracker<Sniper>(
             canSeeTarget: sniper => 
-                _player == null && 
+                _player != null && 
                 CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass),
             cantSeeTarget: sniper => 
-                _player == null 
+                _player == null || !CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass) 
         );
 
         _gunnerTracker = new DetectionTracker<Gunner>(
@@ -196,6 +196,11 @@ public class SquadController : Node
 
     private void UpdateInCombatEnemies()
     {
+        if (_gruntTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _traderTracker.ActiveEnemies.Count == 0 && _player == null)
+        {
+            return;
+        }
+
         _gruntTracker.UpdateVisibility();
         _sniperTracker.UpdateVisibility();
         _gunnerTracker.UpdateVisibility();

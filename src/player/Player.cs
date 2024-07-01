@@ -26,8 +26,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
-	private const float MaxNaturalSpeed = 15;
-	private const float MaxSprintSpeed = 20;
+	private const float MaxNaturalSpeed = 23;
+	private const float MaxSprintSpeed = 23;
 	private const float SensitivityMult = 4f;
 	private const float InvulPeriod = 2.0f;
 	private const float Acceleration = 100;
@@ -315,8 +315,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (bodies.Count == 0) 
 		{
+			_sounds.MeleeMiss.Play();
 			return;
 		} 
+		else
+		{
+			_sounds.Melee.Play();
+		}
 
 		// determine targetting heuristic based on closeness to crosshair and distance?
 		IMeleeTargettable target = bodies[0] as IMeleeTargettable;
@@ -375,7 +380,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void OnGunAnimationFinished(string _)
 	{
-		_gunAnimationPlayer.Play("Drop");
+		if (_remainingAmmo == 0)
+		{
+			_gunAnimationPlayer.Play("Drop");
+		}
+
+		GetTree().CallGroup("MUZZLE", "hide");
 	}
 
 	private void FireBullet(Vector3 velocity)
@@ -445,6 +455,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				case "Treasure":
 				{
 					DoomPortrait.SetAnimation(DoomPortraitType.Treasure);
+
+					if (Health < MaxHealth)
+					{
+						Health += 1;
+						UpdateHealthDisplays();
+					}
 
 					if (_enamoredTimer != null)
 					{

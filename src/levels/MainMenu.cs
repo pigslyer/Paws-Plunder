@@ -32,9 +32,10 @@ public class MainMenu : CanvasLayer
 			}
 		}
 
-		_storyPanel.Visible = true;
+		//_storyPanel.Visible = true;
 
-		_storyLabel.Text = _storyLabel.Text.Replace("%NAME%", Globals.ProtagonistName);
+		//_storyLabel.Text = _storyLabel.Text.Replace("%NAME%", Globals.ProtagonistName);
+		OnIntroButtonPressed();
 	}
 
 	private void OnIntroButtonPressed()

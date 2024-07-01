@@ -96,23 +96,25 @@ anchor_bottom = 1.0
 color = Color( 1, 1, 1, 0 )
 
 [node name="Menu" type="Control" parent="."]
-margin_right = 1920.0
-margin_bottom = 1080.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 theme = SubResource( 4 )
 
 [node name="LogoLabel" type="Label" parent="Menu"]
 anchor_left = 0.5
-anchor_top = 0.128
+anchor_top = 0.21
 anchor_right = 0.5
-anchor_bottom = 0.128
+anchor_bottom = 0.21
 margin_left = -451.0
+margin_top = -65.5
 margin_right = 451.0
-margin_bottom = 131.0
+margin_bottom = 65.5
 theme = ExtResource( 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Paws and Plunder"
 
 [node name="LogoLabel2" type="Label" parent="Menu"]
+visible = false
 anchor_left = 0.5
 anchor_top = 0.128
 anchor_right = 0.5
@@ -126,34 +128,37 @@ custom_fonts/font = SubResource( 2 )
 text = "A tale of mighty cat pirates"
 
 [node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
-anchor_left = 0.345
-anchor_top = 0.461
-anchor_right = 0.674
-anchor_bottom = 0.652
-margin_bottom = 323.48
+anchor_left = 0.5
+anchor_top = 0.6
+anchor_right = 0.5
+anchor_bottom = 0.6
+margin_left = -150.0
+margin_top = -199.0
+margin_right = 150.0
+margin_bottom = 199.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/MainMenuContainer"]
-margin_right = 631.0
-margin_bottom = 529.0
+margin_right = 300.0
+margin_bottom = 398.0
 rect_min_size = Vector2( 300, 300 )
 custom_constants/separation = 64
 
 [node name="PlayButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
-margin_right = 631.0
+margin_right = 300.0
 margin_bottom = 90.0
 theme = ExtResource( 1 )
 text = "Play"
 
 [node name="OptionsButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 margin_top = 154.0
-margin_right = 631.0
+margin_right = 300.0
 margin_bottom = 244.0
 theme = ExtResource( 1 )
 text = "Options"
 
 [node name="Credits" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 margin_top = 308.0
-margin_right = 631.0
+margin_right = 300.0
 margin_bottom = 398.0
 theme = ExtResource( 1 )
 text = "Credits"
@@ -213,29 +218,33 @@ anchor_bottom = 0.9
 [node name="Credits" parent="Menu/VBoxContainer" instance=ExtResource( 8 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 1920.0
-margin_bottom = 978.0
+margin_right = 1536.0
+margin_bottom = 781.0
 size_flags_vertical = 3
 
 [node name="Button" type="Button" parent="Menu/VBoxContainer"]
-margin_top = 982.0
-margin_right = 1920.0
-margin_bottom = 1080.0
+margin_top = 785.0
+margin_right = 1536.0
+margin_bottom = 864.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 text = "Exit"
 
 [node name="Options" type="Control" parent="."]
 visible = false
-margin_right = 1920.0
-margin_bottom = 1080.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 script = ExtResource( 7 )
 
 [node name="Container" type="MarginContainer" parent="Options"]
-anchor_left = 0.345
-anchor_right = 0.674
-margin_top = 300.0
-margin_bottom = 1020.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -315.84
+margin_top = -360.0
+margin_right = 315.84
+margin_bottom = 360.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container"]
 margin_right = 631.0
