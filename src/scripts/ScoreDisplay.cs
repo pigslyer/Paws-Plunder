@@ -3,14 +3,14 @@ using Godot;
 
 public class ScoreDisplay : Control
 {
-	private RichTextLabel _label;
+	private Label _label;
 	private int _shownScore;
 	private int _shownScore0;
 	private float _lerp = 1.0F;
 	
 	public override void _Ready()
 	{
-		_label = GetNode<RichTextLabel>("Number");
+		_label = GetNode<Label>("Number");
 		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, "AddScore");
 	}
 	
