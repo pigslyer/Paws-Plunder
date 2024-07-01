@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -13,12 +13,46 @@
 [ext_resource path="res://src/scripts/ScoreDisplay.cs" type="Script" id=11]
 [ext_resource path="res://src/ui/Deus EX Console.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://src/shaders/damage.gdshader" type="Shader" id=13]
+[ext_resource path="res://src/assets/gun effect-Sheet.png" type="Texture" id=14]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 1.3
 
+[sub_resource type="AtlasTexture" id=9]
+flags = 16
+atlas = ExtResource( 14 )
+region = Rect2( 0, 384, 103, 96 )
+
+[sub_resource type="AtlasTexture" id=10]
+flags = 16
+atlas = ExtResource( 14 )
+region = Rect2( 0, 288, 103, 96 )
+
+[sub_resource type="AtlasTexture" id=11]
+flags = 16
+atlas = ExtResource( 14 )
+region = Rect2( 0, 192, 103, 96 )
+
+[sub_resource type="AtlasTexture" id=12]
+flags = 16
+atlas = ExtResource( 14 )
+region = Rect2( 0, 96, 103, 96 )
+
+[sub_resource type="AtlasTexture" id=13]
+flags = 16
+atlas = ExtResource( 14 )
+region = Rect2( 0, 0, 103, 96 )
+
+[sub_resource type="SpriteFrames" id=14]
+animations = [ {
+"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
+"loop": false,
+"name": "default",
+"speed": 30.0
+} ]
+
 [sub_resource type="BoxShape" id=2]
-extents = Vector3( 0.3, 0.275, 1 )
+extents = Vector3( 0.4, 0.4, 2.5 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 36
@@ -37,6 +71,599 @@ outline_size = 6
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 12 )
 
+[sub_resource type="Animation" id=8]
+resource_name = "ClawAttack"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera/Claw:transform")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, -0.85, -0.75, -0.7 ), Transform( 0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, -0.65, -0.75, -1 ), Transform( 0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, -0.85, -0.75, -0.7 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Claw:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.25 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 0 ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "Death"
+tracks/0/type = "transform"
+tracks/0/path = NodePath("Head/Camera/Claw")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = PoolRealArray( 0, 1, -0.85, -0.75, -0.7, 0, 0.608762, 0, 0.793353, 1, 1, 1, 0.2, 1, -0.85, -0.75, 1, 0, 0.608762, 0, 0.793353, 0, 0, 0 )
+tracks/1/type = "transform"
+tracks/1/path = NodePath("Head/Camera/Gun")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = PoolRealArray( 0, 1, 0.65, -0.65, -0.65, -0.166366, -0.620885, 0.198267, 0.739942, 1, 1, 1, 0.2, 1, 0.65, -0.65, 1, -0.166366, -0.620886, 0.198267, 0.739942, 0, 0, 0 )
+tracks/2/type = "value"
+tracks/2/path = NodePath("Head/Camera:transform")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.732, 0 ), Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.732, 0 ), Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 150, 0 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.732, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Gun:transform")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.04308e-07, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Head/Camera/Claw:transform")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Transform( 0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, -0.85, -0.75, -0.7 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Head/Camera/Claw:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Head/Camera/Gun:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Head/Camera/Gun/MuzzleFlash:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Head/Camera/Gun/MuzzleFlash2:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Head/Camera/Gun/MuzzleFlash3:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Head/Camera/Gun/MuzzleFlash4:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Head/Camera/Gun/MuzzleFlash5:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("Head/Camera/Gun/MuzzleFlash6:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("Head/Camera/Gun:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "Drop"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera/Gun:transform")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.49012e-08, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.129427, 0.224188, -0.965779, 0.482994, 0.836623, 0.258798, 0.865701, -0.500288, -4.22156e-08, 1.325, -0.7, -0.65 ), Transform( 0.396586, 0.33961, -0.852869, 0.433013, 0.75, 0.5, 0.809457, -0.567595, 0.150384, 2, -2, -0.65 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Gun:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.18, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, true, false ]
+}
+
+[sub_resource type="Animation" id=16]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera/Gun:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Gun:transform")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.04308e-07, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Head/Camera/Gun/MuzzleFlash:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Head/Camera/Gun/MuzzleFlash:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Head/Camera/Gun:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Head/Camera/Gun/MuzzleFlash2:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Head/Camera/Gun/MuzzleFlash3:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Head/Camera/Gun/MuzzleFlash4:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Head/Camera/Gun/MuzzleFlash5:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Head/Camera/Gun/MuzzleFlash6:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("Head/Camera/Gun/MuzzleFlash6:frame")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 4 ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("Head/Camera/Gun/MuzzleFlash5:frame")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 4 ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("Head/Camera/Gun/MuzzleFlash4:frame")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 4 ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("Head/Camera/Gun/MuzzleFlash3:frame")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 4 ]
+}
+tracks/14/type = "value"
+tracks/14/path = NodePath("Head/Camera/Gun/MuzzleFlash2:frame")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 4 ]
+}
+
+[sub_resource type="Animation" id=18]
+resource_name = "ShootQuad"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera/Gun/MuzzleFlash2:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Gun/MuzzleFlash3:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Head/Camera/Gun/MuzzleFlash4:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Head/Camera/Gun/MuzzleFlash5:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Head/Camera/Gun/MuzzleFlash6:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Head/Camera/Gun/MuzzleFlash6:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Head/Camera/Gun/MuzzleFlash5:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Head/Camera/Gun/MuzzleFlash4:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Head/Camera/Gun/MuzzleFlash3:frame")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Head/Camera/Gun/MuzzleFlash2:frame")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("Head/Camera/Gun:transform")
+tracks/10/interp = 2
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.49012e-08, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.49012e-08, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.172987, -0.0151344, -0.984808, 0.0871558, 0.996194, 0, 0.981061, -0.0858316, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.49012e-08, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "ShootSingle"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Head/Camera/Gun:transform")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 2.46229, 1, 1 ),
+"update": 0,
+"values": [ Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.04308e-07, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.04308e-07, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.17101, -0.0301537, -0.984808, 0.173648, 0.984807, 0, 0.969846, -0.17101, 0.173648, 0.65, -0.65, -0.65 ), Transform( 0.150384, -0.086824, -0.984808, 0.5, 0.866025, 0, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Head/Camera/Gun/MuzzleFlash:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.101, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Head/Camera/Gun/MuzzleFlash:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0, 0, 4 ]
+}
+
 [node name="Player" type="KinematicBody" groups=["PLAYER"]]
 collision_layer = 2
 script = ExtResource( 1 )
@@ -50,7 +677,7 @@ shape = SubResource( 1 )
 
 [node name="Camera" type="Camera" parent="Head"]
 unique_name_in_owner = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7322, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.732, 0 )
 current = true
 far = 20000.0
 
@@ -66,12 +693,53 @@ __meta__ = {
 }
 
 [node name="Gun" type="Sprite3D" parent="Head/Camera"]
-transform = Transform( 0.150384, -0.0868241, -0.984808, 0.5, 0.866025, 0, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 )
+transform = Transform( 0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.04308e-07, 0.852869, -0.492404, 0.173648, 0.65, -0.65, -0.65 )
 pixel_size = 0.009
 no_depth_test = true
 render_priority = 100
 texture = ExtResource( 10 )
 hframes = 2
+
+[node name="MuzzleFlash" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -7.56377e-08, 0.173648, -0.685725, 1.14646, 0.00913882 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+
+[node name="MuzzleFlash2" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -8.46931e-08, 0.173648, -0.445, 0.709, 0.132 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+frame = 4
+
+[node name="MuzzleFlash3" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -9.37485e-08, 0.173648, -0.79, 0.933, -0.058 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+frame = 4
+
+[node name="MuzzleFlash4" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -1.02804e-07, 0.173648, -0.655, 0.998, -0.076 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+frame = 4
+
+[node name="MuzzleFlash5" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866025, -0.492404, -0.984808, -1.17986e-07, 0.173648, -0.486989, 1.0029, -0.0670616 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+frame = 4
+
+[node name="MuzzleFlash6" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866025, -0.492404, -0.984808, -1.2025e-07, 0.173648, -0.53, 1.152, -0.218 )
+visible = false
+billboard = 2
+frames = SubResource( 14 )
+frame = 4
 
 [node name="MeleeTargetDetection" type="Area" parent="Head/Camera"]
 collision_layer = 0
@@ -79,7 +747,7 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="Head/Camera/MeleeTargetDetection"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.07483 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.32657 )
 shape = SubResource( 2 )
 
 [node name="PickupArea" type="Area" parent="."]
@@ -98,7 +766,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
-visible = false
 margin_right = 100.0
 margin_bottom = 56.0
 
@@ -114,10 +781,10 @@ script = ExtResource( 5 )
 margin_right = 1920.0
 margin_bottom = 57.0
 theme = ExtResource( 6 )
-text = "This is the combat log."
 scroll_active = false
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+visible = false
 margin_top = 28.0
 margin_right = 100.0
 margin_bottom = 56.0
@@ -238,3 +905,14 @@ custom_fonts/font = SubResource( 5 )
 text = "You died!
 Press [R] to respawn"
 align = 1
+
+[node name="BothHandsOrClaw" type="AnimationPlayer" parent="."]
+anims/ClawAttack = SubResource( 8 )
+anims/Death = SubResource( 6 )
+anims/RESET = SubResource( 7 )
+
+[node name="Gun" type="AnimationPlayer" parent="."]
+anims/Drop = SubResource( 17 )
+anims/RESET = SubResource( 16 )
+anims/ShootQuad = SubResource( 18 )
+anims/ShootSingle = SubResource( 15 )

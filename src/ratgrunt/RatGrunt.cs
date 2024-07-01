@@ -127,9 +127,9 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         CollisionLayer = 0;
         CollisionMask = 0;
         _hasMoveTarget = false;
-
-        // replace with death
-        QueueFree();
+        _queuedAttackDirection = null;
+        
+        _sprite.Play("Death");
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()

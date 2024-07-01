@@ -21,4 +21,9 @@ public class GlobalSignals : Node
 	{
 		return _instance;
 	}
+
+	public static void AddScore(int score)
+	{
+		GetInstance().EmitSignal("AddToPlayerScore", score);
+	}
 }

@@ -31,16 +31,17 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private const float SingleBulletVelocity = 200.0f;
 	private const float QuadBulletVelocity = 200.0f;
 
-	private float Sensitivity => 1.0f;
 
 	private const int MaxHealth = 3;
-	private int _health = MaxHealth;
+	public int Health { get; private set; } = MaxHealth;
+	private bool _hasEmittedDeathScreech = false;
 
 	private GunTypes _currentGun = GunTypes.Single;
 	private int _remainingAmmo = 1;
 
 	private Vector3 _previousVelocity = Vector3.Zero;
 	private Vector2 _mouseMotion = Vector2.Zero;
+	public bool LockInPlace = false;
 
 	public Vector3 Velocity => _previousVelocity;
 	public bool JustFired { get; private set;} = false;
@@ -52,8 +53,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private TextureRect _crosshair;
 	private Area _meleeDetectionArea;
 	private Area _pickupDetectionArea;
+	private AnimationPlayer _bothHandsOrClawAnimationPlayer;
+	private AnimationPlayer _gunAnimationPlayer;
 	private DoomPortrait _doomPortrait;
-	private CombatLogControl _logControl;
+	public CombatLogControl LogControl;
 	private HealthContainer _healthContainer;
 	private Spatial _centerOfMassNode;
 	private ColorRect _damageEffect;
@@ -72,8 +75,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_crosshair = GetNode<TextureRect>("%Crosshair");
 		_meleeDetectionArea = GetNode<Area>("%Camera/MeleeTargetDetection");
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
+		_bothHandsOrClawAnimationPlayer = GetNode<AnimationPlayer>("BothHandsOrClaw");
+		_gunAnimationPlayer = GetNode<AnimationPlayer>("Gun");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
-		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		LogControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 		_damageEffect = GetNode<ColorRect>("%DamageEffect");
@@ -94,21 +99,30 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
-		_damageEffect.Material.Set("shader_param/enable", false);
-		_crosshair.Visible = true;
-		_health = MaxHealth;
-		GetNode<Label>("%DeathLabel").Visible = false;
+
+		Health = MaxHealth;
+		_previousVelocity = Vector3.Zero;
+
+		_remainingAmmo = 1;
+		_currentGun = GunTypes.Single;
+		_hasEmittedDeathScreech = false;
+
+		UpdateHealthDisplays();
 		_camera.RotationDegrees = Vector3.Zero;
 		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
+    _bothHandsOrClawAnimationPlayer.Play("RESET");
 	}
 
 	public override void _PhysicsProcess(float delta)
 	{
 		JustFired = false;
 
-		bool isAlive = _health > 0;
+		bool isAlive = Health > 0;
 
-		ApplyMovement(delta, hasControls: isAlive);
+		if (!LockInPlace)
+		{
+			ApplyMovement(delta, hasControls: isAlive);
+		}
 
 		if (isAlive)
 		{
@@ -244,7 +258,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private void MouseRotateCamera(float delta)
 	{
 		Vector3 rotation = _camera.RotationDegrees;
-		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Sensitivity;
+		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Globals.MouseSensitivity;
 
 		rotation.x = Mathf.Clamp(rotation.x, -85.0f, 85.0f);
 		_camera.RotationDegrees = rotation;
@@ -263,6 +277,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		{
 			return;
 		}
+
+		_bothHandsOrClawAnimationPlayer.Play("ClawAttack");
 
 		JustFired = true;
 		Godot.Collections.Array bodies = _meleeDetectionArea.GetOverlappingBodies();
@@ -303,14 +319,15 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		Vector3 shotDirection = -_camera.GlobalTransform.basis.z;
 
-		// include muzzle flash?
 		if (_currentGun == GunTypes.Single)
 		{
+			_gunAnimationPlayer.Play("ShootSingle");
 			FireBullet(shotDirection * SingleBulletVelocity);
 		}
 		else if (_currentGun == GunTypes.Quad)
 		{
-			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 4, QuadBulletVelocity))
+			_gunAnimationPlayer.Play("ShootQuad");
+			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 5, QuadBulletVelocity))
 			{
 				FireBullet(bulletVelocity);
 			}
@@ -318,9 +335,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (_remainingAmmo == 0)
 		{
-			// include actual animation here
-			_gun.Visible = false;
+			_gunAnimationPlayer.Connect("animation_finished", this, nameof(OnGunAnimationFinished), flags: (uint)ConnectFlags.Oneshot);
 		}
+	}
+
+	private void OnGunAnimationFinished(string _)
+	{
+		_gunAnimationPlayer.Play("Drop");
 	}
 
 	private void FireBullet(Vector3 velocity)
@@ -330,7 +351,6 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		bullet.GlobalTranslation = CenterOfMass;
 
 		bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
-		GlobalSignals.GetInstance().EmitSignal(nameof(GlobalSignals.AddToPlayerScore), 100);
 	}
 
 	private void PickUpItems()
@@ -339,8 +359,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		void PickupItem(Item item)
 		{
-			// include add score
-			_logControl.SetMsg($"Picked up a {item.DisplayName}!");
+			if (item.AssociatedScore != 0)
+			{
+				GlobalSignals.AddScore(item.AssociatedScore);
+			}
+
+			LogControl.SetMsg($"Picked up a {item.DisplayName}!");
 			item.QueueFree();
 		}
 
@@ -357,8 +381,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 					_remainingAmmo = 1;
 					_currentGun = GunTypes.Quad;
-					_gun.Visible = true;
 					_gun.Frame = 1;
+					_gunAnimationPlayer.PlayBackwards("Drop");
 
 					PickupItem(item);
 				}
@@ -387,17 +411,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			}
 		}
 	}
-	/*
-	private void Restart()
-	{
-		GetTree().ReloadCurrentScene();
-		Initialize();
-	}
-	*/
-
+	
 	private void KillIfBelowWorld()
 	{
-		if (GlobalTranslation.y < -200)
+		if (Health > 0 && GlobalTranslation.y < -200)
 		{
 			KillWithCameraUpPan();
 		}
@@ -407,7 +424,6 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
 		{
-			//Restart();
 			EmitSignal("RespawnPlayer");
 		}
 	}
@@ -424,7 +440,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	void IBulletHittable.Hit(BulletHitInfo info)
 	{
-		if (_health <= 0)
+		if (Health <= 0)
 		{
 			return;
 		}
@@ -434,15 +450,14 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			return;
 		}
 
-		_health -= 1;
-		GD.Print($"new health {_health}");
-		_logControl.SetMsg($"The Player is now at {_health} health!");
+		Health -= 1;
+
 		_enamoredTimer?.Stop();
 		_enamoredTimer = null;
 
-		_healthContainer.SetHealth(_health);
+		UpdateHealthDisplays();
 
-		if (_health > 0)
+		if (Health > 0)
 		{
 			_doomPortrait.SetAnimation(DoomPortraitType.Pain);
 			_damageEffect.Material.Set("shader_param/enable", true);
@@ -456,7 +471,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 		else
 		{
-			KillSelf();
+			UpdateHealthDisplays();
 			_deathInfo = new DeathInfo(info.Source);
 		}
 	}
@@ -468,18 +483,33 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void KillSelf()
 	{
-		_health = 0;
-		_doomPortrait.SetAnimation(DoomPortraitType.Death);
-		_damageEffect.Material.Set("shader_param/enable", true);
-		GetNode<Label>("%DeathLabel").Visible = true;
-		_crosshair.Visible = false;
+		Health = 0;
+		UpdateHealthDisplays();
+	}
+
+	private void UpdateHealthDisplays()
+	{
+		bool isDead = Health <= 0;
+
+		_healthContainer.SetHealth(Health);
+		_doomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
+		_damageEffect.Material.Set("shader_param/enable", isDead);
+		GetNode<Label>("%DeathLabel").Visible = isDead;
+		_crosshair.Visible = !isDead;
+
+		if (isDead && !_hasEmittedDeathScreech)
+		{
+			LogControl.SetMsg($"{Globals.ProtagonistName} has died!");
+			_hasEmittedDeathScreech = true;
+		}
 	}
 
 	private void KillWithCameraUpPan()
 	{
-		GD.Print("KillWithCameraUpPan");
 		KillSelf();
-		_camera.RotationDegrees = new Vector3(0, 90f, 0);
+
+		_bothHandsOrClawAnimationPlayer.Play("Death");
+		LockInPlace = true;
 	}
 
 	private class DeathInfo
