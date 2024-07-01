@@ -18,6 +18,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	[Export] private bool _initializeOnStartup = false;
 	[Export] private PackedScene _bulletScene;
+	[Export] private PackedScene _youWonScene;
 
 	private const float GravityConst = -120f;
 
@@ -37,7 +38,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 20000;
+	private const int WinScoreCondition = 5000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -74,6 +75,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private CustomTimer _invulTimer;
 	private CustomTimer _enamoredTimer;
 	private bool _gameWon = false;
+	private int _trackedScore = 0;
 
 	public override void _Ready()
 	{
@@ -127,8 +129,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void _OnAddScore(int score)
 	{
-		GD.Print($"Player has scored {score} points!");
-		if (score >= WinScoreCondition)
+		_trackedScore += score;
+		
+		GD.Print($"Player has scored {_trackedScore} points!");
+
+		if (_trackedScore >= WinScoreCondition)
 		{
 			GD.Print("Player has won!");
 			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!", 100f);
@@ -150,10 +155,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (isAlive)
 		{
-			MouseRotateCamera(delta);
-
 			if (!LockInPlace)
 			{
+				MouseRotateCamera(delta);
 				MeleeAttack();
 				ShootAttack();
 
@@ -209,12 +213,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 						c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
 					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 5.0f)
 					{
-						GD.Print("Player has escaped!");
-						KillSelf();
-						var deathLabel = GetNode<Label>("%DeathLabel");
-						
-						deathLabel.Visible = true;
-						deathLabel.Text = "You have escaped with the loot!";
+						GetTree().ChangeSceneTo(_youWonScene);
 					}
 				}
 			}
