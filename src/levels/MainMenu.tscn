@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
 [ext_resource path="res://src/assets/fonts/coralines_cat.ttf" type="DynamicFontData" id=2]
@@ -10,6 +10,12 @@
 [sub_resource type="DynamicFont" id=1]
 size = 64
 outline_size = 8
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+outline_size = 4
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 2 )
 
@@ -36,6 +42,19 @@ margin_bottom = 131.0
 theme = ExtResource( 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Paws and Plunder"
+
+[node name="LogoLabel2" type="Label" parent="Menu"]
+anchor_left = 0.5
+anchor_top = 0.128
+anchor_right = 0.5
+anchor_bottom = 0.128
+margin_left = -395.0
+margin_top = 162.76
+margin_right = 422.0
+margin_bottom = 240.76
+theme = ExtResource( 1 )
+custom_fonts/font = SubResource( 2 )
+text = "The tale of mighty cat pirates"
 
 [node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
 anchor_left = 0.345

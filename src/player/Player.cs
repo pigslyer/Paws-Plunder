@@ -96,6 +96,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
 		_damageEffect.Material.Set("shader_param/enable", false);
 		_crosshair.Visible = true;
+		_health = MaxHealth;
+		GetNode<Label>("%DeathLabel").Visible = false;
+		_camera.RotationDegrees = Vector3.Zero;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -186,8 +189,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		// camera offset
 		Vector3 headOffset = Vector3.Zero;
 		Vector3 headRotation = new Vector3(
-			_head.RotationDegrees.x,
-			_head.RotationDegrees.y,
+			_head.Rotation.x,
+			_head.Rotation.y,
 			Mathf.Clamp(_head.Rotation.z, -0.05f, 0.05f));
 		{
 			float bobOffset = Mathf.Sin(delta) * 1f;
@@ -452,11 +455,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 		else
 		{
-			_doomPortrait.SetAnimation(DoomPortraitType.Death);
-			_damageEffect.Material.Set("shader_param/enable", true);
-			GetNode<Label>("%DeathLabel").Visible = true;
+			KillSelf();
 			_deathInfo = new DeathInfo(info.Source);
-			_crosshair.Visible = false;
 		}
 	}
 
@@ -465,10 +465,20 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		KillWithCameraUpPan();
 	}
 
+	private void KillSelf()
+	{
+		_health = 0;
+		_doomPortrait.SetAnimation(DoomPortraitType.Death);
+		_damageEffect.Material.Set("shader_param/enable", true);
+		GetNode<Label>("%DeathLabel").Visible = true;
+		_crosshair.Visible = false;
+	}
+
 	private void KillWithCameraUpPan()
 	{
-		//Restart();
-		RestartOnRequest();
+		GD.Print("KillWithCameraUpPan");
+		KillSelf();
+		_camera.RotationDegrees = new Vector3(0, 90f, 0);
 	}
 
 	private class DeathInfo

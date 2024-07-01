@@ -33,9 +33,9 @@ public class FinalLevel : Spatial
 		catapultOverlay.Visible = true;
 		var tween = GetNode<Tween>("%CatapultTween");
 		tween.InterpolateProperty(_catapultPathFollow, "unit_offset", 0f, 1f, 1.5f, Tween.TransitionType.Quad, Tween.EaseType.Out);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/alpha", 1f, 0f, 0.25f, Tween.TransitionType.Quad, Tween.EaseType.Out);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/inner_radius", 0.9f, 1f, 0.15f, Tween.TransitionType.Quad, Tween.EaseType.Out);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/outer_radius", 0.9f, 1f, 0.15f, Tween.TransitionType.Quad, Tween.EaseType.Out);
+		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/alpha", 1f, 0f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
+		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/inner_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
+		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/outer_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
 		tween.Start();
 	}
 	

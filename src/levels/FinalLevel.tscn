@@ -10,7 +10,7 @@
 
 [sub_resource type="Curve3D" id=1]
 _data = {
-"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -201.61, 85.2266, -472.205 ),
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -180.926, 146.169, -477.515 ),
 "tilts": PoolRealArray( 0, 0 )
 }
 
@@ -80,7 +80,7 @@ color = Color( 1, 0.890196, 0, 1 )
 unique_name_in_owner = true
 
 [node name="WaterDeathPlane" type="Area" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -147.923, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, -200 )
 collision_layer = 0
 collision_mask = 14
 monitorable = false
