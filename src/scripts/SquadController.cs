@@ -196,11 +196,6 @@ public class SquadController : Node
 
     private void UpdateInCombatEnemies()
     {
-        if (_gruntTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _traderTracker.ActiveEnemies.Count == 0 && _player == null)
-        {
-            return;
-        }
-
         _gruntTracker.UpdateVisibility();
         _sniperTracker.UpdateVisibility();
         _gunnerTracker.UpdateVisibility();
@@ -240,7 +235,7 @@ public class SquadController : Node
 
     private void UpdateEnemyPositions()
     {
-        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count == 0)
+        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count + _traderTracker.ActiveEnemies.Count == 0)
         {
             _updatePositionsTimer?.Stop();
             _updatePositionsTimer = null;
