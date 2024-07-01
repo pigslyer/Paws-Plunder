@@ -12,6 +12,8 @@ public class PlayerSounds : Node
     public AudioStreamPlayer PickupSingle;
     public AudioStreamPlayer ShootQuad;
     public AudioStreamPlayer PickupQuad;
+    public AudioStreamPlayer Melee;
+    public AudioStreamPlayer MeleeMiss;
 
     public override void _Ready()
     {
@@ -25,5 +27,7 @@ public class PlayerSounds : Node
         PickupSingle = GetNode<AudioStreamPlayer>("PickupSingle");
         ShootQuad = GetNode<AudioStreamPlayer>("ShootQuad");
         PickupQuad = GetNode<AudioStreamPlayer>("PickupQuad");
+        Melee = GetNode<AudioStreamPlayer>("Melee");
+        MeleeMiss = GetNode<AudioStreamPlayer>("MeleeMiss");
     }
 }

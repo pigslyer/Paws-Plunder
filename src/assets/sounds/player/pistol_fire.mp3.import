@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/player/pistol_fire.mp3"
+dest_files=[ "res://.import/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

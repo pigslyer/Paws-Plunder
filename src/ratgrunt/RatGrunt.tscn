@@ -92,8 +92,6 @@ pixel_size = 0.1
 billboard = 2
 frames = SubResource( 2 )
 animation = "Idle"
-frame = 2
-playing = true
 __meta__ = {
 "_editor_description_": "todo: make sword swing into its own animation that's switched to based on rng when idle finishes?"
 }
