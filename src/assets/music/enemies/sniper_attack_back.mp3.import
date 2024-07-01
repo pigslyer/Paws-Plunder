@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/sniper_attack_back.mp3-9b8c74abb55f477c057fac9ea995e1b8.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/enemies/sniper_attack_back.mp3"
+dest_files=[ "res://.import/sniper_attack_back.mp3-9b8c74abb55f477c057fac9ea995e1b8.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

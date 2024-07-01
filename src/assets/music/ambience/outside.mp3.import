@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/outside.mp3-e3427ead301834a2ef1a0189064df05e.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/ambience/outside.mp3"
+dest_files=[ "res://.import/outside.mp3-e3427ead301834a2ef1a0189064df05e.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

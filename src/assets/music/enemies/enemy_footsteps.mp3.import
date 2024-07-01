@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/enemies/enemy_footsteps.mp3"
+dest_files=[ "res://.import/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/blunderbuss_pickup.mp3-245ee30c0753ee2a03c791c64a01a10b.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/weapons/blunderbuss_pickup.mp3"
+dest_files=[ "res://.import/blunderbuss_pickup.mp3-245ee30c0753ee2a03c791c64a01a10b.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
