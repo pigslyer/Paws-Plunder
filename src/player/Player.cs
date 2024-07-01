@@ -37,7 +37,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 20;
+	private const int WinScoreCondition = 20000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -210,6 +210,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 5.0f)
 					{
 						GD.Print("Player has escaped!");
+						KillSelf();
+						var deathLabel = GetNode<Label>("%DeathLabel");
+						
+						deathLabel.Visible = true;
+						deathLabel.Text = "You have escaped with the loot!";
 					}
 				}
 			}
