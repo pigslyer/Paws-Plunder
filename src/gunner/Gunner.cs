@@ -9,6 +9,10 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private static readonly float TotalSpreadRad = Mathf.Deg2Rad(30);
     private const float BulletSpeed = 30.0f;
     private const int ShootFrame = 1;
+    private static readonly Distro _footstepsDistro = (0.7f, 0.2f);
+    private static readonly Distro _attackBarkDistro = (0.7f, 0.2f);
+    private static readonly Distro _blunderbussDistro = (0.7f, 0.2f);
+    private static readonly Distro _deathDistro = (0.7f, 0.2f);
 
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
     
@@ -19,6 +23,8 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private AnimatedSprite3D _sprite;
     private NavigationAgent _agent;
     private Spatial _centerOfMassNode;
+    private GunnerSounds _sounds;
+
     private bool _hasMoveOrder = false;
 
     private Vector3? _queuedAttackDirection = null;
@@ -28,6 +34,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         _agent = GetNode<NavigationAgent>("NavigationAgent");
         _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
         _centerOfMassNode = GetNode<Spatial>("CenterOfMass");
+        _sounds = GetNode<GunnerSounds>("Sounds");
 
         _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount());
         _sprite.Playing = true;
@@ -42,11 +49,13 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     {
         if (!_hasMoveOrder)
         {
+            _sounds.Footsteps.Stop();
             return;
         }
 
         if (_queuedAttackDirection != null)
         {
+            _sounds.Footsteps.Stop();
             return;
         }
 
@@ -54,12 +63,21 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, WalkSpeed * delta);
 
         _hasMoveOrder = !_agent.IsNavigationFinished();
+
+        if (!_hasMoveOrder)
+        {
+            _sprite.Play("Idle");
+            _sounds.Footsteps.Stop();
+        }
     }
 
     public void GoTo(Vector3 point)
     {
         _agent.SetTargetLocation(point);
         _hasMoveOrder = true;
+        
+        _sprite.Play("Walk");
+        _sounds.Footsteps.PlayPitched(_footstepsDistro);
     }
 
     public void AttackTarget(Player player)
@@ -67,7 +85,10 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         Vector3 forwardBulletVelocity = CenterOfMass.DirectionTo(player.CenterOfMass);
         
         _queuedAttackDirection = forwardBulletVelocity;
+
         _sprite.Play("Shoot");
+        _sounds.Footsteps.Stop();
+        _sounds.AttackBark.PlayPitched(_attackBarkDistro);
     }
 
     private void OnAnimationFrameChanged()
@@ -75,6 +96,8 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         if (_sprite.Animation == "Shoot" && _sprite.Frame == ShootFrame && _queuedAttackDirection != null)
         {
             FireBlunderbuss(_queuedAttackDirection.Value);
+
+            _sounds.Blunderbuss.PlayPitched(_blunderbussDistro);
         }
     }
 
@@ -83,7 +106,15 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         if (_sprite.Animation == "Shoot")
         {
             _queuedAttackDirection = null;            
-            _sprite.Play("Idle");
+            if (_hasMoveOrder)
+            {
+                _sprite.Play("Walk");
+                _sounds.Footsteps.PlayPitched(_footstepsDistro);
+            }
+            else
+            {
+                _sprite.Play("Idle");
+            }
         }
     }
 
@@ -122,6 +153,8 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         _hasMoveOrder = false;
     
         _sprite.Play("Death");
+        _sounds.Death.PlayPitched(_deathDistro);
+        _sounds.Footsteps.Stop();
 
         Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
         GetParent().AddChild(droppedGun);

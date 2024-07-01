@@ -6,6 +6,8 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     public event Action Died;
 
     [Export] private PackedScene _bulletScene;
+    [Export] private PackedScene _droppedGunScene;
+
     private const float BulletSpeed = 30.0f;
 
     private const float FarAwaySpeed = 12.0f;
@@ -13,10 +15,15 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     private const float WhatIsNearby = 5.0f;
     private const float ChanceForIdleSwing = 0.2f;
     private const int ShootFrame = 1;
+    private static readonly Distro _footstepsPitchDistro = (1.0f, 0.2f);
+    private static readonly Distro _attackBarkPitchDistro = (1.0f, 0.2f);
+    private static readonly Distro _firePitchDistro = (1.0f, 0.2f);
+    private static readonly Distro _deathPitchDistro = (1.0f, 0.2f);
 
     private NavigationAgent _agent;
     private AnimatedSprite3D _sprite;
     private Spatial _centerOfMass;
+    private RatGruntSounds _sounds;
 
     public Vector3 CenterOfMass => _centerOfMass.GlobalTranslation;
     private bool _hasMoveTarget = false;
@@ -27,8 +34,9 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         _agent = GetNode<NavigationAgent>("NavigationAgent");
         _centerOfMass = GetNode<Spatial>("CenterOfMass");
         _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
+        _sounds = GetNode<RatGruntSounds>("Sounds");
 
-        _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount());
+        _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount() - 1);
         _sprite.Playing = true;
     }
 
@@ -41,7 +49,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     {
         if (!_hasMoveTarget)
         {
-             return;
+            return;
         }
 
         if (_queuedAttackDirection != null)
@@ -58,18 +66,29 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, speed * delta);
 
         _hasMoveTarget = !_agent.IsNavigationFinished();
+
+        if (!_hasMoveTarget)
+        {
+            _sounds.Footsteps.Stop();
+            _sprite.Play("Idle");
+        }
     }
 
     public void GoTo(Vector3 point)
     {
         _hasMoveTarget = true;
         _agent.SetTargetLocation(point);
+
+        _sounds.Footsteps.PlayPitched(_footstepsPitchDistro);
+        _sprite.Play("Walk");
     }
 
     public void AttackTarget(Player target)
     {
         _queuedAttackDirection = CenterOfMass.DirectionTo(target.CenterOfMass) * BulletSpeed;
+        
         _sprite.Play("Shoot");
+        _sounds.AttackBark.PlayPitched(_attackBarkPitchDistro);
     }
 
     private void OnAnimationFrameChanged()
@@ -77,6 +96,8 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         if (_sprite.Animation == "Shoot" && _sprite.Frame == ShootFrame && _queuedAttackDirection != null)
         {
             ShootBulletWithVelocity(_queuedAttackDirection.Value);
+
+            _sounds.Fire.PlayPitched(_firePitchDistro);
         }
     }
 
@@ -97,8 +118,17 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         }
         else if (_sprite.Animation == "Shoot")
         {
-            _sprite.Play("Idle");
             _queuedAttackDirection = null;
+
+            if (_hasMoveTarget)
+            {
+                _sprite.Play("Walk");
+                _sounds.Footsteps.PlayPitched(_footstepsPitchDistro);
+            }
+            else
+            {
+                _sprite.Play("Idle");
+            }
         }
     }
 
@@ -128,8 +158,14 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         CollisionMask = 0;
         _hasMoveTarget = false;
         _queuedAttackDirection = null;
+
+        Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
+        GetParent().AddChild(droppedGun);
+        droppedGun.GlobalTranslation = CenterOfMass;
         
         _sprite.Play("Death");
+        _sounds.Death.PlayPitched(_deathPitchDistro);
+        _sounds.Footsteps.Stop();
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/all paws on deck considerably quieter.mp3-22bef59a79b1482caab868932ab6d4c7.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/music/all paws on deck considerably quieter.mp3"
+dest_files=[ "res://.import/all paws on deck considerably quieter.mp3-22bef59a79b1482caab868932ab6d4c7.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

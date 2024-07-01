@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -14,6 +14,15 @@
 [ext_resource path="res://src/ui/Deus EX Console.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://src/shaders/damage.gdshader" type="Shader" id=13]
 [ext_resource path="res://src/assets/gun effect-Sheet.png" type="Texture" id=14]
+[ext_resource path="res://src/assets/sounds/player/pickup.mp3" type="AudioStream" id=15]
+[ext_resource path="res://src/assets/sounds/player/player_hurt.mp3" type="AudioStream" id=16]
+[ext_resource path="res://src/assets/sounds/player/player_footsteps.mp3" type="AudioStream" id=17]
+[ext_resource path="res://src/assets/sounds/player/player_hurt2.mp3" type="AudioStream" id=18]
+[ext_resource path="res://src/player/PlayerSounds.cs" type="Script" id=19]
+[ext_resource path="res://src/assets/sounds/weapons/pistol_fire.mp3" type="AudioStream" id=20]
+[ext_resource path="res://src/assets/sounds/weapons/pistol_pickup.mp3" type="AudioStream" id=21]
+[ext_resource path="res://src/assets/sounds/weapons/blunderbuss_pickup.mp3" type="AudioStream" id=22]
+[ext_resource path="res://src/assets/sounds/weapons/blunderbuss_fire.mp3" type="AudioStream" id=23]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 1.3
@@ -916,3 +925,44 @@ anims/Drop = SubResource( 17 )
 anims/RESET = SubResource( 16 )
 anims/ShootQuad = SubResource( 18 )
 anims/ShootSingle = SubResource( 15 )
+
+[node name="Sounds" type="Node" parent="."]
+script = ExtResource( 19 )
+
+[node name="PickupTreasure" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 15 )
+bus = "Voice"
+
+[node name="Hurt" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 16 )
+bus = "SFX"
+
+[node name="Death" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 18 )
+bus = "SFX"
+
+[node name="Footsteps" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 17 )
+bus = "SFX"
+
+[node name="Jumping" type="AudioStreamPlayer" parent="Sounds"]
+bus = "SFX"
+
+[node name="Landing" type="AudioStreamPlayer" parent="Sounds"]
+bus = "SFX"
+
+[node name="PickupSingle" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 21 )
+bus = "SFX"
+
+[node name="ShootSingle" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 20 )
+bus = "SFX"
+
+[node name="PickupQuad" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 22 )
+bus = "SFX"
+
+[node name="ShootQuad" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 23 )
+bus = "SFX"
