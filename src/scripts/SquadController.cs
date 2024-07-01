@@ -60,25 +60,33 @@ public class SquadController : Node
         _gruntTracker = new DetectionTracker<RatGrunt>(
             canSeeTarget: grunt => 
                 _player != null && 
-                CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)
+                CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass),
+            cantSeeTarget: grunt => 
+                _player != null
         );
         
         _sniperTracker = new DetectionTracker<Sniper>(
             canSeeTarget: sniper => 
                 _player != null && 
-                CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass)
+                CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass),
+            cantSeeTarget: sniper => 
+                _player != null
         );
 
         _gunnerTracker = new DetectionTracker<Gunner>(
             canSeeTarget: gunner =>
                 _player != null &&
-                CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)
+                CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass),
+            cantSeeTarget: gunner => 
+                _player != null
         );
 
         _traderTracker = new DetectionTracker<TraderMouse>(
             canSeeTarget: trader =>
                 _player != null &&
-                CanPointBeSeen(trader.CenterOfMass, _player.CenterOfMass)
+                CanPointBeSeen(trader.CenterOfMass, _player.CenterOfMass),
+            cantSeeTarget: trader => 
+                _player == null
         );
 
         _gruntMovementQueue = new RandomOrderQueue<RatGrunt>(_rng);
@@ -138,6 +146,8 @@ public class SquadController : Node
         
         _queuedAttackers.Clear();
         _queuedMovers.Clear();
+
+        GlobalSignals.AddScore(100);
     }
 
     private void OnSniperDied(Sniper sniper)
@@ -145,6 +155,8 @@ public class SquadController : Node
         _sniperTracker.RemoveEnemy(sniper);
 
         _queuedAttackers.Clear();
+
+        GlobalSignals.AddScore(500);
     }
 
     private void OnGunnerDied(Gunner gunner)
@@ -154,6 +166,8 @@ public class SquadController : Node
 
         _queuedAttackers.Clear();
         _queuedMovers.Clear();
+
+        GlobalSignals.AddScore(500);
     }
 
     private void OnTraderDied(TraderMouse trader)
@@ -234,6 +248,11 @@ public class SquadController : Node
     {
         _updatePositionsTimer = null;
 
+        if (_player == null)
+        {
+            return;
+        }
+
         Vector3 playerPosition = _player.GlobalTranslation;
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
@@ -298,20 +317,25 @@ public class SquadController : Node
     {
         _runAttackRoutine = null;
 
+        if (_player == null)
+        {
+            return;
+        }
+
         int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Count);
-        foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers))
+        foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)))
         {
             _queuedAttackers.AddElement(grunt);
         }
 
         int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Count);
-        foreach (Sniper sniper in _rng.RandEls(_sniperTracker.ActiveEnemies, sniperAttackers))
+        foreach (Sniper sniper in _rng.RandEls(_sniperTracker.ActiveEnemies, sniperAttackers, sniper => CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass)))
         {
             _queuedAttackers.AddElement(sniper);
         }
 
         int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Count);
-        foreach (Gunner gunner in _rng.RandEls(_gunnerTracker.ActiveEnemies, gunnerAttackers))
+        foreach (Gunner gunner in _rng.RandEls(_gunnerTracker.ActiveEnemies, gunnerAttackers, gunner => CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)))
         {
             _queuedAttackers.AddElement(gunner);
         }
@@ -497,6 +521,8 @@ public class SquadController : Node
     private class DetectionTracker<T>
     {
         private readonly Predicate<T> _canSeeTarget;
+        private readonly Predicate<T> _cantSeeTarget;
+
         private readonly List<T> _inactiveEnemies = new List<T>();
         private readonly List<T> _activeEnemies = new List<T>();
         private readonly List<T> _justLeftCombat = new List<T>();
@@ -508,9 +534,9 @@ public class SquadController : Node
         public IReadOnlyList<T> JustLeftCombat => _justLeftCombat;
         public IReadOnlyList<T> JustEnteredCombat => _justEnteredCombat;
 
-        public DetectionTracker(Predicate<T> canSeeTarget)
+        public DetectionTracker(Predicate<T> canSeeTarget, Predicate<T> cantSeeTarget)
         {
-            _canSeeTarget = canSeeTarget;
+            (_canSeeTarget, _cantSeeTarget) = (canSeeTarget, cantSeeTarget);
         }
         
         public void UpdateVisibility()
@@ -530,7 +556,7 @@ public class SquadController : Node
 
             foreach (T enemy in _activeEnemies)
             {
-                if (!_canSeeTarget.Invoke(enemy))
+                if (_cantSeeTarget.Invoke(enemy))
                 {
                     enteringCombat.Add((false, enemy));
                 }

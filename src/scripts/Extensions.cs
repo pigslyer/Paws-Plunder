@@ -81,7 +81,7 @@ public static class Extensions {
         return list[rng.RandiRange(0, list.Count - 1)];
     }
 
-    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> list, int count)
+    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> list, int count, Predicate<T> allowedElements = null)
     {
         List<int> ints = new List<int>(list.Count);
 
@@ -92,9 +92,30 @@ public static class Extensions {
 
         rng.Shuffle(ints);
 
-        for (int i = 0; i < Math.Min(count, list.Count); i++)
+        int takenElements = 0;
+        int index = 0;
+        while (true)
         {
-            yield return list[ints[i]];
+            if (index >= list.Count)
+            {
+                break;
+            }   
+
+            if (takenElements >= count)
+            {
+                break;
+            }
+
+            if (allowedElements?.Invoke(list[index]) == false)
+            {
+                index += 1;
+                continue;
+            }
+
+            yield return list[index];
+            
+            takenElements += 1;
+            index += 1;
         }
     }
     

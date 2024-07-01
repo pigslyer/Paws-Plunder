@@ -34,6 +34,7 @@ public class Globals : Node
 
     private static Globals _instance;
     public static float MouseSensitivity = 1.0F;
+    public static string ProtagonistName = CatNames[0];
 
     private Player _player;
     public static Player GetPlayer()
@@ -46,6 +47,11 @@ public class Globals : Node
         _instance._player = (Player)_instance.GetTree().GetNodesInGroup("PLAYER")[0];
 
         return _instance._player;
+    }
+
+    public static void RandomizeProtag()
+    {
+        ProtagonistName = Rng.RandEl(CatNames);
     }
 
     public override void _Ready()
