@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
 [ext_resource path="res://src/assets/fonts/coralines_cat.ttf" type="DynamicFontData" id=2]
@@ -6,6 +6,72 @@
 [ext_resource path="res://src/levels/MainMenu.cs" type="Script" id=4]
 [ext_resource path="res://src/scripts/VolumeSlider.cs" type="Script" id=5]
 [ext_resource path="res://src/scripts/Options.cs" type="Script" id=7]
+
+[sub_resource type="StyleBoxEmpty" id=7]
+
+[sub_resource type="StyleBoxEmpty" id=8]
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.207843, 0.207843, 0.207843, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 1, 1, 1, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 0, 0, 0, 1 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.141176, 0.141176, 0.141176, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 6
+
+[sub_resource type="DynamicFont" id=3]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=4]
+default_font = SubResource( 3 )
+Button/styles/disabled = SubResource( 7 )
+Button/styles/focus = SubResource( 8 )
+Button/styles/hover = SubResource( 9 )
+Button/styles/normal = SubResource( 6 )
+Button/styles/pressed = SubResource( 10 )
+PanelContainer/styles/panel = SubResource( 5 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 64
@@ -30,6 +96,7 @@ color = Color( 1, 1, 1, 0 )
 [node name="Menu" type="Control" parent="."]
 margin_right = 1920.0
 margin_bottom = 1080.0
+theme = SubResource( 4 )
 
 [node name="LogoLabel" type="Label" parent="Menu"]
 anchor_left = 0.5
@@ -69,25 +136,69 @@ margin_bottom = 529.0
 rect_min_size = Vector2( 300, 300 )
 custom_constants/separation = 64
 
-[node name="PlayButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer"]
+[node name="PlayButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 margin_right = 631.0
 margin_bottom = 90.0
 theme = ExtResource( 1 )
 text = "Play"
 
-[node name="OptionsButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer"]
+[node name="OptionsButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 margin_top = 154.0
 margin_right = 631.0
 margin_bottom = 244.0
 theme = ExtResource( 1 )
 text = "Options"
 
-[node name="ExitButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer"]
+[node name="ExitButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 margin_top = 308.0
 margin_right = 631.0
 margin_bottom = 398.0
 theme = ExtResource( 1 )
 text = "Exit"
+
+[node name="StoryPanel" type="PanelContainer" parent="Menu"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.6
+anchor_right = 0.5
+anchor_bottom = 0.6
+margin_left = -212.0
+margin_top = -195.0
+margin_right = 212.0
+margin_bottom = 195.0
+theme = SubResource( 4 )
+
+[node name="MarginContainer" type="MarginContainer" parent="Menu/StoryPanel"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 420.0
+margin_bottom = 386.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/StoryPanel/MarginContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 408.0
+margin_bottom = 374.0
+alignment = 1
+
+[node name="Intro" type="Label" parent="Menu/StoryPanel/MarginContainer/VBoxContainer"]
+margin_right = 400.0
+margin_bottom = 321.0
+rect_min_size = Vector2( 400, 0 )
+size_flags_vertical = 5
+text = "\"Give the word %NAME% and we'll begin. Just remember, once you're on board, you need to get as much treasure as you can, taking out any of their dastardly rat guards along the way before the ship sinks.\"
+\"Alright. . . 3, 2, 1. . .\""
+autowrap = true
+
+[node name="Fire" type="Button" parent="Menu/StoryPanel/MarginContainer/VBoxContainer"]
+margin_top = 325.0
+margin_right = 400.0
+margin_bottom = 366.0
+text = "Fire!"
 
 [node name="Options" type="Control" parent="."]
 visible = false
@@ -254,6 +365,7 @@ bus = "Music"
 [connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/OptionsButton" to="." method="_on_OptionsButton_pressed"]
 [connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
+[connection signal="pressed" from="Menu/StoryPanel/MarginContainer/VBoxContainer/Fire" to="." method="OnIntroButtonPressed"]
 [connection signal="value_changed" from="Options/Container/VBoxContainer/Mouse/VBoxContainer/Slider" to="Options" method="_on_mouse_value_changed"]
 [connection signal="value_changed" from="Options/Container/VBoxContainer/Master/VBoxContainer/Slider" to="Options/Container/VBoxContainer/Master/VBoxContainer/Slider" method="_on_slider_value_changed"]
 [connection signal="value_changed" from="Options/Container/VBoxContainer/Music/VBoxContainer/Slider" to="Options/Container/VBoxContainer/Music/VBoxContainer/Slider" method="_on_slider_value_changed"]

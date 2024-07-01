@@ -77,7 +77,7 @@ public class Globals : Node
         for (int i = 0; i < shotCount; i++)
         {
             float currentAngleOffset = -spread / 2 + i * (spread / (shotCount - 1));
-            Vector3 currentVelocity = baseDirection.Rotated(Vector3.Up, currentAngleOffset);
+            Vector3 currentVelocity = baseDirection.Rotated(Vector3.Up, currentAngleOffset) * speed;
 
             yield return currentVelocity;
         }

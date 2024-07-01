@@ -766,7 +766,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
-visible = false
 margin_right = 100.0
 margin_bottom = 56.0
 
@@ -782,10 +781,10 @@ script = ExtResource( 5 )
 margin_right = 1920.0
 margin_bottom = 57.0
 theme = ExtResource( 6 )
-text = "This is the combat log."
 scroll_active = false
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+visible = false
 margin_top = 28.0
 margin_right = 100.0
 margin_bottom = 56.0

@@ -6,19 +6,19 @@ public class FinalLevel : Spatial
 	private Player _player;
 	private Path _catapultPath;
 	private PathFollow _catapultPathFollow;
-
 	public override void _Ready()
 	{
 		_player = GetNode<Player>("%Player");
 		_catapultPath = GetNode<Path>("CatapultPath");
 		_catapultPathFollow = GetNode<PathFollow>("CatapultPath/CatapultPathFollow");
-
 		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
 		catapultOverlay.Material.Set("shader_param/alpha", 1f);
 		catapultOverlay.Material.Set("shader_param/inner_radius", 0.9f);
 		catapultOverlay.Material.Set("shader_param/outer_radius", 0.9f);
 
 		_player.LockInPlace = true;
+
+		Globals.RandomizeProtag();
 	}
 
 	private void _on_MainMenu_StartGame()
@@ -47,7 +47,12 @@ public class FinalLevel : Spatial
 	
 	private void _on_Player_RespawnPlayer()
 	{	
-		_on_MainMenu_StartGame();
+		Globals.RandomizeProtag();
+
+		_player.LockInPlace = true;
+		_player.Initialize();
+		_player.LogControl.SetMsg($"Good luck {Globals.ProtagonistName}!");
+		_SpawnPlayer();		
 	}
 
 	public override void _Input(InputEvent @event)

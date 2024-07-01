@@ -64,7 +64,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
     public void AttackTarget(Player player)
     {
-        Vector3 forwardBulletVelocity = CenterOfMass.DirectionTo(player.CenterOfMass) * BulletSpeed;
+        Vector3 forwardBulletVelocity = CenterOfMass.DirectionTo(player.CenterOfMass);
         
         _queuedAttackDirection = forwardBulletVelocity;
         _sprite.Play("Shoot");

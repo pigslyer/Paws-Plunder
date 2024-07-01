@@ -34,6 +34,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
+	private bool _hasEmittedDeathScreech = false;
 
 	private GunTypes _currentGun = GunTypes.Single;
 	private int _remainingAmmo = 1;
@@ -55,7 +56,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private AnimationPlayer _bothHandsOrClawAnimationPlayer;
 	private AnimationPlayer _gunAnimationPlayer;
 	private DoomPortrait _doomPortrait;
-	private CombatLogControl _logControl;
+	public CombatLogControl LogControl;
 	private HealthContainer _healthContainer;
 	private Spatial _centerOfMassNode;
 	private ColorRect _damageEffect;
@@ -77,7 +78,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_bothHandsOrClawAnimationPlayer = GetNode<AnimationPlayer>("BothHandsOrClaw");
 		_gunAnimationPlayer = GetNode<AnimationPlayer>("Gun");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
-		_logControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		LogControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 		_damageEffect = GetNode<ColorRect>("%DamageEffect");
@@ -100,8 +101,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
 
 		Health = MaxHealth;
+		_previousVelocity = Vector3.Zero;
+
 		_remainingAmmo = 1;
 		_currentGun = GunTypes.Single;
+		_hasEmittedDeathScreech = false;
 
 		UpdateHealthDisplays();
 		_camera.RotationDegrees = Vector3.Zero;
@@ -360,7 +364,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				GlobalSignals.AddScore(item.AssociatedScore);
 			}
 
-			_logControl.SetMsg($"Picked up a {item.DisplayName}!");
+			LogControl.SetMsg($"Picked up a {item.DisplayName}!");
 			item.QueueFree();
 		}
 
@@ -447,8 +451,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 
 		Health -= 1;
-		GD.Print($"new health {Health}");
-		_logControl.SetMsg($"The Player is now at {Health} health!");
+
 		_enamoredTimer?.Stop();
 		_enamoredTimer = null;
 
@@ -468,7 +471,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 		else
 		{
-			KillSelf();
+			UpdateHealthDisplays();
 			_deathInfo = new DeathInfo(info.Source);
 		}
 	}
@@ -493,6 +496,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_damageEffect.Material.Set("shader_param/enable", isDead);
 		GetNode<Label>("%DeathLabel").Visible = isDead;
 		_crosshair.Visible = !isDead;
+
+		if (isDead && !_hasEmittedDeathScreech)
+		{
+			LogControl.SetMsg($"{Globals.ProtagonistName} has died!");
+			_hasEmittedDeathScreech = true;
+		}
 	}
 
 	private void KillWithCameraUpPan()
