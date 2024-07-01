@@ -6,6 +6,7 @@ public class FinalLevel : Spatial
 	private Player _player;
 	private Path _catapultPath;
 	private PathFollow _catapultPathFollow;
+
 	public override void _Ready()
 	{
 		_player = GetNode<Player>("%Player");
@@ -16,10 +17,14 @@ public class FinalLevel : Spatial
 		catapultOverlay.Material.Set("shader_param/alpha", 1f);
 		catapultOverlay.Material.Set("shader_param/inner_radius", 0.9f);
 		catapultOverlay.Material.Set("shader_param/outer_radius", 0.9f);
+
+		_player.LockInPlace = true;
 	}
 
 	private void _on_MainMenu_StartGame()
 	{
+		_player.LockInPlace = true;
+
 		GetNode<CanvasLayer>("%MainMenu").Visible = false;
 		_player.Initialize();
 		_SpawnPlayer();		
@@ -36,12 +41,12 @@ public class FinalLevel : Spatial
 		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/alpha", 1f, 0f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
 		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/inner_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
 		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/outer_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
+		tween.InterpolateProperty(_player, "LockInPlace", true, false, 1f);
 		tween.Start();
 	}
 	
 	private void _on_Player_RespawnPlayer()
-	{
-		GD.Print("Respawning Player");
+	{	
 		_on_MainMenu_StartGame();
 	}
 
