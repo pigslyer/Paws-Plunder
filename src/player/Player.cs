@@ -38,7 +38,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 100;
+	private const int WinScoreCondition = 100000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
