@@ -154,6 +154,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);
+        _sounds.Footsteps.Stop();
 
         Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
         GetParent().AddChild(droppedGun);

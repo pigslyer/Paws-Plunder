@@ -165,6 +165,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathPitchDistro);
+        _sounds.Footsteps.Stop();
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()

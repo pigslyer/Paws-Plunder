@@ -124,14 +124,14 @@ monitorable = false
 script = ExtResource( 2 )
 
 [node name="RatGrunt" parent="ShipMouse/Area" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 38.2651, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.0492, -11.553 )
 
 [node name="CollisionShape" type="CollisionShape" parent="ShipMouse/Area"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 59.805, 0 )
 shape = SubResource( 16 )
 
 [node name="Gunner" parent="ShipMouse/Area" instance=ExtResource( 8 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8463, 38.0498, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.173, 18.1123, -10.6885 )
 
 [node name="HideWater" type="Area" parent="ShipMouse"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -57.4336, 0 )

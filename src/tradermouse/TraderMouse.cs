@@ -79,6 +79,7 @@ public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable,
 
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);
+        _sounds.Footsteps.Stop();
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()
