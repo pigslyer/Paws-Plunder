@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/blunderbuss_fire.mp3-bee481e37e8813d9c674c00c8bf7a236.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/weapons/blunderbuss_fire.mp3"
+dest_files=[ "res://.import/blunderbuss_fire.mp3-bee481e37e8813d9c674c00c8bf7a236.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

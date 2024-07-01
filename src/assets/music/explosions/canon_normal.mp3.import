@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/canon_normal.mp3-7df12bd8fe63642220124c6e2c9f709e.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/explosions/canon_normal.mp3"
+dest_files=[ "res://.import/canon_normal.mp3-7df12bd8fe63642220124c6e2c9f709e.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
