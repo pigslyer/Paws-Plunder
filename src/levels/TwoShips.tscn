@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 [ext_resource path="res://src/scripts/SquadController.cs" type="Script" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://src/ratgrunt/RatGrunt.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
 [ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
-[ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=8]
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -132,9 +131,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
 visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource( 14 )
-
-[node name="Player" parent="." instance=ExtResource( 8 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 335.024, 48.1085, -246.19 )
 
 [connection signal="body_entered" from="ShipMouse/Area" to="ShipMouse/Area" method="PlayerEnteredArea"]
 [connection signal="body_exited" from="ShipMouse/Area" to="ShipMouse/Area" method="PlayerExitedArea"]

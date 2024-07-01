@@ -3,7 +3,6 @@
 [ext_resource path="res://src/levels/MainMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/levels/TwoShips.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/shaders/catapult_main_menu.gdshader" type="Shader" id=4]
 [ext_resource path="res://src/levels/FinalLevel.cs" type="Script" id=5]
 [ext_resource path="res://src/scripts/DeathPlane.cs" type="Script" id=6]
 
@@ -11,12 +10,27 @@
 
 [sub_resource type="Curve3D" id=1]
 _data = {
-"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -201.61, 85.2266, -472.205 ),
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 0.0109215, 0.0960283, 0.0894165, -7.94917, 182.446, 191.423, 7.94917, -182.446, -191.423, -180.926, 146.169, -477.515 ),
 "tilts": PoolRealArray( 0, 0 )
 }
 
+[sub_resource type="Shader" id=7]
+code = "shader_type canvas_item;
+
+uniform float alpha : hint_range(0.f, 1.f) = 1.0;
+uniform float inner_radius : hint_range(0.f, 1.f) = 0.0;
+uniform float outer_radius : hint_range(0.f, 1.f) = 1.0;
+
+void fragment() 
+{
+	float x = abs(UV.r - .5) * 2.0;
+	float y = abs(UV.g - .5) * 2.0;
+	float q = clamp(1.0 - (1.0 - sqrt(x*x+y*y) /outer_radius) / (1.0-inner_radius), 0, 1);
+	COLOR = vec4(0, 0, 0, q*alpha);
+}"
+
 [sub_resource type="ShaderMaterial" id=2]
-shader = ExtResource( 4 )
+shader = SubResource( 7 )
 shader_param/alpha = 1.0
 shader_param/inner_radius = 0.868
 shader_param/outer_radius = 0.821
@@ -39,7 +53,7 @@ navmesh = SubResource( 6 )
 [node name="TwoShips" parent="NavigationMeshInstance" instance=ExtResource( 2 )]
 
 [node name="CatapultPath" type="Path" parent="."]
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -118.815, 51.0688, -30.9278 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -114.426, 48, -37.759 )
 curve = SubResource( 1 )
 
 [node name="CatapultPathFollow" type="PathFollow" parent="CatapultPath"]
@@ -49,14 +63,13 @@ loop = false
 
 [node name="Player" parent="CatapultPath/CatapultPathFollow" instance=ExtResource( 3 )]
 unique_name_in_owner = true
-visible = false
+transform = Transform( 0.999999, 0, 2.84217e-14, 0, 1, 0, -2.84217e-14, 0, 0.999999, 0, 0, 0 )
 
 [node name="CatapultTween" type="Tween" parent="CatapultPath/CatapultPathFollow"]
 unique_name_in_owner = true
 
 [node name="CatapultEffect" type="ColorRect" parent="."]
 unique_name_in_owner = true
-visible = false
 material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -64,10 +77,10 @@ mouse_filter = 2
 color = Color( 1, 0.890196, 0, 1 )
 
 [node name="MainMenu" parent="." instance=ExtResource( 1 )]
-visible = false
+unique_name_in_owner = true
 
 [node name="WaterDeathPlane" type="Area" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -147.923, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, -200 )
 collision_layer = 0
 collision_mask = 14
 monitorable = false
@@ -93,7 +106,5 @@ shape = SubResource( 5 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.17828, 5, 409.371 )
 shape = SubResource( 5 )
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -129.619, 49.844, -27.52 )
-
+[connection signal="RespawnPlayer" from="CatapultPath/CatapultPathFollow/Player" to="." method="_on_Player_RespawnPlayer"]
 [connection signal="StartGame" from="MainMenu" to="." method="_on_MainMenu_StartGame"]

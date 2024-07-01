@@ -1,12 +1,23 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
-[ext_resource path="res://src/assets/img/logo.png" type="Texture" id=2]
+[ext_resource path="res://src/assets/fonts/coralines_cat.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=3]
 [ext_resource path="res://src/levels/MainMenu.cs" type="Script" id=4]
 [ext_resource path="res://src/scripts/VolumeSlider.cs" type="Script" id=5]
-[ext_resource path="res://Mafia 2 - Louis Prima - Che La Luna.mp3" type="AudioStream" id=6]
 [ext_resource path="res://src/scripts/Options.cs" type="Script" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 64
+outline_size = 8
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+outline_size = 4
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 2 )
 
 [node name="MainMenu" type="CanvasLayer"]
 script = ExtResource( 4 )
@@ -17,31 +28,44 @@ anchor_bottom = 1.0
 color = Color( 1, 1, 1, 0 )
 
 [node name="Menu" type="Control" parent="."]
-visible = false
 margin_right = 1920.0
 margin_bottom = 1080.0
 
-[node name="LogoRect" type="TextureRect" parent="Menu"]
+[node name="LogoLabel" type="Label" parent="Menu"]
 anchor_left = 0.5
+anchor_top = 0.128
 anchor_right = 0.5
-margin_left = -289.0
-margin_top = 34.0
-margin_right = 339.0
-margin_bottom = 534.0
-texture = ExtResource( 2 )
-expand = true
-stretch_mode = 5
+anchor_bottom = 0.128
+margin_left = -451.0
+margin_right = 451.0
+margin_bottom = 131.0
+theme = ExtResource( 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Paws and Plunder"
+
+[node name="LogoLabel2" type="Label" parent="Menu"]
+anchor_left = 0.5
+anchor_top = 0.128
+anchor_right = 0.5
+anchor_bottom = 0.128
+margin_left = -395.0
+margin_top = 162.76
+margin_right = 422.0
+margin_bottom = 240.76
+theme = ExtResource( 1 )
+custom_fonts/font = SubResource( 2 )
+text = "The tale of mighty cat pirates"
 
 [node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
 anchor_left = 0.345
-anchor_top = 0.583
+anchor_top = 0.461
 anchor_right = 0.674
 anchor_bottom = 0.652
 margin_bottom = 323.48
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/MainMenuContainer"]
 margin_right = 631.0
-margin_bottom = 398.0
+margin_bottom = 529.0
 rect_min_size = Vector2( 300, 300 )
 custom_constants/separation = 64
 
@@ -66,6 +90,7 @@ theme = ExtResource( 1 )
 text = "Exit"
 
 [node name="Options" type="Control" parent="."]
+visible = false
 margin_right = 1920.0
 margin_bottom = 1080.0
 script = ExtResource( 7 )
@@ -223,7 +248,6 @@ theme = ExtResource( 1 )
 text = "Back"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 6 )
 autoplay = true
 bus = "Music"
 
