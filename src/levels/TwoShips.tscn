@@ -828,6 +828,9 @@ _type = 5
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3582, -6.85395, -37.2005 )
 _type = 5
 
+[node name="TreasureBase56" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.91138, 21.5215, -238.424 )
+
 [node name="ShipCat" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
 

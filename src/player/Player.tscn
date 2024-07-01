@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=52 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -27,6 +27,8 @@
 [ext_resource path="res://src/assets/sounds/player/jump.mp3" type="AudioStream" id=25]
 [ext_resource path="res://src/assets/sounds/player/swipe.mp3" type="AudioStream" id=26]
 [ext_resource path="res://src/assets/sounds/player/swipe_hit.mp3" type="AudioStream" id=27]
+[ext_resource path="res://src/levels/YouWon.tscn" type="PackedScene" id=28]
+[ext_resource path="res://src/player/EscapeText.gd" type="Script" id=29]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 1.3
@@ -98,6 +100,16 @@ size = 48
 outline_size = 6
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 12 )
+
+[sub_resource type="DynamicFont" id=23]
+font_data = ExtResource( 12 )
+
+[sub_resource type="StyleBoxFlat" id=24]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 
 [sub_resource type="Animation" id=8]
 resource_name = "ClawAttack"
@@ -696,6 +708,7 @@ tracks/2/keys = {
 collision_layer = 2
 script = ExtResource( 1 )
 _bulletScene = ExtResource( 4 )
+_youWonScene = ExtResource( 28 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.65437, 0 )
@@ -864,6 +877,7 @@ margin_top = -48.0
 margin_bottom = -48.0
 
 [node name="ScoreDisplay" type="Control" parent="CanvasLayer/DoomPortrait"]
+unique_name_in_owner = true
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 226.4
@@ -880,7 +894,6 @@ margin_top = -58.0
 margin_right = -3.3999
 margin_bottom = -17.0
 theme = ExtResource( 6 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "25121"
 align = 1
@@ -955,6 +968,26 @@ text = "You died!
 Press [R] to respawn"
 align = 1
 
+[node name="EscapeText" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.99
+anchor_top = 0.01
+anchor_right = 0.99
+anchor_bottom = 0.01
+margin_left = -672.0
+margin_bottom = 19.0
+custom_fonts/font = SubResource( 23 )
+custom_styles/normal = SubResource( 24 )
+text = "\"You have pillaged enough goods! Find a cannon and press [E] to escape!\""
+script = ExtResource( 29 )
+color1 = Color( 1, 0, 0, 1 )
+color2 = Color( 0.945098, 1, 0, 1 )
+
+[node name="Timer" type="Timer" parent="CanvasLayer/EscapeText"]
+wait_time = 2.0
+autostart = true
+
 [node name="BothHandsOrClaw" type="AnimationPlayer" parent="."]
 anims/ClawAttack = SubResource( 8 )
 anims/Death = SubResource( 6 )
@@ -1016,3 +1049,5 @@ bus = "SFX"
 [node name="MeleeMiss" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource( 26 )
 bus = "SFX"
+
+[connection signal="timeout" from="CanvasLayer/EscapeText/Timer" to="CanvasLayer/EscapeText" method="_on_Timer_timeout"]

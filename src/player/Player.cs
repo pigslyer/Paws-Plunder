@@ -29,7 +29,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
 	private const float MaxNaturalSpeed = 23;
 	private const float MaxSprintSpeed = 23;
-	private const float SensitivityMult = 4f;
+	private const float SensitivityMult = 8f;
 	private const float InvulPeriod = 2.0f;
 	private const float Acceleration = 100;
 	private const float EnamoredByTreasureTime = 2.0f;
@@ -38,7 +38,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 5000;
+	private const int WinScoreCondition = 100;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -137,7 +137,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		{
 			GD.Print("Player has won!");
 			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!", 100f);
+			GetNode<CanvasItem>("%EscapeText").Show();
+			GetNode<ScoreDisplay>("%ScoreDisplay").Modulate = Colors.Yellow;
 			GetTree().CallGroup("Cannons", "EnableEscape");
+			
 			_gameWon = true;
 		}
 	}
@@ -211,7 +214,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 					// get closest cannon
 					var closestCannon = cannons.OfType<Cannon>().OrderBy(
 						c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
-					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 5.0f)
+					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 12.0f)
 					{
 						GetTree().ChangeSceneTo(_youWonScene);
 					}
