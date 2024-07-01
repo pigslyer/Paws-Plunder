@@ -37,6 +37,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
+	private const int WinScoreCondition = 20000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -100,6 +101,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		{
 			Initialize();
 		}
+
+		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, "_OnAddScore");
 	}
 
 	public void Initialize()
@@ -119,6 +122,16 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_camera.RotationDegrees = Vector3.Zero;
 		DoomPortrait.SetAnimation(DoomPortraitType.Idle);
 		_bothHandsOrClawAnimationPlayer.Play("RESET");
+	}
+
+	private void _OnAddScore(int score)
+	{
+		GD.Print($"Player has scored {score} points!");
+		if (score >= WinScoreCondition)
+		{
+			GD.Print("Player has won!");
+			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
+		}
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -181,6 +194,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			inputVector = new Vector2(Input.GetActionStrength("plr_right") - Input.GetActionStrength("plr_left"), Input.GetActionStrength("plr_back") - Input.GetActionStrength("plr_forward")).Normalized();
 			jump = Input.IsActionPressed("plr_jump");
 			sprint = Input.IsActionPressed("plr_sprint");
+
+			if (Input.IsActionPressed("plr_use"))
+			{
+
+			}
 		}
 
 		// xz speed		
