@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://src/assets/models/black metal.material" type="Material" id=1]
 [ext_resource path="res://src/assets/models/wood.material" type="Material" id=2]
 [ext_resource path="res://src/assets/models/wood_016.material" type="Material" id=3]
 [ext_resource path="res://src/assets/models/wood_007.material" type="Material" id=4]
+[ext_resource path="res://src/levels/ship/Arrow.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/levels/ship/Cannon.cs" type="Script" id=6]
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "cannon_Cylinder004"
@@ -120,6 +122,7 @@ surfaces/1 = {
 extents = Vector3( 9.04525, 3.83404, 3.09333 )
 
 [node name="Cannon" type="StaticBody"]
+script = ExtResource( 6 )
 
 [node name="cannon" type="Spatial" parent="."]
 transform = Transform( -1.31134e-07, 0, 3, 0, 3, 0, -3, 0, -1.31134e-07, 0, 0, 0 )
@@ -147,3 +150,8 @@ mesh = SubResource( 5 )
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05763, 0.368012, 0 )
 shape = SubResource( 6 )
+
+[node name="Arrow" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.95389, 0 )
+visible = false
+script = null
