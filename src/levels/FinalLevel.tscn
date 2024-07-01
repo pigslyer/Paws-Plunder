@@ -52,6 +52,12 @@ script = ExtResource( 5 )
 
 [node name="TwoShips" parent="." instance=ExtResource( 2 )]
 
+[node name="Sea" parent="TwoShips/Ground" index="0"]
+visible = true
+
+[node name="RatGrunt" parent="TwoShips/ShipMouse/Area" index="0"]
+_droppedGunScene = null
+
 [node name="CatapultPath" type="Path" parent="."]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -114.426, 48, -37.759 )
 curve = SubResource( 1 )
@@ -126,7 +132,6 @@ bus = "SFX"
 stream = ExtResource( 7 )
 bus = "SFX"
 
-[connection signal="PlayerDied" from="CatapultPath/CatapultPathFollow/Player" to="." method="OnPlayerDied"]
 [connection signal="RespawnPlayer" from="CatapultPath/CatapultPathFollow/Player" to="." method="_on_Player_RespawnPlayer"]
 [connection signal="StartGame" from="MainMenu" to="." method="_on_MainMenu_StartGame"]
 
