@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/pistol_pickup.mp3-c142a655ee8b957ea4e4503c1d1a1ed0.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/weapons/pistol_pickup.mp3"
+dest_files=[ "res://.import/pistol_pickup.mp3-c142a655ee8b957ea4e4503c1d1a1ed0.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

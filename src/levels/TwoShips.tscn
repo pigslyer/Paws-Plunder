@@ -97,7 +97,7 @@ light_energy = 1.587
 shadow_enabled = true
 
 [node name="Ground" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0 )
 physics_material_override = SubResource( 5 )
 
 [node name="Sea" type="MeshInstance" parent="Ground"]
@@ -148,7 +148,6 @@ shape = SubResource( 17 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
 
 [node name="FogOverlay" parent="." instance=ExtResource( 3 )]
-visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource( 14 )
 

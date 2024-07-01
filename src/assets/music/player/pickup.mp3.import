@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/pickup.mp3-4dd3d9d4d4d65fa84468305d4071d8c0.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/player/pickup.mp3"
+dest_files=[ "res://.import/pickup.mp3-4dd3d9d4d4d65fa84468305d4071d8c0.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

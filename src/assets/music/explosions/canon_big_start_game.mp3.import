@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/canon_big_start_game.mp3-5816d8343f62c98ee7f10860a2b4b2ba.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/explosions/canon_big_start_game.mp3"
+dest_files=[ "res://.import/canon_big_start_game.mp3-5816d8343f62c98ee7f10860a2b4b2ba.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/wind_flying_after_canon_shot.mp3-0f13b9fdf33fa6a781f05145c67b348c.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/wind_flying_after_canon_shot.mp3"
+dest_files=[ "res://.import/wind_flying_after_canon_shot.mp3-0f13b9fdf33fa6a781f05145c67b348c.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

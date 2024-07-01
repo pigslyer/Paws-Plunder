@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/trader_panic.mp3-ca7fc55e08adbebb4f8b313681ad89c4.mp3str"
+
+[deps]
+
+source_file="res://src/assets/music/enemies/trader_panic.mp3"
+dest_files=[ "res://.import/trader_panic.mp3-ca7fc55e08adbebb4f8b313681ad89c4.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
