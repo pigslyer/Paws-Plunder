@@ -110,7 +110,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		UpdateHealthDisplays();
 		_camera.RotationDegrees = Vector3.Zero;
 		_doomPortrait.SetAnimation(DoomPortraitType.Idle);
-    _bothHandsOrClawAnimationPlayer.Play("RESET");
+	_bothHandsOrClawAnimationPlayer.Play("RESET");
 	}
 
 	public override void _PhysicsProcess(float delta)
