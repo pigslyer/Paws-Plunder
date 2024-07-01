@@ -152,6 +152,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05763, 0.368012, 0 )
 shape = SubResource( 6 )
 
 [node name="Arrow" parent="." instance=ExtResource( 5 )]
+unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.95389, 0 )
 visible = false
-script = null

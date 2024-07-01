@@ -12,6 +12,12 @@ public class CombatLogControl : Control
 		_label.Text = msg;
 	}
 
+	public void SetMsg(string msg, float len)
+	{
+		_msgTime = len;
+		_label.Text = msg;
+	}
+
 	public string GetMsg()
 	{
 		return _label.Text;

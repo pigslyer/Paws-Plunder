@@ -73,5 +73,5 @@ animations = [ {
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
 frames = SubResource( 1 )
 animation = "arrow"
-frame = 10
+frame = 55
 playing = true

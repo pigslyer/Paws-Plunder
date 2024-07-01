@@ -37,7 +37,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 20000;
+	private const int WinScoreCondition = 20;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -73,6 +73,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private CustomTimer _invulTimer;
 	private CustomTimer _enamoredTimer;
+	private bool _gameWon = false;
 
 	public override void _Ready()
 	{
@@ -130,7 +131,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		if (score >= WinScoreCondition)
 		{
 			GD.Print("Player has won!");
-			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
+			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!", 100f);
+			GetTree().CallGroup("Cannons", "EnableEscape");
+			_gameWon = true;
 		}
 	}
 
@@ -197,7 +200,18 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 			if (Input.IsActionPressed("plr_use"))
 			{
-
+				if (_gameWon)
+				{
+					// get all cannons (there should be only one, but just in case...
+					var cannons = GetTree().GetNodesInGroup("Cannons");
+					// get closest cannon
+					var closestCannon = cannons.OfType<Cannon>().OrderBy(
+						c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
+					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 5.0f)
+					{
+						GD.Print("Player has escaped!");
+					}
+				}
 			}
 		}
 

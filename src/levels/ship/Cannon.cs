@@ -6,7 +6,7 @@ public class Cannon : StaticBody
 	private Spatial _arrow;
 	public override void _Ready()
 	{
-		Spatial _arrow = GetNode<Spatial>("Arrow");
+		_arrow = GetNode<Spatial>("%Arrow");
 	}
 
 	public void EnableEscape()
