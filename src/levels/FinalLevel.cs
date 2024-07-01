@@ -48,6 +48,8 @@ public class FinalLevel : Spatial
 
 	private void _SpawnPlayer()
 	{
+		_musicMenu.Stop();
+
 		//_player.ToggleGravity(false);
 		_player.Translation = Vector3.Zero;
 		_player.DoomPortrait.SetAnimation(DoomPortraitType.Flying);
@@ -75,6 +77,7 @@ public class FinalLevel : Spatial
 
 	private void OnPlayerDied()
 	{
+		_musicMenu.Stop();
 		_musicGameplay.Stop();
 		_musicDeath.Play();
 	}
@@ -88,6 +91,8 @@ public class FinalLevel : Spatial
 		_SpawnPlayer();		
 
 		_player.LogControl.SetMsg($"Good luck {Globals.ProtagonistName}!");
+		GlobalSignals.AddScore(-1000);
+
 		_musicDeath.Stop();
 		_musicGameplay.Play();
 	}
@@ -96,7 +101,7 @@ public class FinalLevel : Spatial
 	{
 		if (Input.IsActionJustPressed("ui_quit"))
 		{
-			GetTree().Quit();
+//			GetTree().Quit();
 		}
 	}
 }

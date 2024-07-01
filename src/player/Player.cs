@@ -18,6 +18,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	[Export] private bool _initializeOnStartup = false;
 	[Export] private PackedScene _bulletScene;
+	[Export] private PackedScene _youWonScene;
 
 	private const float GravityConst = -120f;
 
@@ -26,8 +27,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
-	private const float MaxNaturalSpeed = 15;
-	private const float MaxSprintSpeed = 20;
+	private const float MaxNaturalSpeed = 23;
+	private const float MaxSprintSpeed = 23;
 	private const float SensitivityMult = 4f;
 	private const float InvulPeriod = 2.0f;
 	private const float Acceleration = 100;
@@ -37,7 +38,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 20000;
+	private const int WinScoreCondition = 5000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -74,6 +75,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private CustomTimer _invulTimer;
 	private CustomTimer _enamoredTimer;
 	private bool _gameWon = false;
+	private int _trackedScore = 0;
 
 	public override void _Ready()
 	{
@@ -127,8 +129,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void _OnAddScore(int score)
 	{
-		GD.Print($"Player has scored {score} points!");
-		if (score >= WinScoreCondition)
+		_trackedScore += score;
+		
+		GD.Print($"Player has scored {_trackedScore} points!");
+
+		if (_trackedScore >= WinScoreCondition)
 		{
 			GD.Print("Player has won!");
 			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!", 100f);
@@ -150,10 +155,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (isAlive)
 		{
-			MouseRotateCamera(delta);
-
 			if (!LockInPlace)
 			{
+				MouseRotateCamera(delta);
 				MeleeAttack();
 				ShootAttack();
 
@@ -209,12 +213,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 						c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
 					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 5.0f)
 					{
-						GD.Print("Player has escaped!");
-						KillSelf();
-						var deathLabel = GetNode<Label>("%DeathLabel");
-						
-						deathLabel.Visible = true;
-						deathLabel.Text = "You have escaped with the loot!";
+						GetTree().ChangeSceneTo(_youWonScene);
 					}
 				}
 			}
@@ -352,8 +351,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (bodies.Count == 0) 
 		{
+			_sounds.MeleeMiss.Play();
 			return;
 		} 
+		else
+		{
+			_sounds.Melee.Play();
+		}
 
 		// determine targetting heuristic based on closeness to crosshair and distance?
 		IMeleeTargettable target = bodies[0] as IMeleeTargettable;
@@ -412,7 +416,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void OnGunAnimationFinished(string _)
 	{
-		_gunAnimationPlayer.Play("Drop");
+		if (_remainingAmmo == 0)
+		{
+			_gunAnimationPlayer.Play("Drop");
+		}
+
+		GetTree().CallGroup("MUZZLE", "hide");
 	}
 
 	private void FireBullet(Vector3 velocity)
@@ -482,6 +491,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				case "Treasure":
 				{
 					DoomPortrait.SetAnimation(DoomPortraitType.Treasure);
+
+					if (Health < MaxHealth)
+					{
+						Health += 1;
+						UpdateHealthDisplays();
+					}
 
 					if (_enamoredTimer != null)
 					{

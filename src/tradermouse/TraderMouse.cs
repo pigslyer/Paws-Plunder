@@ -76,6 +76,7 @@ public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable,
 
         CollisionLayer = 0;
         CollisionMask = 0;
+        _hasMoveTarget = false;
 
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);

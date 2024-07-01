@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/swipe.mp3-81e776b9773002f1c402af6efed35947.mp3str"
+
+[deps]
+
+source_file="res://src/assets/sounds/player/swipe.mp3"
+dest_files=[ "res://.import/swipe.mp3-81e776b9773002f1c402af6efed35947.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

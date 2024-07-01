@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -19,10 +19,14 @@
 [ext_resource path="res://src/assets/sounds/player/player_footsteps.mp3" type="AudioStream" id=17]
 [ext_resource path="res://src/assets/sounds/player/player_hurt2.mp3" type="AudioStream" id=18]
 [ext_resource path="res://src/player/PlayerSounds.cs" type="Script" id=19]
-[ext_resource path="res://src/assets/sounds/weapons/pistol_fire.mp3" type="AudioStream" id=20]
+[ext_resource path="res://src/assets/sounds/player/pistol_fire.mp3" type="AudioStream" id=20]
 [ext_resource path="res://src/assets/sounds/weapons/pistol_pickup.mp3" type="AudioStream" id=21]
 [ext_resource path="res://src/assets/sounds/weapons/blunderbuss_pickup.mp3" type="AudioStream" id=22]
 [ext_resource path="res://src/assets/sounds/weapons/blunderbuss_fire.mp3" type="AudioStream" id=23]
+[ext_resource path="res://src/assets/sounds/player/land.mp3" type="AudioStream" id=24]
+[ext_resource path="res://src/assets/sounds/player/jump.mp3" type="AudioStream" id=25]
+[ext_resource path="res://src/assets/sounds/player/swipe.mp3" type="AudioStream" id=26]
+[ext_resource path="res://src/assets/sounds/player/swipe_hit.mp3" type="AudioStream" id=27]
 
 [sub_resource type="CapsuleShape" id=1]
 height = 1.3
@@ -62,6 +66,21 @@ animations = [ {
 
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 0.4, 0.4, 2.5 )
+
+[sub_resource type="StyleBoxFlat" id=21]
+bg_color = Color( 0, 0, 0, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="DynamicFont" id=22]
+font_data = ExtResource( 12 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 36
@@ -709,41 +728,41 @@ render_priority = 100
 texture = ExtResource( 10 )
 hframes = 2
 
-[node name="MuzzleFlash" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -7.56377e-08, 0.173648, -0.685725, 1.14646, 0.00913882 )
 visible = false
 billboard = 2
 frames = SubResource( 14 )
 
-[node name="MuzzleFlash2" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash2" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -8.46931e-08, 0.173648, -0.445, 0.709, 0.132 )
 visible = false
 billboard = 2
 frames = SubResource( 14 )
 frame = 4
 
-[node name="MuzzleFlash3" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash3" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -9.37485e-08, 0.173648, -0.79, 0.933, -0.058 )
 visible = false
 billboard = 2
 frames = SubResource( 14 )
 frame = 4
 
-[node name="MuzzleFlash4" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash4" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866026, -0.492404, -0.984808, -1.02804e-07, 0.173648, -0.655, 0.998, -0.076 )
 visible = false
 billboard = 2
 frames = SubResource( 14 )
 frame = 4
 
-[node name="MuzzleFlash5" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash5" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866025, -0.492404, -0.984808, -1.17986e-07, 0.173648, -0.486989, 1.0029, -0.0670616 )
 visible = false
 billboard = 2
 frames = SubResource( 14 )
 frame = 4
 
-[node name="MuzzleFlash6" type="AnimatedSprite3D" parent="Head/Camera/Gun"]
+[node name="MuzzleFlash6" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
 transform = Transform( 0.150383, 0.5, 0.852868, -0.086824, 0.866025, -0.492404, -0.984808, -1.2025e-07, 0.173648, -0.53, 1.152, -0.218 )
 visible = false
 billboard = 2
@@ -775,21 +794,37 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchor_right = 0.1
+margin_left = 16.0
+margin_top = 16.0
 margin_right = 100.0
 margin_bottom = 56.0
 
-[node name="CombatLogControl" type="Control" parent="CanvasLayer/DebugContainer"]
-modulate = Color( 0, 0, 0, 1 )
-margin_right = 100.0
-margin_bottom = 24.0
+[node name="CombatLogControl" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+margin_right = 276.0
+margin_bottom = 30.0
 rect_min_size = Vector2( 100, 24 )
 mouse_filter = 2
+custom_styles/panel = SubResource( 21 )
 script = ExtResource( 5 )
 
-[node name="Msg" type="RichTextLabel" parent="CanvasLayer/DebugContainer/CombatLogControl"]
-margin_right = 1920.0
-margin_bottom = 57.0
-theme = ExtResource( 6 )
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DebugContainer/CombatLogControl"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 275.0
+margin_bottom = 29.0
+custom_constants/margin_right = -4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+
+[node name="Msg" type="RichTextLabel" parent="CanvasLayer/DebugContainer/CombatLogControl/MarginContainer"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 278.0
+margin_bottom = 24.0
+custom_fonts/normal_font = SubResource( 22 )
+fit_content_height = true
 scroll_active = false
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
@@ -851,10 +886,13 @@ text = "25121"
 align = 1
 
 [node name="HealthContainer" type="VBoxContainer" parent="CanvasLayer"]
-margin_left = 736.0
-margin_top = 816.0
-margin_right = 806.0
-margin_bottom = 1032.0
+anchor_left = 0.41
+anchor_top = 0.96
+anchor_right = 0.41
+anchor_bottom = 0.96
+margin_left = -35.0
+margin_top = -216.0
+margin_right = 35.0
 script = ExtResource( 8 )
 
 [node name="Health1" type="MarginContainer" parent="CanvasLayer/HealthContainer"]
@@ -904,11 +942,13 @@ color = Color( 1, 0.890196, 0, 1 )
 unique_name_in_owner = true
 visible = false
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 margin_left = -282.0
-margin_top = 301.0
+margin_top = -56.5
 margin_right = 282.0
-margin_bottom = 414.0
+margin_bottom = 56.5
 theme = ExtResource( 6 )
 custom_fonts/font = SubResource( 5 )
 text = "You died!
@@ -946,9 +986,11 @@ stream = ExtResource( 17 )
 bus = "SFX"
 
 [node name="Jumping" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 25 )
 bus = "SFX"
 
 [node name="Landing" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 24 )
 bus = "SFX"
 
 [node name="PickupSingle" type="AudioStreamPlayer" parent="Sounds"]
@@ -965,4 +1007,12 @@ bus = "SFX"
 
 [node name="ShootQuad" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource( 23 )
+bus = "SFX"
+
+[node name="Melee" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 27 )
+bus = "SFX"
+
+[node name="MeleeMiss" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 26 )
 bus = "SFX"

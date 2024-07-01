@@ -26,15 +26,13 @@ public class CombatLogControl : Control
 	public override void _PhysicsProcess(float delta)
 	{
 		_msgTime -= delta;
-		if (_msgTime <= 0.0F)
-		{
-			_label.Text = null;
-		}
+
+		Visible = _msgTime > 0.0f;
 	}
 
 	public override void _Ready()
 	{
 		base._Ready();
-		_label = (RichTextLabel)GetNode(new NodePath("Msg"));
+		_label = GetNode<RichTextLabel>("MarginContainer/Msg");
 	}
 }

@@ -1,14 +1,17 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://src/shaders/fog.gdshader" type="Shader" id=1]
 [ext_resource path="res://src/scripts/SquadController.cs" type="Script" id=2]
 [ext_resource path="res://src/shaders/FogOverlay.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/levels/ship/Ship.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/ratgrunt/RatGrunt.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/levels/TreasureItem.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/shaders/water.gdshader" type="Shader" id=6]
 [ext_resource path="res://src/shaders/WorldEnvironment.tres" type="Environment" id=7]
-[ext_resource path="res://src/gunner/Gunner.tscn" type="PackedScene" id=8]
+[ext_resource path="res://src/ratgrunt/RatGrunt.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/levels/HideWater.gd" type="Script" id=9]
+[ext_resource path="res://src/gunner/Gunner.tscn" type="PackedScene" id=10]
+[ext_resource path="res://src/sniper/Sniper.tscn" type="PackedScene" id=11]
+[ext_resource path="res://src/tradermouse/TraderMouse.tscn" type="PackedScene" id=12]
 
 [sub_resource type="PhysicsMaterial" id=5]
 
@@ -98,11 +101,12 @@ shadow_enabled = true
 
 [node name="Ground" type="StaticBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0 )
+collision_layer = 0
+collision_mask = 0
 physics_material_override = SubResource( 5 )
 
 [node name="Sea" type="MeshInstance" parent="Ground"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40741, 0 )
-visible = false
 mesh = SubResource( 4 )
 skeleton = NodePath("../..")
 
@@ -123,15 +127,480 @@ collision_mask = 2
 monitorable = false
 script = ExtResource( 2 )
 
-[node name="RatGrunt" parent="ShipMouse/Area" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.0492, -11.553 )
-
 [node name="CollisionShape" type="CollisionShape" parent="ShipMouse/Area"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 59.805, 0 )
 shape = SubResource( 16 )
 
-[node name="Gunner" parent="ShipMouse/Area" instance=ExtResource( 8 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.173, 18.1123, -10.6885 )
+[node name="RatGrunt" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.2081, 38.1438, 1.81752 )
+
+[node name="RatGrunt2" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.7264, 38.1438, 16.5761 )
+
+[node name="RatGrunt3" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7123, 38.1438, 0.727051 )
+
+[node name="RatGrunt4" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.6055, 38.1438, 8.32678 )
+
+[node name="RatGrunt5" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.4089, 38.1438, -26.7024 )
+
+[node name="RatGrunt6" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.88937, 38.1438, -69.3147 )
+
+[node name="RatGrunt7" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.214, 38.1438, -93.4235 )
+
+[node name="RatGrunt8" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.12924, 38.1438, -73.4602 )
+
+[node name="RatGrunt9" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5151, 64.8698, -94.3851 )
+
+[node name="RatGrunt10" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5151, 57.2607, 80.3424 )
+
+[node name="RatGrunt11" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.6014, 58.0583, 111.907 )
+
+[node name="RatGrunt12" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.6043, 58.2228, 118.747 )
+
+[node name="RatGrunt13" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 27.0625, 18.0486, 106.989 )
+
+[node name="RatGrunt14" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.2773, 18.0486, 101.083 )
+
+[node name="RatGrunt15" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.62805, 18.0486, 99.3241 )
+
+[node name="RatGrunt16" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8764, 18.0486, 94.8946 )
+
+[node name="RatGrunt17" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.9516, 18.0486, 103.601 )
+
+[node name="RatGrunt18" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9332, 18.0486, 80.2707 )
+
+[node name="RatGrunt19" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7867, 18.0486, 24.7352 )
+
+[node name="RatGrunt20" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.4634, 18.0486, 2.15836 )
+
+[node name="RatGrunt21" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.41455, 18.0486, -23.0283 )
+
+[node name="RatGrunt22" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.71008, 18.0486, -32.59 )
+
+[node name="RatGrunt23" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.680267, 18.0486, -59.3551 )
+
+[node name="RatGrunt24" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.69019, 18.0486, -75.3139 )
+
+[node name="RatGrunt25" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.96863, 18.0486, -96.2237 )
+
+[node name="RatGrunt26" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.96863, 3.11966, -96.2237 )
+
+[node name="RatGrunt27" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.9541, 3.11966, -89.7708 )
+
+[node name="RatGrunt28" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.2794, 3.11962, -85.3892 )
+
+[node name="RatGrunt29" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.4349, 3.11962, -75.7625 )
+
+[node name="RatGrunt30" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.9614, 3.11962, -61.2218 )
+
+[node name="RatGrunt31" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.45142, 3.11962, -58.8844 )
+
+[node name="RatGrunt32" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5695, 3.11962, -1.75279 )
+
+[node name="RatGrunt33" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.694, 3.11962, 68.5192 )
+
+[node name="RatGrunt34" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.3547, 3.11962, 75.2798 )
+
+[node name="RatGrunt35" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.6858, 3.11962, 87.6418 )
+
+[node name="RatGrunt36" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.7377, 3.11962, 108.061 )
+
+[node name="RatGrunt37" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.64514, 3.11962, 121.009 )
+
+[node name="RatGrunt38" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.73166, 3.11962, 108.491 )
+
+[node name="RatGrunt39" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.7438, 3.11962, 87.4726 )
+
+[node name="RatGrunt40" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7793, 3.11962, 49.6322 )
+
+[node name="RatGrunt41" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.5244, 3.11962, 38.3681 )
+
+[node name="RatGrunt42" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.3747, 3.11962, 26.2521 )
+
+[node name="RatGrunt43" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.4782, 3.11962, -8.77315 )
+
+[node name="RatGrunt44" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.99442, 3.11962, -25.9004 )
+
+[node name="RatGrunt45" parent="ShipMouse/Area" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9495, 3.11962, -56.4501 )
+
+[node name="Gunner" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3933, 80.9327, 161.317 )
+
+[node name="Gunner2" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31.455, 80.9327, 161.317 )
+
+[node name="Gunner3" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 27.9178, 80.9327, 153.547 )
+
+[node name="Gunner4" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.5166, 80.9327, 152.582 )
+
+[node name="Gunner5" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.47437, 59.2736, 151.271 )
+
+[node name="Gunner6" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.47437, 38.2074, 34.4942 )
+
+[node name="Gunner7" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.1682, 38.2074, -45.5076 )
+
+[node name="Gunner8" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9362, 38.2074, -102.491 )
+
+[node name="Gunner9" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9362, 64.9326, -102.491 )
+
+[node name="Gunner10" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.534, 17.94, -95.3335 )
+
+[node name="Gunner11" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.0214, 17.94, -81.4167 )
+
+[node name="Gunner12" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.0214, 17.94, -28.619 )
+
+[node name="Gunner13" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.59323, 17.94, 18.9049 )
+
+[node name="Gunner14" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.4666, 17.94, -20.0409 )
+
+[node name="Gunner15" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.22363, 17.94, 53.8265 )
+
+[node name="Gunner16" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.76486, 17.94, 51.3027 )
+
+[node name="Gunner17" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1815, 17.94, 89.5951 )
+
+[node name="Gunner18" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.894, 3.18276, 83.8082 )
+
+[node name="Gunner19" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.1508, 3.18276, 54.8503 )
+
+[node name="Gunner20" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5626, 3.18276, 29.9001 )
+
+[node name="Gunner21" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9603, 3.18276, -9.45555 )
+
+[node name="Gunner22" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02481, 3.18276, -28.0875 )
+
+[node name="Gunner23" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4951, 3.18276, -35.435 )
+
+[node name="Gunner24" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 24.9183, 3.18276, -67.3029 )
+
+[node name="Gunner25" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.43832, 3.18276, -97.8959 )
+
+[node name="Gunner26" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.06094, 3.18276, -92.5095 )
+
+[node name="Gunner27" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0753, 3.18276, -71.8134 )
+
+[node name="Gunner28" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.6992, 3.18276, -83.0925 )
+
+[node name="Gunner29" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.504, 3.18276, -87.962 )
+
+[node name="Gunner30" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.58997, -9.01847, -60.0553 )
+
+[node name="Gunner31" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.94202, -9.01847, -38.8292 )
+
+[node name="Gunner32" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.01434, -10.2155, -29.6921 )
+
+[node name="Gunner33" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.27646, -9.7644, -18.28 )
+
+[node name="Gunner34" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.2326, -9.2932, -3.84976 )
+
+[node name="Gunner35" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.13742, -9.36908, 21.488 )
+
+[node name="Gunner36" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, -9.2827, 45.3163 )
+
+[node name="Gunner37" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.726, -9.2827, 73.9957 )
+
+[node name="Gunner38" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.79825, -9.2827, 71.2995 )
+
+[node name="Gunner39" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1861, -9.2827, 90.9077 )
+
+[node name="Gunner40" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.68146, -7.97752, 96.21 )
+
+[node name="Gunner41" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.68146, -10.2147, 78.21 )
+
+[node name="Gunner42" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.00745, -9.21339, 61.21 )
+
+[node name="Gunner43" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.68149, -10.2145, 46.21 )
+
+[node name="Gunner44" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.31854, -10.2148, 46.21 )
+
+[node name="Gunner45" parent="ShipMouse/Area" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.57623, -7.97752, 34.6976 )
+
+[node name="Sniper" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5631, 44.0222, -27.5985 )
+
+[node name="Sniper2" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5631, 44.0222, -7.73692 )
+
+[node name="Sniper3" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.1206, 44.0222, -47.2571 )
+
+[node name="Sniper4" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.97089, 49.8945, -78.3958 )
+
+[node name="Sniper5" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.10745, 49.8945, -78.3958 )
+
+[node name="Sniper6" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.10745, 70.3233, -82.1591 )
+
+[node name="Sniper7" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.42703, 21.0069, -87.1281 )
+
+[node name="Sniper8" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8251, 20.8801, -58.8202 )
+
+[node name="Sniper9" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0556, 22.3018, -11.7952 )
+
+[node name="Sniper10" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0055, 22.3018, 35.1523 )
+
+[node name="Sniper11" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.354645, -3.89057, 41.893 )
+
+[node name="Sniper12" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.426392, -5.15694, 86.6572 )
+
+[node name="Sniper13" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.6401, -5.18762, 69.6423 )
+
+[node name="Sniper14" parent="ShipMouse/Area" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6222, 10.6561, -38.3068 )
+
+[node name="TraderMouse" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.4569, 38.735, -1.58366 )
+
+[node name="TraderMouse2" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9048, 38.2233, -11.8959 )
+
+[node name="TraderMouse3" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24.3503, 38.2233, -18.9501 )
+
+[node name="TraderMouse4" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3503, 38.2233, -33.9501 )
+
+[node name="TraderMouse5" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3503, 38.2233, -61.9501 )
+
+[node name="TraderMouse6" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.35028, 38.2233, -71.9501 )
+
+[node name="TraderMouse7" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.3963, 38.2233, -73.712 )
+
+[node name="TraderMouse8" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.0002, 38.2233, -54.633 )
+
+[node name="TraderMouse9" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.6855, 38.2233, -44.9578 )
+
+[node name="TraderMouse10" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.6855, 18.1301, -44.9578 )
+
+[node name="TraderMouse11" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.32458, 18.1301, -53.7533 )
+
+[node name="TraderMouse12" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.67542, 18.1301, -35.7533 )
+
+[node name="TraderMouse13" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961304, 18.1301, -15.7562 )
+
+[node name="TraderMouse14" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.316, 18.1301, -0.723587 )
+
+[node name="TraderMouse15" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.0101, 18.1301, 33.7856 )
+
+[node name="TraderMouse16" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.29633, 18.1301, 55.9952 )
+
+[node name="TraderMouse17" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.99792, 18.1301, 73.898 )
+
+[node name="TraderMouse18" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.83286, 18.1301, 108.52 )
+
+[node name="TraderMouse19" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4783, 18.1301, 107.209 )
+
+[node name="TraderMouse20" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.89282, 18.1301, 117.907 )
+
+[node name="TraderMouse21" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5602, 18.1301, 119.903 )
+
+[node name="TraderMouse22" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5602, 38.4317, 119.903 )
+
+[node name="TraderMouse23" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.8337, 38.4317, 100.899 )
+
+[node name="TraderMouse24" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56741, 38.4317, 107.864 )
+
+[node name="TraderMouse25" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.4031, 38.4317, 90.5597 )
+
+[node name="TraderMouse26" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.2206, 38.4317, 75.6342 )
+
+[node name="TraderMouse27" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.6191, 38.4317, 66.5502 )
+
+[node name="TraderMouse28" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.7083, 38.4317, 60.9403 )
+
+[node name="TraderMouse29" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.9995, 38.4317, 57.7417 )
+
+[node name="TraderMouse30" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.9995, 56.7695, 57.7417 )
+
+[node name="TraderMouse31" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.4081, 57.8111, 98.7769 )
+
+[node name="TraderMouse32" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.3801, 57.2723, 77.7623 )
+
+[node name="TraderMouse33" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.04712, 57.372, 80.7352 )
+
+[node name="TraderMouse34" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.3985, 57.9576, 105.073 )
+
+[node name="TraderMouse35" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.1307, 58.5071, 127.327 )
+
+[node name="TraderMouse37" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.63617, 64.9488, -100.018 )
+
+[node name="TraderMouse38" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.4836, 64.9488, -94.7961 )
+
+[node name="TraderMouse39" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3219, 64.9488, -91.1034 )
+
+[node name="TraderMouse40" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.9354, 64.9488, -96.9442 )
+
+[node name="TraderMouse41" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.37006, 38.2233, -107.156 )
+
+[node name="TraderMouse42" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.20856, 38.2233, -112.867 )
+
+[node name="TraderMouse43" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.7263, 18.1289, -108.71 )
+
+[node name="TraderMouse44" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0444641, 18.1289, -76.1247 )
+
+[node name="TraderMouse45" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44946, 18.1289, -71.2743 )
+
+[node name="TraderMouse46" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.27026, 18.1289, -57.7663 )
+
+[node name="TraderMouse47" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0867, 3.19862, -63.6053 )
+
+[node name="TraderMouse48" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5245, 3.19862, -28.3939 )
+
+[node name="TraderMouse49" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.8025, 3.19862, -12.59 )
+
+[node name="TraderMouse50" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5634, 3.19862, -24.1165 )
+
+[node name="TraderMouse51" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.8777, 3.19862, -45.0661 )
+
+[node name="TraderMouse52" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.1726, 3.19862, -70.847 )
+
+[node name="TraderMouse53" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.6122, 3.19862, -85.7012 )
+
+[node name="TraderMouse36" parent="ShipMouse/Area" instance=ExtResource( 12 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.1307, 79.1802, 151.445 )
 
 [node name="HideWater" type="Area" parent="ShipMouse"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -57.4336, 0 )
@@ -143,6 +612,221 @@ _water = NodePath("../../Ground/Sea")
 
 [node name="CollisionShape" type="CollisionShape" parent="ShipMouse/HideWater"]
 shape = SubResource( 17 )
+
+[node name="Treasures" type="Spatial" parent="ShipMouse"]
+
+[node name="TreasureBase" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39.3935, 29.9599, 137.86 )
+_type = 5
+
+[node name="TreasureBase2" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -43.8385, 29.9599, 130.861 )
+_type = 5
+
+[node name="TreasureBase3" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 35.1585, 29.9599, 128.66 )
+_type = 5
+
+[node name="TreasureBase4" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30.2654, 29.9599, 137.582 )
+_type = 5
+
+[node name="TreasureBase5" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.01462, -61.9751, -119.458 )
+
+[node name="TreasureBase6" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.91638, -61.9751, -115.081 )
+
+[node name="TreasureBase7" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.55206, -61.9751, -112.59 )
+
+[node name="TreasureBase8" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7305, -61.9751, 67.0144 )
+
+[node name="TreasureBase9" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7305, -49.7166, 60.2035 )
+_type = 4
+
+[node name="TreasureBase44" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.03986, -62.3708, 61.8327 )
+_type = 4
+
+[node name="TreasureBase45" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.47079, -62.3708, 75.4103 )
+_type = 4
+
+[node name="TreasureBase46" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.85245, -62.3708, 81.6008 )
+_type = 4
+
+[node name="TreasureBase47" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0006, -62.3708, 62.5578 )
+_type = 4
+
+[node name="TreasureBase48" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.0193, -62.3708, 52.8294 )
+_type = 4
+
+[node name="TreasureBase49" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.0133, -62.3708, 46.5776 )
+_type = 4
+
+[node name="TreasureBase50" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.8149, -62.3708, 28.6448 )
+_type = 4
+
+[node name="TreasureBase51" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8149, -62.3708, 14.6448 )
+_type = 4
+
+[node name="TreasureBase52" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.09259, -62.3683, -10.888 )
+_type = 4
+
+[node name="TreasureBase53" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.66647, -62.3683, -32.9791 )
+_type = 4
+
+[node name="TreasureBase54" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.24686, -62.3683, -60.0244 )
+_type = 4
+
+[node name="TreasureBase55" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.0261, -62.3683, -70.8236 )
+_type = 4
+
+[node name="TreasureBase10" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88519, -49.7166, 60.2035 )
+_type = 4
+
+[node name="TreasureBase11" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05487, -49.7166, 19.6301 )
+_type = 6
+
+[node name="TreasureBase12" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05487, -49.7166, -46.8923 )
+_type = 6
+
+[node name="TreasureBase13" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05487, -49.7166, -122.517 )
+_type = 6
+
+[node name="TreasureBase14" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05487, -27.7923, -123.317 )
+
+[node name="TreasureBase15" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05487, -33.4563, -106.185 )
+_type = 2
+
+[node name="TreasureBase16" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.85291, -33.4563, -108.173 )
+_type = 2
+
+[node name="TreasureBase17" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12878, -33.3991, -108.984 )
+_type = 2
+
+[node name="TreasureBase18" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.66098, -33.3991, -60.8342 )
+_type = 6
+
+[node name="TreasureBase19" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.21066, -33.3991, -60.6741 )
+_type = 6
+
+[node name="TreasureBase20" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.84665, -33.3991, -57.7842 )
+_type = 6
+
+[node name="TreasureBase21" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.96207, -33.3991, -69.107 )
+_type = 6
+
+[node name="TreasureBase22" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18872, -33.3991, -8.13438 )
+_type = 4
+
+[node name="TreasureBase23" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.0917, -33.1429, 50.8748 )
+_type = 5
+
+[node name="TreasureBase24" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9596, -33.1429, 45.2094 )
+_type = 5
+
+[node name="TreasureBase25" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.6341, -33.1429, 47.2667 )
+_type = 5
+
+[node name="TreasureBase26" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.6341, -33.1429, 55.2667 )
+_type = 5
+
+[node name="TreasureBase27" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.9231, -34.2247, 47.3013 )
+_type = 5
+
+[node name="TreasureBase28" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9749, -34.2247, 40.2993 )
+_type = 5
+
+[node name="TreasureBase29" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -30.1936, -34.2247, 40.2993 )
+_type = 5
+
+[node name="TreasureBase30" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5655, -34.2247, 51.0768 )
+_type = 5
+
+[node name="TreasureBase31" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.4157, -34.2247, 46.8089 )
+_type = 5
+
+[node name="TreasureBase32" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.4157, -13.2593, 42.8089 )
+_type = 5
+
+[node name="TreasureBase33" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.0371, -12.342, 48.0854 )
+_type = 5
+
+[node name="TreasureBase34" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.24356, -12.342, 56.4204 )
+_type = 5
+
+[node name="TreasureBase35" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.81512, -12.342, 51.7433 )
+_type = 5
+
+[node name="TreasureBase36" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0833, -11.6781, 65.6065 )
+_type = 6
+
+[node name="TreasureBase37" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.84805, 5.91058, 31.5179 )
+_type = 4
+
+[node name="TreasureBase38" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.54703, 8.61611, 134.94 )
+
+[node name="TreasureBase39" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.54703, 15.1056, -107.643 )
+
+[node name="TreasureBase40" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.54703, -2.46867, -103.366 )
+_type = 6
+
+[node name="TreasureBase41" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.3158, -6.85395, -76.6917 )
+_type = 5
+
+[node name="TreasureBase42" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3545, -6.85395, -50.5495 )
+_type = 5
+
+[node name="TreasureBase43" parent="ShipMouse/Treasures" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3582, -6.85395, -37.2005 )
+_type = 5
 
 [node name="ShipCat" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -144.664, 58.8555, 0 )
