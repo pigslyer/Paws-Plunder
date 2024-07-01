@@ -54,7 +54,7 @@ margin_right = 422.0
 margin_bottom = 240.76
 theme = ExtResource( 1 )
 custom_fonts/font = SubResource( 2 )
-text = "The tale of mighty cat pirates"
+text = "A tale of mighty cat pirates"
 
 [node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
 anchor_left = 0.345
