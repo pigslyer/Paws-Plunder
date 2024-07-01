@@ -5,7 +5,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 {
     public event Action Died;
 
-    private const int ParallelShots = 4;
+    private const int ParallelShots = 5;
     private static readonly float TotalSpreadRad = Mathf.Deg2Rad(30);
     private const float BulletSpeed = 30.0f;
     private const int ShootFrame = 1;
