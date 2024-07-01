@@ -4,10 +4,12 @@ using System;
 public class FinalLevel : Spatial
 {
 	private Player _player;
+	private Path _catapultPath;
 	private PathFollow _catapultPathFollow;
 	public override void _Ready()
 	{
 		_player = GetNode<Player>("%Player");
+		_catapultPath = GetNode<Path>("CatapultPath");
 		_catapultPathFollow = GetNode<PathFollow>("CatapultPath/CatapultPathFollow");
 
 		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
@@ -18,7 +20,7 @@ public class FinalLevel : Spatial
 
 	private void _on_MainMenu_StartGame()
 	{
-		GetNode<CanvasLayer>("MainMenu").Visible = false;
+		GetNode<CanvasLayer>("%MainMenu").Visible = false;
 		_player.Initialize();
 		_SpawnPlayer();		
 	}
@@ -26,6 +28,7 @@ public class FinalLevel : Spatial
 	private void _SpawnPlayer()
 	{
 		//_player.ToggleGravity(false);
+		_player.Translation = Vector3.Zero;
 		var catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
 		catapultOverlay.Visible = true;
 		var tween = GetNode<Tween>("%CatapultTween");
@@ -34,7 +37,12 @@ public class FinalLevel : Spatial
 		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/inner_radius", 0.9f, 1f, 0.15f, Tween.TransitionType.Quad, Tween.EaseType.Out);
 		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/outer_radius", 0.9f, 1f, 0.15f, Tween.TransitionType.Quad, Tween.EaseType.Out);
 		tween.Start();
-
+	}
+	
+	private void _on_Player_RespawnPlayer()
+	{
+		GD.Print("Respawning Player");
+		_on_MainMenu_StartGame();
 	}
 
 	public override void _Input(InputEvent @event)
@@ -45,5 +53,13 @@ public class FinalLevel : Spatial
 		}
 	}
 }
+
+
+
+
+
+
+
+
 
 

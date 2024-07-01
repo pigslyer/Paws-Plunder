@@ -10,6 +10,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		Quad,
 	}
 
+	[Signal]
+	public delegate void RespawnPlayer();
 	[Export] private bool _initializeOnStartup = false;
 	[Export] private PackedScene _bulletScene;
 
@@ -67,6 +69,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_camera = GetNode<Camera>("%Camera");
 		_gun = GetNode<Sprite3D>("%Camera/Gun");
 		_debugLabel = GetNode<Label>("CanvasLayer/DebugContainer/PanelContainer/Label");
+		_crosshair = GetNode<TextureRect>("%Crosshair");
 		_meleeDetectionArea = GetNode<Area>("%Camera/MeleeTargetDetection");
 		_pickupDetectionArea = GetNode<Area>("PickupArea");
 		_doomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
@@ -91,6 +94,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
+		_damageEffect.Material.Set("shader_param/enable", false);
+		_crosshair.Visible = true;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -194,7 +199,6 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 		_head.Translation = headOffset;
 		_head.Rotation = headRotation;
-		GD.Print(_head.RotationDegrees.z);
 
 		// gravity
 		{
@@ -379,11 +383,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			}
 		}
 	}
+	/*
 	private void Restart()
 	{
 		GetTree().ReloadCurrentScene();
 		Initialize();
 	}
+	*/
 
 	private void KillIfBelowWorld()
 	{
@@ -397,7 +403,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
 		{
-			Restart();
+			//Restart();
+			EmitSignal("RespawnPlayer");
 		}
 	}
 
@@ -446,7 +453,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		else
 		{
 			_doomPortrait.SetAnimation(DoomPortraitType.Death);
-
+			_damageEffect.Material.Set("shader_param/enable", true);
+			GetNode<Label>("%DeathLabel").Visible = true;
 			_deathInfo = new DeathInfo(info.Source);
 			_crosshair.Visible = false;
 		}
@@ -459,7 +467,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	private void KillWithCameraUpPan()
 	{
-		Restart();
+		//Restart();
+		RestartOnRequest();
 	}
 
 	private class DeathInfo

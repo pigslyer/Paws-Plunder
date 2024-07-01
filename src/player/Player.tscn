@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -27,9 +27,15 @@ font_data = ExtResource( 12 )
 [sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 13 )
 shader_param/vignette_intensity = 0.4
-shader_param/vignette_opacity = 0.0
+shader_param/vignette_opacity = 0.5
 shader_param/vignette_rgb = Color( 0.8, 0, 0, 1 )
-shader_param/enable = true
+shader_param/enable = false
+
+[sub_resource type="DynamicFont" id=5]
+size = 48
+outline_size = 6
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 12 )
 
 [node name="Player" type="KinematicBody" groups=["PLAYER"]]
 collision_layer = 2
@@ -92,6 +98,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
+visible = false
 margin_right = 100.0
 margin_bottom = 56.0
 
@@ -123,6 +130,7 @@ margin_right = 93.0
 margin_bottom = 21.0
 
 [node name="Crosshair" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -215,3 +223,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 1, 0.890196, 0, 1 )
+
+[node name="DeathLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -282.0
+margin_top = 301.0
+margin_right = 282.0
+margin_bottom = 414.0
+theme = ExtResource( 6 )
+custom_fonts/font = SubResource( 5 )
+text = "You died!
+Press [R] to respawn"
+align = 1
