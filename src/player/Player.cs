@@ -64,7 +64,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private AnimationPlayer _bothHandsOrClawAnimationPlayer;
 	private AnimationPlayer _gunAnimationPlayer;
 	public DoomPortrait DoomPortrait;
-	public CombatLogControl LogControl;
+	public CombatLog LogControl;
 	private HealthContainer _healthContainer;
 	private Spatial _centerOfMassNode;
 	private ColorRect _damageEffect;
@@ -89,7 +89,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_bothHandsOrClawAnimationPlayer = GetNode<AnimationPlayer>("BothHandsOrClaw");
 		_gunAnimationPlayer = GetNode<AnimationPlayer>("Gun");
 		DoomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
-		LogControl = GetNode<CombatLogControl>("CanvasLayer/DebugContainer/CombatLogControl");
+		LogControl = GetNode<CombatLog>("CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog");
 		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
 		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
 		_damageEffect = GetNode<ColorRect>("%DamageEffect");
@@ -105,7 +105,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			Initialize();
 		}
 
-		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, "_OnAddScore");
+		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, nameof(OnScoreAdded));
 	}
 
 	public void Initialize()
@@ -127,21 +127,20 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		_bothHandsOrClawAnimationPlayer.Play("RESET");
 	}
 
-	private void _OnAddScore(int score)
+	private void OnScoreAdded(int score)
 	{
-		_trackedScore += score;
-		
-		GD.Print($"Player has scored {_trackedScore} points!");
+		bool hadWon = HasWon();
 
-		if (_trackedScore >= WinScoreCondition)
+		_trackedScore += score;		
+
+		if (!hadWon && HasWon())
 		{
-			GD.Print("Player has won!");
-			LogControl.SetMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!", 100f);
+			LogControl.PushMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
+
 			GetNode<CanvasItem>("%EscapeText").Show();
 			GetNode<ScoreDisplay>("%ScoreDisplay").Modulate = Colors.Yellow;
+
 			GetTree().CallGroup("Cannons", "EnableEscape");
-			
-			_gameWon = true;
 		}
 	}
 
@@ -165,6 +164,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				ShootAttack();
 
 				PickUpItems();
+
+				EscapeShip();
 			}	
 		}
 		else if (_deathInfo != null)
@@ -204,22 +205,6 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			inputVector = new Vector2(Input.GetActionStrength("plr_right") - Input.GetActionStrength("plr_left"), Input.GetActionStrength("plr_back") - Input.GetActionStrength("plr_forward")).Normalized();
 			jump = Input.IsActionPressed("plr_jump");
 			sprint = Input.IsActionPressed("plr_sprint");
-
-			if (Input.IsActionPressed("plr_use"))
-			{
-				if (_gameWon)
-				{
-					// get all cannons (there should be only one, but just in case...
-					var cannons = GetTree().GetNodesInGroup("Cannons");
-					// get closest cannon
-					var closestCannon = cannons.OfType<Cannon>().OrderBy(
-						c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
-					if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 12.0f)
-					{
-						GetTree().ChangeSceneTo(_youWonScene);
-					}
-				}
-			}
 		}
 
 		// xz speed		
@@ -447,7 +432,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				GlobalSignals.AddScore(item.AssociatedScore);
 			}
 
-			LogControl.SetMsg($"Picked up a {item.DisplayName}!");
+			LogControl.PushMsg($"Picked up a {item.DisplayName}!");
 			item.QueueFree();
 		}
 
@@ -522,6 +507,32 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 	}
 	
+	private void EscapeShip()
+	{
+		if (!HasWon())
+		{
+			return;
+		}		
+
+		bool use = Input.IsActionJustPressed("plr_use");
+
+		if (!use)
+		{
+			return;
+		}
+
+		// get all cannons (there should be only one, but just in case...
+		Godot.Collections.Array cannons = GetTree().GetNodesInGroup("Cannons");
+		// get closest cannon
+		Cannon closestCannon = cannons.OfType<Cannon>().OrderBy(
+			c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
+		
+		if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 12.0f)
+		{
+			GetTree().ChangeSceneTo(_youWonScene);
+		}
+	}
+	
 	private void KillIfBelowWorld()
 	{
 		if (Health > 0 && GlobalTranslation.y < -200)
@@ -536,6 +547,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		{
 			EmitSignal("RespawnPlayer");
 		}
+	}
+
+	private bool HasWon()
+	{
+		return _trackedScore >= WinScoreCondition;
 	}
 
 	public override void _UnhandledInput(InputEvent ev)
@@ -592,10 +608,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		KillWithCameraUpPan();
 	}
 
-	private void KillSelf()
+	private void KillWithCameraUpPan()
 	{
 		Health = 0;
 		UpdateHealthDisplays();
+
+		_bothHandsOrClawAnimationPlayer.Play("Death");
+		LockInPlace = true;
 	}
 
 	private void UpdateHealthDisplays()
@@ -610,19 +629,11 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		if (isDead && !_hasEmittedDeathScreech)
 		{
-			LogControl.SetMsg($"{Globals.ProtagonistName} has died!");
+			LogControl.PushMsg($"{Globals.ProtagonistName} has died!");
 			_sounds.Death.Play();
 			EmitSignal(nameof(PlayerDied));
 			_hasEmittedDeathScreech = true;
 		}
-	}
-
-	private void KillWithCameraUpPan()
-	{
-		KillSelf();
-
-		_bothHandsOrClawAnimationPlayer.Play("Death");
-		LockInPlace = true;
 	}
 
 	private class DeathInfo

@@ -1,16 +1,16 @@
-[gd_scene load_steps=52 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
 [ext_resource path="res://src/assets/left_paw.png" type="Texture" id=3]
 [ext_resource path="res://src/bullet/Bullet.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/scripts/CombatLogControl.cs" type="Script" id=5]
+[ext_resource path="res://src/player/CombatLog.cs" type="Script" id=5]
 [ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=6]
 [ext_resource path="res://src/player/DoomPortrait.tscn" type="PackedScene" id=7]
-[ext_resource path="res://src/scripts/HealthContainer.cs" type="Script" id=8]
+[ext_resource path="res://src/player/HealthContainer.cs" type="Script" id=8]
 [ext_resource path="res://src/assets/ui heart.png" type="Texture" id=9]
 [ext_resource path="res://src/assets/right_paw.png" type="Texture" id=10]
-[ext_resource path="res://src/scripts/ScoreDisplay.cs" type="Script" id=11]
+[ext_resource path="res://src/player/ScoreDisplay.cs" type="Script" id=11]
 [ext_resource path="res://src/ui/Deus EX Console.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://src/shaders/damage.gdshader" type="Shader" id=13]
 [ext_resource path="res://src/assets/gun effect-Sheet.png" type="Texture" id=14]
@@ -80,9 +80,6 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="DynamicFont" id=22]
-font_data = ExtResource( 12 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 36
@@ -813,32 +810,31 @@ margin_top = 16.0
 margin_right = 100.0
 margin_bottom = 56.0
 
-[node name="CombatLogControl" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
-margin_right = 276.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 100, 24 )
+[node name="CombatLogPanel" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
+margin_right = 2.0
+margin_bottom = 10.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 21 )
-script = ExtResource( 5 )
+__meta__ = {
+"_editor_description_": "this doesn't hide itself rn"
+}
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DebugContainer/CombatLogControl"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 275.0
-margin_bottom = 29.0
+margin_right = 1.0
+margin_bottom = 9.0
 custom_constants/margin_right = -4
 custom_constants/margin_top = 4
 custom_constants/margin_left = 4
 custom_constants/margin_bottom = 4
 
-[node name="Msg" type="RichTextLabel" parent="CanvasLayer/DebugContainer/CombatLogControl/MarginContainer"]
+[node name="CombatLog" type="VBoxContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer"]
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 278.0
-margin_bottom = 24.0
-custom_fonts/normal_font = SubResource( 22 )
-fit_content_height = true
-scroll_active = false
+margin_right = 4.0
+margin_bottom = 4.0
+script = ExtResource( 5 )
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
 visible = false

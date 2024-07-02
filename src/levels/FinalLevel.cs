@@ -90,7 +90,7 @@ public class FinalLevel : Spatial
 		_player.Initialize();
 		_SpawnPlayer();		
 
-		_player.LogControl.SetMsg($"Good luck {Globals.ProtagonistName}!");
+		_player.LogControl.PushMsg($"Good luck {Globals.ProtagonistName}!");
 		GlobalSignals.AddScore(-1000);
 
 		_musicDeath.Stop();

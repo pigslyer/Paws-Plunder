@@ -1,11 +1,14 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 
 public class Globals : Node 
 {
+    private static Globals _instance;
+
     private RandomNumberGenerator _rng = new RandomNumberGenerator();
     public static RandomNumberGenerator Rng => _instance._rng;
+    
+    public static float MouseSensitivity = 1.0F;
 
     public static IReadOnlyList<string> CatNames = new string[]
     {
@@ -38,11 +41,16 @@ public class Globals : Node
         "Mini",
     };
 
-    private static Globals _instance;
-    public static float MouseSensitivity = 1.0F;
-    public static string ProtagonistName = CatNames[0];
+    private RandomOrderQueue<string> _randomOrderedCatNames;
+    private string _protagonistName;
+    public static string ProtagonistName => _instance._protagonistName;
+    
 
     private Player _player;
+    /// <summary>
+    /// Should be avoided like the devil!
+    /// </summary>
+    /// <returns>The player, if they exist.</returns>
     public static Player GetPlayer()
     {
         if (IsInstanceValid(_instance._player))
@@ -57,11 +65,13 @@ public class Globals : Node
 
     public static void RandomizeProtag()
     {
-        ProtagonistName = Rng.RandEl(CatNames);
+        _instance._protagonistName = _instance._randomOrderedCatNames.NextElement();
     }
 
-    public override void _Ready()
+    public Globals()
     {
+        _randomOrderedCatNames = new RandomOrderQueue<string>(CatNames, _rng);
+        
         _rng.Randomize();
     }
 
