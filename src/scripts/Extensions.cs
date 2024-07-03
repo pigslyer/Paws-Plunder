@@ -129,6 +129,13 @@ public static class Extensions {
         return sprite.Frames.GetFrameCount(sprite.Animation);
     }
 
+    public static T Pop<T>(this List<T> list)
+    {
+        T element = list.Last();
+        list.RemoveAt(list.Count - 1);
+        return element;
+    }
+
     public static void FadeOut(this AudioStreamPlayer player, float duration)
     {
         SceneTreeTween tween = player.CreateTween();

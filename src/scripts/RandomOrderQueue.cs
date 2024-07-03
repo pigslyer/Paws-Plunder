@@ -48,9 +48,8 @@ public class RandomOrderQueue<T>
             return default;
         }
         
-        T returnedElement = _unretrievedElements.Last();
-        _unretrievedElements.RemoveAt(_unretrievedElements.Count - 1);
-        _retrievedElements.Add(returnedElement);
+        T nextElement = _unretrievedElements.Pop();
+        _retrievedElements.Add(nextElement);
 
         if (_unretrievedElements.Count == 0)
         {
@@ -58,6 +57,6 @@ public class RandomOrderQueue<T>
             _rng.Shuffle(_unretrievedElements);
         }   
 
-        return returnedElement;
+        return nextElement;
     }  
 }
