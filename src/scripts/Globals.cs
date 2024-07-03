@@ -73,6 +73,8 @@ public class Globals : Node
         _randomOrderedCatNames = new RandomOrderQueue<string>(CatNames, _rng);
         
         _rng.Randomize();
+
+        _protagonistName = _randomOrderedCatNames.NextElement();
     }
 
     public override void _EnterTree()
