@@ -3,8 +3,13 @@ using Godot;
 
 public class CombatLog : VBoxContainer 
 {
+	[Signal] delegate void Emptied();
+	[Signal] delegate void EntryAdded();
+
 	private const float DefaultMsgDisplayLength = 5.0F;
 	private const string MetaTimeRemaining = "CombatLog::TimeRemaining";
+
+	private float _totalTime = 0f;
 
 	// the time currently represents how long this will be at the top of the board.
 	public void PushMsg(string msg)
@@ -13,9 +18,14 @@ public class CombatLog : VBoxContainer
 		{
 			Text = msg,
 		};
-
-		label.SetMeta(MetaTimeRemaining, DefaultMsgDisplayLength);
 		AddChild(label);
+
+		float time = DefaultMsgDisplayLength - _totalTime;
+
+		label.SetMeta(MetaTimeRemaining, time);
+		_totalTime += time;
+		
+		EmitSignal(nameof(EntryAdded));
 	}
 
 	public void Clear()
@@ -28,6 +38,8 @@ public class CombatLog : VBoxContainer
 
 	public override void _Process(float delta)
 	{
+		_totalTime = Math.Max(_totalTime - delta, 0.0f);
+
 		int checkingChild = 0;
 
 		while (delta > 0 && checkingChild < GetChildCount())
@@ -51,6 +63,11 @@ public class CombatLog : VBoxContainer
 			}
 
 			checkingChild += 1;
+		}
+
+		if (checkingChild != 0 && GetChild(checkingChild - 1).IsQueuedForDeletion())
+		{
+			EmitSignal(nameof(Emptied));
 		}
 	}
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://src/player/Player.cs" type="Script" id=1]
 [ext_resource path="res://src/assets/crosshair.png" type="Texture" id=2]
@@ -68,6 +68,12 @@ animations = [ {
 
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 0.4, 0.4, 2.5 )
+
+[sub_resource type="DynamicFont" id=25]
+font_data = ExtResource( 12 )
+
+[sub_resource type="Theme" id=26]
+default_font = SubResource( 25 )
 
 [sub_resource type="StyleBoxFlat" id=21]
 bg_color = Color( 0, 0, 0, 1 )
@@ -811,9 +817,11 @@ margin_right = 100.0
 margin_bottom = 56.0
 
 [node name="CombatLogPanel" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
-margin_right = 2.0
+visible = false
+margin_right = 276.0
 margin_bottom = 10.0
 mouse_filter = 2
+theme = SubResource( 26 )
 custom_styles/panel = SubResource( 21 )
 __meta__ = {
 "_editor_description_": "this doesn't hide itself rn"
@@ -822,7 +830,7 @@ __meta__ = {
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel"]
 margin_left = 1.0
 margin_top = 1.0
-margin_right = 1.0
+margin_right = 275.0
 margin_bottom = 9.0
 custom_constants/margin_right = -4
 custom_constants/margin_top = 4
@@ -832,7 +840,7 @@ custom_constants/margin_bottom = 4
 [node name="CombatLog" type="VBoxContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer"]
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 4.0
+margin_right = 278.0
 margin_bottom = 4.0
 script = ExtResource( 5 )
 
@@ -1046,4 +1054,6 @@ bus = "SFX"
 stream = ExtResource( 26 )
 bus = "SFX"
 
+[connection signal="Emptied" from="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog" to="CanvasLayer/DebugContainer/CombatLogPanel" method="hide"]
+[connection signal="EntryAdded" from="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog" to="CanvasLayer/DebugContainer/CombatLogPanel" method="show"]
 [connection signal="timeout" from="CanvasLayer/EscapeText/Timer" to="CanvasLayer/EscapeText" method="_on_Timer_timeout"]
