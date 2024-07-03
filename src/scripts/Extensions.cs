@@ -40,19 +40,6 @@ public struct Range
 public static class Extensions {
     public static Vector3 x0z(this Vector3 vec) => new Vector3(vec.x, 0, vec.z); 
     public static Vector3 x00(this Vector3 vec) => new Vector3(vec.x, 0, 0); 
-    public static float Sqr(this float f) => f * f;
-    public static List<V> GetList<K, V>(this Dictionary<K, List<V>> dic, K key) 
-    {
-        if (dic.TryGetValue(key, out var existing))
-        {
-            return existing;
-        }
-
-        List<V> values = new List<V>();
-        dic[key] = values;
-
-        return values;
-    }
 
     // ripped from https://stackoverflow.com/questions/273313/randomize-a-listt
     public static void Shuffle<T>(this RandomNumberGenerator rng, List<T> list)
@@ -118,11 +105,6 @@ public static class Extensions {
             index += 1;
         }
     }
-    
-    public static Vector3 DirectionTo(this Vector3 fromPoint, Vector3 toPoint)
-    {
-        return (toPoint - fromPoint).Normalized();
-    }
 
     public static int FrameCount(this AnimatedSprite3D sprite)
     {
@@ -166,33 +148,6 @@ public static class Extensions {
             {
                 player.Stop();
             }
-        }
-    }
-    
-    public static void SetPlaying(this AudioStreamPlayer3D player, bool playing, Distro? pitchScale = null, RandomNumberGenerator rng = null)
-    {
-        if (playing == player.Playing)
-        {
-            return;
-        }
-
-        if (playing)
-        {
-            if (pitchScale.HasValue)
-            {
-                if (rng == null)
-                {
-                    rng = Globals.Rng;
-                }
-
-                player.PitchScale = rng.Randfn(pitchScale.Value);
-            }
-
-            player.Play();
-        }
-        else
-        {
-            player.Stop();
         }
     }
 
