@@ -1,8 +1,8 @@
 using Godot;
 
-public class Item : Spatial 
+public interface IItem 
 {
-    [Export] public string ItemName = "Placeholder";
-    [Export] public string DisplayName = "Placeholder";
-    [Export] public int AssociatedScore;
+	string ItemName { get; }
+	string DisplayName { get; }
+	int AssociatedScore { get; }
 }

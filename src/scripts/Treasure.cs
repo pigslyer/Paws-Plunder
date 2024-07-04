@@ -1,4 +1,5 @@
 
+using System;
 using System.Runtime.CompilerServices;
 using Godot;
 
@@ -13,46 +14,75 @@ public enum TreasureType : int
     CatBag
 }
 
-public class Treasure : Item
+public class Treasure : Spatial, IItem
 {
     [Export] private TreasureType _type;
+
+    public string ItemName => "Treasure";
+
+    public string DisplayName 
+    {
+        get
+        {
+            switch (_type)
+            {
+                case TreasureType.Lasagna:
+                return "Lasagna";
+
+                case TreasureType.WetLasaga:
+                return "Wet Lasagna";
+
+                case TreasureType.CatBust:
+                return "Cat statue";
+
+                case TreasureType.Tuna:
+                return "Tuna";
+
+                case TreasureType.Catnip:
+                return "Catnip";
+
+                case TreasureType.CatCoin:
+                return "Coin";
+
+                case TreasureType.CatBag:
+                return "Bag of Coins";
+            }
+
+            throw new NotImplementedException();
+        }
+    }
+    public int AssociatedScore
+    {
+        get
+        {
+            switch (_type)
+            {
+                case TreasureType.Lasagna:
+                return 10000;
+
+                case TreasureType.WetLasaga:
+                return -1000;
+
+                case TreasureType.CatBust:
+                return 2000;
+
+                case TreasureType.Catnip:
+                return 5000;
+
+                case TreasureType.CatCoin:
+                return 500;
+
+                case TreasureType.CatBag:
+                return 1000;                 
+            }
+
+            throw new NotImplementedException();
+        }
+    }
 
     public override void _Ready()
     {
         Sprite3D sprite = GetNode<Sprite3D>("Sprite3D");
         sprite.Frame = (int)_type;
-
-        switch (_type)
-        {
-            case TreasureType.Lasagna:
-            DisplayName = "Lasagna";
-            AssociatedScore = 10000;
-            break;            
-
-            case TreasureType.WetLasaga:
-            DisplayName = "Wet Lasagna";
-            AssociatedScore = -1000;            
-            break;            
-
-            case TreasureType.CatBust:
-            DisplayName = "Cat Bust";
-            AssociatedScore = 2000;            
-            break;            
-            
-            case TreasureType.Catnip:
-            DisplayName = "Catnip";
-            AssociatedScore = 5000;            
-            break;            
-            
-            case TreasureType.CatCoin:
-            DisplayName = "Cat Coin";
-            AssociatedScore = 500;            
-            break;            
-            
-            case TreasureType.CatBag:
-            DisplayName = "Bag of Cat Coins";
-            AssociatedScore = 1000;            
-            break;            
-        }
     }
 }

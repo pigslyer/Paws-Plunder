@@ -425,7 +425,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	{
 		Godot.Collections.Array pickupables = _pickupDetectionArea.GetOverlappingBodies();
 
-		void PickupItem(Item item)
+		void PickupItem(IItem item)
 		{
 			if (item.AssociatedScore != 0)
 			{
@@ -433,10 +433,10 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			}
 
 			LogControl.PushMsg($"Picked up a {item.DisplayName}!");
-			item.QueueFree();
+			((Node)item).QueueFree();
 		}
 
-		foreach (Item item in pickupables.OfType<Item>())
+		foreach (IItem item in pickupables.OfType<IItem>())
 		{
 			switch (item.ItemName)
 			{
