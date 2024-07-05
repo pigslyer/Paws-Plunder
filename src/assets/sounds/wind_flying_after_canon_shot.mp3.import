@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/wind_flying_after_canon_shot.mp3-e3576eb78654a7e9bc5bf115c2d71b2a.mp3str"
+uid="uid://o5c3xoyi6gj7"
+path="res://.godot/imported/wind_flying_after_canon_shot.mp3-e3576eb78654a7e9bc5bf115c2d71b2a.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/wind_flying_after_canon_shot.mp3"
-dest_files=[ "res://.import/wind_flying_after_canon_shot.mp3-e3576eb78654a7e9bc5bf115c2d71b2a.mp3str" ]
+dest_files=["res://.godot/imported/wind_flying_after_canon_shot.mp3-e3576eb78654a7e9bc5bf115c2d71b2a.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

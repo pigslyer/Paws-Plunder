@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/enemy_death1.mp3-bd1e5715e295a8dfa1b75b3deb8fa215.mp3str"
+uid="uid://d1own4nt2dmr2"
+path="res://.godot/imported/enemy_death1.mp3-bd1e5715e295a8dfa1b75b3deb8fa215.mp3str"
 
 [deps]
 
 source_file="res://src/assets/music/enemies/enemy_death1.mp3"
-dest_files=[ "res://.import/enemy_death1.mp3-bd1e5715e295a8dfa1b75b3deb8fa215.mp3str" ]
+dest_files=["res://.godot/imported/enemy_death1.mp3-bd1e5715e295a8dfa1b75b3deb8fa215.mp3str"]
 
 [params]
 
 loop=true
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

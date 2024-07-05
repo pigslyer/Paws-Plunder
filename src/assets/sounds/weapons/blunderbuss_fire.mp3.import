@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/blunderbuss_fire.mp3-99dc235f1dda68bb29c0a6714778b0aa.mp3str"
+uid="uid://cflso3ab8q06n"
+path="res://.godot/imported/blunderbuss_fire.mp3-99dc235f1dda68bb29c0a6714778b0aa.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/weapons/blunderbuss_fire.mp3"
-dest_files=[ "res://.import/blunderbuss_fire.mp3-99dc235f1dda68bb29c0a6714778b0aa.mp3str" ]
+dest_files=["res://.godot/imported/blunderbuss_fire.mp3-99dc235f1dda68bb29c0a6714778b0aa.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

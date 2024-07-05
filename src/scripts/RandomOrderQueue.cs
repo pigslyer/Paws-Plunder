@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class RandomOrderQueue<T>
-{
-    private readonly RandomNumberGenerator _rng;
-    private List<T> _unretrievedElements = new List<T>();
-    private List<T> _retrievedElements = new List<T>();
+namespace PawsPlunder;
 
-    public RandomOrderQueue(RandomNumberGenerator rng)
-    {
-        _rng = rng;
-    }
+public class RandomOrderQueue<T>(RandomNumberGenerator rng)
+{
+    private readonly RandomNumberGenerator _rng = rng;
+    private List<T> _unretrievedElements = [];
+    private List<T> _retrievedElements = [];
 
     public RandomOrderQueue(IEnumerable<T> elements, RandomNumberGenerator rng) : this(rng)
     {
@@ -41,7 +38,7 @@ public class RandomOrderQueue<T>
         }
     }   
 
-    public T NextElement()
+    public T? NextElement()
     {
         if (_unretrievedElements.Count == 0)
         {

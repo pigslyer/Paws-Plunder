@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using Godot;
 
-public class Globals : Node 
+namespace PawsPlunder;
+
+public partial class Globals : Node 
 {
-    private static Globals _instance;
+    private static Globals _instance = null!;
 
     private RandomNumberGenerator _rng = new RandomNumberGenerator();
     public static RandomNumberGenerator Rng => _instance._rng;
     
     public static float MouseSensitivity = 1.0F;
 
-    public static IReadOnlyList<string> CatNames = new string[]
-    {
+    public static IReadOnlyList<string> CatNames = [
         // generic
         "Blackfur",
         "Catbeard",
@@ -39,21 +40,22 @@ public class Globals : Node
 
         // nudl
         "Mini",
-    };
+    ];
 
     private RandomOrderQueue<string> _randomOrderedCatNames;
     private string _protagonistName;
     public static string ProtagonistName => _instance._protagonistName;
     
 
-    private Player _player;
+    private Player? _player;
     /// <summary>
     /// Should be avoided like the devil!
     /// </summary>
     /// <returns>The player, if they exist.</returns>
     public static Player GetPlayer()
     {
-        if (IsInstanceValid(_instance._player))
+        // IsInstanceValid should be properly annotated with nullability hints, whatever tho
+        if (_instance._player != null && IsInstanceValid(_instance._player))
         {
             return _instance._player;
         }
@@ -65,7 +67,7 @@ public class Globals : Node
 
     public static void RandomizeProtag()
     {
-        _instance._protagonistName = _instance._randomOrderedCatNames.NextElement();
+        _instance._protagonistName = _instance._randomOrderedCatNames.NextElement() ?? "NULL";
     }
 
     public Globals()
@@ -74,7 +76,7 @@ public class Globals : Node
         
         _rng.Randomize();
 
-        _protagonistName = _randomOrderedCatNames.NextElement();
+        _protagonistName = _randomOrderedCatNames.NextElement() ?? "NULL";
     }
 
     public override void _EnterTree()
@@ -86,7 +88,7 @@ public class Globals : Node
     {
         if (_instance == this)
         {
-            _instance = null;
+            _instance = null!;
         }
     }
     

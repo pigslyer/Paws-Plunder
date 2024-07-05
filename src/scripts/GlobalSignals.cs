@@ -1,11 +1,13 @@
 using Godot;
 
-public class GlobalSignals : Node
+namespace PawsPlunder;
+
+// TODO: maybe rename this?
+public partial class GlobalSignals : Node
 {
-	[Signal]
-	public delegate void AddToPlayerScore(int score);
+	[Signal] public delegate void AddToPlayerScoreEventHandler(int score);
 	
-	private static GlobalSignals _instance;
+	private static GlobalSignals _instance = null!;
 	
 	public override void _EnterTree()
 	{
@@ -14,7 +16,7 @@ public class GlobalSignals : Node
 
 	public override void _ExitTree()
 	{
-		if (_instance == this) _instance = null;
+		if (_instance == this) _instance = null!;
 	}
 
 	public static GlobalSignals GetInstance()
@@ -24,6 +26,6 @@ public class GlobalSignals : Node
 
 	public static void AddScore(int score)
 	{
-		GetInstance().EmitSignal("AddToPlayerScore", score);
+		GetInstance().EmitSignal(SignalName.AddToPlayerScore, score);
 	}
 }

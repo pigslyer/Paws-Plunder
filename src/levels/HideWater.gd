@@ -1,6 +1,6 @@
-extends Area
+extends Area3D
 
-export var _water: NodePath;
+@export var _water: NodePath;
 
 
 

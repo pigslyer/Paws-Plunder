@@ -1,7 +1,7 @@
 extends Label
 
-export var color1: Color;
-export var color2: Color;
+@export var color1: Color;
+@export var color2: Color;
 
 var is_color_1: bool = false;
 

@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/canon_normal.mp3-90931c9ca7bb9e99b590f1059f3d3736.mp3str"
+uid="uid://ci570c0ybjv7o"
+path="res://.godot/imported/canon_normal.mp3-90931c9ca7bb9e99b590f1059f3d3736.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/explosions/canon_normal.mp3"
-dest_files=[ "res://.import/canon_normal.mp3-90931c9ca7bb9e99b590f1059f3d3736.mp3str" ]
+dest_files=["res://.godot/imported/canon_normal.mp3-90931c9ca7bb9e99b590f1059f3d3736.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

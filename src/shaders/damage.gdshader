@@ -1,13 +1,15 @@
 shader_type canvas_item;
 
+uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap;
+
 uniform float vignette_intensity : hint_range(0.0, 1.0) = 0.4;
 uniform float vignette_opacity : hint_range(0.0, 1.0) = 0.5;
-uniform vec4 vignette_rgb : hint_color = vec4(0.8, 0.0, 0.0, 1.0);
+uniform vec4 vignette_rgb : source_color = vec4(0.8, 0.0, 0.0, 1.0);
 uniform bool enable = true;
 
 void fragment() 
 {
-    vec3 screen_color = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0).rgb;
+    vec3 screen_color = textureLod(screen_texture, SCREEN_UV, 0.0).rgb;
     
     if (!enable) {
         COLOR = vec4(screen_color, 1.0);

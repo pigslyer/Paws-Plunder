@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/sniper_attack_front.mp3-d1c86d30bab4d578e9928024f5c84657.mp3str"
+uid="uid://hmw7sdhvir47"
+path="res://.godot/imported/sniper_attack_front.mp3-d1c86d30bab4d578e9928024f5c84657.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/enemies/sniper_attack_front.mp3"
-dest_files=[ "res://.import/sniper_attack_front.mp3-d1c86d30bab4d578e9928024f5c84657.mp3str" ]
+dest_files=["res://.godot/imported/sniper_attack_front.mp3-d1c86d30bab4d578e9928024f5c84657.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

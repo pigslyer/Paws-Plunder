@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/rifle_fire.mp3-dfbce8b0cac94a40a611f050e1fc5457.mp3str"
+uid="uid://ck0wxv7155djb"
+path="res://.godot/imported/rifle_fire.mp3-dfbce8b0cac94a40a611f050e1fc5457.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/weapons/rifle_fire.mp3"
-dest_files=[ "res://.import/rifle_fire.mp3-dfbce8b0cac94a40a611f050e1fc5457.mp3str" ]
+dest_files=["res://.godot/imported/rifle_fire.mp3-dfbce8b0cac94a40a611f050e1fc5457.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

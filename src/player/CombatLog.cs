@@ -1,10 +1,12 @@
 using System;
 using Godot;
 
-public class CombatLog : VBoxContainer 
+namespace PawsPlunder;
+
+public partial class CombatLog : VBoxContainer 
 {
-	[Signal] delegate void Emptied();
-	[Signal] delegate void EntryAdded();
+	[Signal] delegate void EmptiedEventHandler();
+	[Signal] delegate void EntryAddedEventHandler();
 
 	private const float DefaultMsgDisplayLength = 5.0F;
 	private const string MetaTimeRemaining = "CombatLog::TimeRemaining";
@@ -36,9 +38,9 @@ public class CombatLog : VBoxContainer
 		}
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
-		_totalTime = Math.Max(_totalTime - delta, 0.0f);
+		_totalTime = Math.Max(_totalTime - (float)delta, 0.0f);
 
 		int checkingChild = 0;
 
@@ -48,7 +50,7 @@ public class CombatLog : VBoxContainer
 
 			float remainingTime = (float)topOfBoard.GetMeta(MetaTimeRemaining, 0.0f);
 
-			float subbed = Math.Min(remainingTime, delta);
+			float subbed = Math.Min(remainingTime, (float)delta);
 
 			remainingTime -= subbed;
 			delta -= subbed;

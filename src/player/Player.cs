@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using Godot;
 
-public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
+namespace PawsPlunder;
+
+public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnterable
 {
 	private enum GunTypes
 	{
@@ -11,20 +13,20 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	}
 
 	[Signal]
-	public delegate void RespawnPlayer();
+	public delegate void RespawnPlayerEventHandler();
 
 	[Signal]
-	public delegate void PlayerDied();
+	public delegate void PlayerDiedEventHandler();
 
 	[Export] private bool _initializeOnStartup = false;
-	[Export] private PackedScene _bulletScene;
-	[Export] private PackedScene _youWonScene;
+	[Export] private PackedScene _bulletScene = null!;
+	[Export] private PackedScene _youWonScene = null!;
 
 	private const float GravityConst = -120f;
 
-	private Vector3 GravityAcceleration = new Vector3(0, GravityConst, 0);
+	private Vector3 GravityAcceleration = new(0, GravityConst, 0);
 
-	private Vector3 JumpVelocity => new Vector3(0, 40, 0);
+	private Vector3 JumpVelocity => new(0, 40, 0);
 	private float JumpHorizontalVelocityBoost => 0.25f;
 	private float JumpVerticalFromX0zVelocityBoost => 0.01f;
 	private const float MaxNaturalSpeed = 23;
@@ -47,55 +49,43 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private GunTypes _currentGun = GunTypes.Single;
 	private int _remainingAmmo = 1;
 
-	private Vector3 _previousVelocity = Vector3.Zero;
 	private Vector2 _mouseMotion = Vector2.Zero;
 	public bool LockInPlace = false;
 
-	public Vector3 Velocity => _previousVelocity;
 	public bool JustFired { get; private set;} = false;
-	public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
-	private Spatial _head;
-	private Camera _camera;
-	private Sprite3D _gun;
-	private Label _debugLabel;
-	private TextureRect _crosshair;
-	private Area _meleeDetectionArea;
-	private Area _pickupDetectionArea;
-	private AnimationPlayer _bothHandsOrClawAnimationPlayer;
-	private AnimationPlayer _gunAnimationPlayer;
-	public DoomPortrait DoomPortrait;
-	public CombatLog LogControl;
-	private HealthContainer _healthContainer;
-	private Spatial _centerOfMassNode;
-	private ColorRect _damageEffect;
-	private PlayerSounds _sounds;
+	public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
 
-	private DeathInfo _deathInfo = null;
+	[Export] private Node3D _head = null!;
+	[Export] private Camera3D _camera = null!;
+	[Export] private Sprite3D _gun = null!;
+	[Export] private Label _debugLabel = null!;
+	[Export] private TextureRect _crosshair = null!;
+	[Export] private Area3D _meleeDetectionArea = null!;
+	[Export] private Area3D _pickupDetectionArea = null!;
+	[Export] private AnimationPlayer _bothHandsOrClawAnimationPlayer = null!;
+	[Export] private AnimationPlayer _gunAnimationPlayer = null!;
+	[Export] public DoomPortrait DoomPortrait = null!;
+	[Export] public CombatLog LogControl = null!;
+	[Export] private HealthContainer _healthContainer = null!;
+	[Export] private Node3D _centerOfMassNode = null!;
+	[Export] private ColorRect _damageEffect = null!;
+	[Export] private PlayerSounds _sounds = null!;
 
-	private CustomTimer _invulTimer;
-	private CustomTimer _enamoredTimer;
+	private DeathInfo? _deathInfo = null;
+
+	private CustomTimer? _invulTimer;
+	private CustomTimer? _enamoredTimer;
+
+	// TODO: Remove both of these
 	private bool _gameWon = false;
 	private int _trackedScore = 0;
 
 	public override void _Ready()
 	{
-		_head = GetNode<Spatial>("Head");
-		_camera = GetNode<Camera>("%Camera");
-		_gun = GetNode<Sprite3D>("%Camera/Gun");
-		_debugLabel = GetNode<Label>("CanvasLayer/DebugContainer/PanelContainer/Label");
-		_crosshair = GetNode<TextureRect>("%Crosshair");
-		_meleeDetectionArea = GetNode<Area>("%Camera/MeleeTargetDetection");
-		_pickupDetectionArea = GetNode<Area>("PickupArea");
-		_bothHandsOrClawAnimationPlayer = GetNode<AnimationPlayer>("BothHandsOrClaw");
-		_gunAnimationPlayer = GetNode<AnimationPlayer>("Gun");
-		DoomPortrait = GetNode<DoomPortrait>("CanvasLayer/DoomPortrait");
-		LogControl = GetNode<CombatLog>("CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog");
-		_healthContainer = GetNode<HealthContainer>("CanvasLayer/HealthContainer");
-		_centerOfMassNode = GetNode<Spatial>("CenterOfMass");
-		_damageEffect = GetNode<ColorRect>("%DamageEffect");
-		_sounds = GetNode<PlayerSounds>("Sounds");
-
+		// TODO: move this somewhere else!
 		Input.MouseMode = Input.MouseModeEnum.Visible;
+
+		// TODO: these probably shouldn't be here?
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = false;
 		GetNode<Sprite3D>("%Camera/Gun").Visible = false;
@@ -105,7 +95,7 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			Initialize();
 		}
 
-		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, nameof(OnScoreAdded));
+		GlobalSignals.GetInstance().AddToPlayerScore += OnScoreAdded;
 	}
 
 	public void Initialize()
@@ -144,22 +134,23 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		}
 	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _PhysicsProcess(double delta)
 	{
+		float fDelta = (float)delta;
 		JustFired = false;
 
 		bool isAlive = Health > 0;
 
 		if (!LockInPlace)
 		{
-			ApplyMovement(delta, hasControls: isAlive);
+			ApplyMovement(fDelta, hasControls: isAlive);
 		}
 
 		if (isAlive)
 		{
 			if (!LockInPlace)
 			{
-				MouseRotateCamera(delta);
+				MouseRotateCamera(fDelta);
 				MeleeAttack();
 				ShootAttack();
 
@@ -188,13 +179,12 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 	public void ToggleGravity(bool enable)
 	{
-		GravityAcceleration.y = enable ? GravityConst : 0;	
+		GravityAcceleration.Y = enable ? GravityConst : 0;	
 	}
 
-	private void ApplyMovement(float delta, bool hasControls)
+	private void ApplyMovement(float fDelta, bool hasControls)
 	{
-		Vector3 velocity = Vector3.Zero;
-		Vector3 snap = Vector3.Down;
+		Vector3 newVelocity = Vector3.Zero;
 
 		Vector2 inputVector = Vector2.Zero;
 		bool jump = false; 
@@ -209,18 +199,19 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 
 		// xz speed		
 		{
-			Basis cameraBasis = _camera.GlobalTransform.basis;
+			// TODO: use actual math here
+			Basis cameraBasis = _camera.GlobalTransform.Basis;
 
-			Vector3 right = cameraBasis.x;
-			right.y = 0;
+			Vector3 right = cameraBasis.X;
+			right.Y = 0;
 			right = right.Normalized();
 
-			Vector3 forward = cameraBasis.z;
-			forward.y = 0;
+			Vector3 forward = cameraBasis.Z;
+			forward.Y = 0;
 			forward = forward.Normalized();
 
-			Vector3 globalizedInput = inputVector.y * forward + inputVector.x * right;
-			Vector3 velocityXz = _previousVelocity.x0z();
+			Vector3 globalizedInput = inputVector.Y * forward + inputVector.X * right;
+			Vector3 velocityXz = _previousVelocity.X0Z();
 
 			float currentNaturalMaxSpeed = sprint ? MaxSprintSpeed : MaxNaturalSpeed;
 
@@ -230,7 +221,8 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			{
 				if (IsOnFloor())
 				{
-					currentNaturalMaxSpeed = Mathf.MoveToward(currentSpeed, currentNaturalMaxSpeed, 20 * delta);
+					// TODO: remove hardcoded value
+					currentNaturalMaxSpeed = Mathf.MoveToward(currentSpeed, currentNaturalMaxSpeed, 20 * fDelta);
 				}
 				else
 				{
@@ -238,32 +230,33 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 				}
 			}
 
-			velocityXz += globalizedInput * Acceleration * delta;
+			velocityXz += globalizedInput * Acceleration * fDelta;
 			velocityXz = velocityXz.LimitLength(currentNaturalMaxSpeed);
 
-			velocity += velocityXz;
+			newVelocity += velocityXz;
 		}
+
+
+		// TODO: Move this somewhere else?
 		// camera offset
-		Vector3 headOffset = Vector3.Zero;
-		Vector3 headRotation = new Vector3(
-			_head.Rotation.x,
-			_head.Rotation.y,
-			Mathf.Clamp(_head.Rotation.z, -0.05f, 0.05f));
 		{
-			float bobOffset = Mathf.Sin(delta) * 1f;
-			headOffset.y = bobOffset;
+			Vector3 headOffset = Vector3.Zero;
+			Vector3 headRotation = new(_head.Rotation.X, _head.Rotation.Y, float.Clamp(_head.Rotation.Z, -0.05f, 0.05f));
+
+			float bobOffset = float.Sin(fDelta);
+			headOffset.Y = bobOffset;
+		
+			float swayRad = float.Sign(inputVector.X) * -0.05f;
+			headRotation.Z = Mathf.LerpAngle(headRotation.Z, swayRad, 0.05f);
+			
+			_head.Position = headOffset;
+			_head.Rotation = headRotation;
 		}
-		{
-			float swayRad = Mathf.Sign(inputVector.x) * -0.05f;
-			headRotation.z = Mathf.LerpAngle(headRotation.z, swayRad, 0.05f);
-		}
-		_head.Translation = headOffset;
-		_head.Rotation = headRotation;
 
 		// gravity
 		{
-			velocity += new Vector3(0, _previousVelocity.y, 0);
-			velocity += GravityAcceleration * delta;
+			newVelocity += new Vector3(0, _previousVelocity.Y, 0);
+			newVelocity += GravityAcceleration * fDelta;
 		}
 
 		// jumping
@@ -273,14 +266,13 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 			{
 				Vector3 jumpVelocity = JumpVelocity;
 
-				if (velocity.x0z().Length() > MaxNaturalSpeed)
+				if (newVelocity.X0Z().Length() > MaxNaturalSpeed)
 				{
 					//jumpVelocity += jumpVelocity * (velocity.x0z().Length() - MaxNaturalSpeed) * JumpVerticalFromX0zVelocityBoost;
 				}				
 
-				velocity += jumpVelocity;
-				velocity += velocity.x0z() * JumpHorizontalVelocityBoost;
-				snap = Vector3.Zero;
+				newVelocity += jumpVelocity;
+				newVelocity += newVelocity.X0Z() * JumpHorizontalVelocityBoost;
 
 				_sounds.Jumping.Play();
 				_sounds.Landing.FadeOut(0.2f);
@@ -291,14 +283,15 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 		{
 			if (IsOnFloor() && inputVector.Length() < 0.01f)
 			{
-				velocity -= velocity.x0z();
+				newVelocity -= newVelocity.X0Z();
 				//velocity += -velocity.x0z() + velocity.x0z() * 0.8f;
 			}
 		}
 
 		bool wasOnFloor = IsOnFloor();
-		_previousVelocity = MoveAndSlideWithSnap(velocity, snap, Vector3.Up, true);
-		_debugLabel.Text = $"Velocity: {velocity}\nSpeed: {velocity.Length()}\nSpeed xz: {velocity.x0z().Length()}";
+		Velocity = newVelocity;
+		MoveAndSlide();
+		_debugLabel.Text = $"Velocity: {newVelocity}\nSpeed: {newVelocity.Length()}\nSpeed xz: {newVelocity.X0Z().Length()}";
 
 		_sounds.Footsteps.SetPlaying(IsOnFloor() && hasControls && inputVector.LengthSquared() > 0.001f);	
 		_sounds.Footsteps.PitchScale = sprint ? SprintPitchScale : WalkPitchScale;
@@ -312,9 +305,9 @@ public class Player : KinematicBody, IBulletHittable, IDeathPlaneEnterable
 	private void MouseRotateCamera(float delta)
 	{
 		Vector3 rotation = _camera.RotationDegrees;
-		rotation += new Vector3(-_mouseMotion.y, -_mouseMotion.x, 0) * SensitivityMult * delta * Globals.MouseSensitivity;
+		rotation += new Vector3(-_mouseMotion.Y, -_mouseMotion.X, 0) * SensitivityMult * delta * Globals.MouseSensitivity;
 
-		rotation.x = Mathf.Clamp(rotation.x, -85.0f, 85.0f);
+		rotation.X = float.Clamp(rotation.X, -85.0f, 85.0f);
 		_camera.RotationDegrees = rotation;
 	}
 

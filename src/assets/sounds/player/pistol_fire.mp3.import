@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str"
+uid="uid://dkijs7cmxqql4"
+path="res://.godot/imported/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/player/pistol_fire.mp3"
-dest_files=[ "res://.import/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str" ]
+dest_files=["res://.godot/imported/pistol_fire.mp3-daeb11c3df04f857f8080ea3c163fb00.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

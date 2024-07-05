@@ -1,4 +1,4 @@
-using Godot;
+namespace PawsPlunder;
 
 public interface IItem 
 {

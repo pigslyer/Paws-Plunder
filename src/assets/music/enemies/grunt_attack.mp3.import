@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/grunt_attack.mp3-5a247c5b5d2fc347789b0318e7857db9.mp3str"
+uid="uid://cwq7yfjni5syu"
+path="res://.godot/imported/grunt_attack.mp3-5a247c5b5d2fc347789b0318e7857db9.mp3str"
 
 [deps]
 
 source_file="res://src/assets/music/enemies/grunt_attack.mp3"
-dest_files=[ "res://.import/grunt_attack.mp3-5a247c5b5d2fc347789b0318e7857db9.mp3str" ]
+dest_files=["res://.godot/imported/grunt_attack.mp3-5a247c5b5d2fc347789b0318e7857db9.mp3str"]
 
 [params]
 
 loop=true
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

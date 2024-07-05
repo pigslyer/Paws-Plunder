@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/pickup.mp3-e858791ef66172ad01a3da98c9ebb419.mp3str"
+uid="uid://d15hsscqv2skn"
+path="res://.godot/imported/pickup.mp3-e858791ef66172ad01a3da98c9ebb419.mp3str"
 
 [deps]
 
 source_file="res://src/assets/music/pickup.mp3"
-dest_files=[ "res://.import/pickup.mp3-e858791ef66172ad01a3da98c9ebb419.mp3str" ]
+dest_files=["res://.godot/imported/pickup.mp3-e858791ef66172ad01a3da98c9ebb419.mp3str"]
 
 [params]
 
 loop=true
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/enemy_damage.mp3-7d598cf9511b220c72bf920787e491fb.mp3str"
+uid="uid://b22nqp5ypb64d"
+path="res://.godot/imported/enemy_damage.mp3-7d598cf9511b220c72bf920787e491fb.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/enemies/enemy_damage.mp3"
-dest_files=[ "res://.import/enemy_damage.mp3-7d598cf9511b220c72bf920787e491fb.mp3str" ]
+dest_files=["res://.godot/imported/enemy_damage.mp3-7d598cf9511b220c72bf920787e491fb.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

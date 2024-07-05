@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str"
+uid="uid://d0n4y7jlqi163"
+path="res://.godot/imported/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str"
 
 [deps]
 
 source_file="res://src/assets/music/enemies/enemy_footsteps.mp3"
-dest_files=[ "res://.import/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str" ]
+dest_files=["res://.godot/imported/enemy_footsteps.mp3-f801384db44e9d55fc54953607033b27.mp3str"]
 
 [params]
 
 loop=true
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

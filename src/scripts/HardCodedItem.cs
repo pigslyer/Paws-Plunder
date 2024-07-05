@@ -1,6 +1,8 @@
 using Godot;
 
-public class HardCodedItem : Spatial, IItem
+namespace PawsPlunder;
+
+public partial class HardCodedItem : Node3D, IItem
 {
     [Export] public string ItemName { get; private set; } = "Placeholder"; 
 

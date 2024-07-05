@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Godot;
+
+namespace PawsPlunder;
 
 public struct Distro
 {
@@ -21,7 +24,7 @@ public struct Distro
 
 public struct Range
 {
-    public static Range Circle => new Range(0, Mathf.Tau);
+    public static Range Circle => new(0, float.Tau);
 
     public float Min;
     public float Max;
@@ -38,13 +41,28 @@ public struct Range
 }
 
 public static class Extensions {
-    public static Vector3 x0z(this Vector3 vec) => new Vector3(vec.x, 0, vec.z); 
-    public static Vector3 x00(this Vector3 vec) => new Vector3(vec.x, 0, 0); 
+    // swizzles
+    public static Vector3 X0Z(this Vector3 vec) => new(vec.X, 0, vec.Z); 
+    public static Vector3 X00(this Vector3 vec) => new(vec.X, 0, 0);
 
-    // ripped from https://stackoverflow.com/questions/273313/randomize-a-listt
-    public static void Shuffle<T>(this RandomNumberGenerator rng, List<T> list)
+    /// <summary>
+    /// Note: This method is a banger that makes the rest of the extensions and APIs work super well, HOWEVER.
+    /// <para>NEVER USE THE RETUREND SPAN AFTER MODIFYING THE LIST IN ANY WAY BUT THE INDEXER</para>
+    /// Going contrary to that will cause undefined behaviour 
+    /// (you'll access the possibly outdated backing array or, heaven forefend, 
+    /// garbage memory that won't be treated as out of bounds despite being out of bounds) 
+    /// </summary>
+    /// <param name="list"></param>
+    /// <returns>The backing span of a list.</returns>
+    public static Span<T> AsSpan<T>(this List<T> list)
     {
-        int n = list.Count;  
+        return CollectionsMarshal.AsSpan(list);
+    }
+
+    // ripped from https://stackoverflow.com/questions/273313/randomize-a-listt [sic]
+    public static void Shuffle<T>(this RandomNumberGenerator rng, Span<T> list)
+    {
+        int n = list.Length;  
 
         while (n > 1) {  
             n -= 1;  
@@ -63,27 +81,22 @@ public static class Extensions {
         return rng.RandfRange(range.Min, range.Max);
     }
 
-    public static T RandEl<T>(this RandomNumberGenerator rng, IReadOnlyList<T> list)
+    public static T RandEl<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> list)
     {
-        return list[rng.RandiRange(0, list.Count - 1)];
+        return list[rng.RandiRange(0, list.Length - 1)];
     }
 
-    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> list, int count, Predicate<T> allowedElements = null)
+    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> elements, int count, Predicate<T>? allowedElements = null)
     {
-        List<int> ints = new List<int>(list.Count);
+        int[] naturals = GetNaturalNumbers(elements.Length).ToArray(); 
 
-        for (int i = 0; i < list.Count; i++)
-        {
-            ints.Add(i);
-        }
-
-        rng.Shuffle(ints);
+        rng.Shuffle(naturals.AsSpan());
 
         int takenElements = 0;
         int index = 0;
         while (true)
         {
-            if (index >= list.Count)
+            if (index >= elements.Length)
             {
                 break;
             }   
@@ -93,13 +106,13 @@ public static class Extensions {
                 break;
             }
 
-            if (allowedElements?.Invoke(list[index]) == false)
+            if (allowedElements?.Invoke(elements[index]) == false)
             {
                 index += 1;
                 continue;
             }
 
-            yield return list[index];
+            yield return elements[index];
             
             takenElements += 1;
             index += 1;
@@ -108,7 +121,7 @@ public static class Extensions {
 
     public static int FrameCount(this AnimatedSprite3D sprite)
     {
-        return sprite.Frames.GetFrameCount(sprite.Animation);
+        return sprite.SpriteFrames.GetFrameCount(sprite.Animation);
     }
 
     public static T Pop<T>(this List<T> list)
@@ -120,11 +133,16 @@ public static class Extensions {
 
     public static void FadeOut(this AudioStreamPlayer player, float duration)
     {
-        SceneTreeTween tween = player.CreateTween();
+        float currentVolumeDb = player.VolumeDb;
+
+        Tween tween = player.CreateTween();
 
         tween.TweenProperty(player, "volume_db", -60, duration).SetTrans(Tween.TransitionType.Expo);
-        tween.TweenCallback(player, "stop");
-        tween.TweenCallback(player, "set", new Godot.Collections.Array(new object[]{"volume_db", player.VolumeDb}));
+        // is this dangerous due to GC stuff?
+        tween.TweenCallback(Callable.From(() => {
+            player.Stop();
+            player.VolumeDb = currentVolumeDb;
+        }));
     }
 
     public static void SetPlaying(this AudioStreamPlayer player, bool playing, float? fadeOut = null)
@@ -151,19 +169,36 @@ public static class Extensions {
         }
     }
 
-    public static void PlayPitched(this AudioStreamPlayer3D player, Distro distribution, RandomNumberGenerator rng = null)
+    public static void PlayPitched(this AudioStreamPlayer3D player, Distro distribution, RandomNumberGenerator? rng = null)
     {
         if (player.Playing)
         {
             return;
         }
 
-        if (rng == null)
-        {
-            rng = Globals.Rng;
-        }
+        rng ??= Globals.Rng;
 
         player.PitchScale = rng.Randfn(distribution);
         player.Play();
+    }
+    
+    private static int[] _naturalNumbers;
+    
+    static Extensions()
+    {
+        const int StoredNaturalNumbers = 1000;
+
+        _naturalNumbers = Enumerable.Range(0, StoredNaturalNumbers).ToArray();
+    }
+
+    private static ReadOnlySpan<int> GetNaturalNumbers(int count)
+    {
+        if (_naturalNumbers.Length < count)
+        {
+            _naturalNumbers = Enumerable.Range(0, count).ToArray();
+            GD.PushWarning($"Required {count} natural numbers, increase static allocation in {nameof(Extensions)}!");
+        }
+
+        return _naturalNumbers.AsSpan()[0..count];
     }
 }

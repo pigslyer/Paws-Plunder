@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/explosion2.mp3-edef90c78b03052d3732a3187edc8b2e.mp3str"
+uid="uid://glwbpson1we6"
+path="res://.godot/imported/explosion2.mp3-edef90c78b03052d3732a3187edc8b2e.mp3str"
 
 [deps]
 
 source_file="res://src/assets/sounds/explosions/explosion2.mp3"
-dest_files=[ "res://.import/explosion2.mp3-edef90c78b03052d3732a3187edc8b2e.mp3str" ]
+dest_files=["res://.godot/imported/explosion2.mp3-edef90c78b03052d3732a3187edc8b2e.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,12 +1,14 @@
 using System;
 using Godot;
 
-public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
-{
-    public event Action Died;
+namespace PawsPlunder;
 
-    [Export] private PackedScene _bulletScene;
-    [Export] private PackedScene _droppedGunScene;
+public partial class RatGrunt : CharacterBody3D, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
+{
+    public event Action? Died;
+
+    [Export] private PackedScene _bulletScene = null!;
+    [Export] private PackedScene _droppedGunScene = null!;
 
     private const float BulletSpeed = 30.0f;
 
@@ -20,32 +22,28 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     private static readonly Distro _firePitchDistro = (1.0f, 0.2f);
     private static readonly Distro _deathPitchDistro = (1.0f, 0.2f);
 
-    private NavigationAgent _agent;
-    private AnimatedSprite3D _sprite;
-    private Spatial _centerOfMass;
-    private RatGruntSounds _sounds;
+    [Export] private NavigationAgent3D _agent = null!;
+    [Export] private AnimatedSprite3D _sprite = null!;
+    [Export] private Node3D _centerOfMass = null!;
+    [Export] private RatGruntSounds _sounds = null!;
 
-    public Vector3 CenterOfMass => _centerOfMass.GlobalTranslation;
+    public Vector3 CenterOfMass => _centerOfMass.GlobalPosition;
+
     private bool _hasMoveTarget = false;
     private Vector3? _queuedAttackDirection = null;
 
     public override void _Ready()
     {
-        _agent = GetNode<NavigationAgent>("NavigationAgent");
-        _centerOfMass = GetNode<Spatial>("CenterOfMass");
-        _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
-        _sounds = GetNode<RatGruntSounds>("Sounds");
-
+        _sprite.Play("Idle");
         _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount() - 1);
-        _sprite.Playing = true;
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
         FollowPath(delta);
     }
 
-    private void FollowPath(float delta)
+    private void FollowPath(double delta)
     {
         if (!_hasMoveTarget)
         {
@@ -57,13 +55,13 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
             return;
         }
 
-        Vector3 nextPosition = _agent.GetNextLocation();
-        Vector3 targetPosition = _agent.GetTargetLocation();
+        Vector3 nextPosition = _agent.GetNextPathPosition();
+        Vector3 targetPosition = _agent.TargetPosition;
 
-        bool isNearby = GlobalTranslation.DistanceTo(targetPosition) < WhatIsNearby;
+        bool isNearby = GlobalPosition.DistanceTo(targetPosition) < WhatIsNearby;
 
         float speed = isNearby ? NearbySpeed : FarAwaySpeed; 
-        GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, speed * delta);
+        GlobalPosition = GlobalPosition.MoveToward(nextPosition, speed * (float)delta);
 
         _hasMoveTarget = !_agent.IsNavigationFinished();
 
@@ -77,7 +75,7 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
     public void GoTo(Vector3 point)
     {
         _hasMoveTarget = true;
-        _agent.SetTargetLocation(point);
+        _agent.TargetPosition = point;
 
         _sounds.Footsteps.PlayPitched(_footstepsPitchDistro);
         _sprite.Play("Walk");
@@ -134,9 +132,9 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
 
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
-        Bullet bullet = _bulletScene.Instance<Bullet>();        
+        Bullet bullet = _bulletScene.Instantiate<Bullet>();        
         GetParent().AddChild(bullet);
-        bullet.GlobalTranslation = CenterOfMass;
+        bullet.GlobalPosition = CenterOfMass;
         bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
@@ -159,9 +157,9 @@ public class RatGrunt : KinematicBody, IMeleeTargettable, IBulletHittable, IDeat
         _hasMoveTarget = false;
         _queuedAttackDirection = null;
 
-        Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
+        Node3D droppedGun = _droppedGunScene.Instantiate<Node3D>();
         GetParent().AddChild(droppedGun);
-        droppedGun.GlobalTranslation = CenterOfMass;
+        droppedGun.GlobalPosition = CenterOfMass;
         
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathPitchDistro);
