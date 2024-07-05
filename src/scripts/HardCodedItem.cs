@@ -1,6 +1,6 @@
 using Godot;
 
-public class HardCodedItem : Node, IItem
+public class HardCodedItem : Spatial, IItem
 {
     [Export] public string ItemName { get; private set; } = "Placeholder"; 
 
