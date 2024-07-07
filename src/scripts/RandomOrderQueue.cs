@@ -1,7 +1,7 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
 namespace PawsPlunder;
 
@@ -15,14 +15,15 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
     {
         _unretrievedElements = elements.ToList();
 
-        _rng.Shuffle(_unretrievedElements);
+        // TODO: fix type arguments cannot be inferred from usage
+        //_rng.Shuffle(_unretrievedElements);
     }
 
     public void AddElement(T element)
     {
         int index = _rng.RandiRange(0, Math.Max(_unretrievedElements.Count - 1, 0));
         _unretrievedElements.Insert(index, element);
-    }   
+    }
 
     public void RemoveElement(T element)
     {
@@ -34,9 +35,10 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
         if (_unretrievedElements.Count == 0 && _retrievedElements.Count > 0)
         {
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
-            _rng.Shuffle(_unretrievedElements);
+            // TODO: fix type arguments cannot be inferred from usage
+            //_rng.Shuffle(_unretrievedElements);
         }
-    }   
+    }
 
     public T? NextElement()
     {
@@ -44,16 +46,17 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
         {
             return default;
         }
-        
+
         T nextElement = _unretrievedElements.Pop();
         _retrievedElements.Add(nextElement);
 
         if (_unretrievedElements.Count == 0)
         {
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
-            _rng.Shuffle(_unretrievedElements);
-        }   
+            // TODO: fix type arguments cannot be inferred from usage
+            //_rng.Shuffle(_unretrievedElements);
+        }
 
         return nextElement;
-    }  
+    }
 }

@@ -2,7 +2,7 @@ using Godot;
 
 public struct MeleeHitInfo
 {
-    public Spatial Source;
+    public Node3D Source;
 }
 
 public interface IMeleeTargettable

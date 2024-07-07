@@ -1,75 +1,75 @@
-using System;
 using Godot;
+using System;
 
 namespace PawsPlunder;
 
-public partial class CombatLog : VBoxContainer 
+public partial class CombatLog : VBoxContainer
 {
-	[Signal] delegate void EmptiedEventHandler();
-	[Signal] delegate void EntryAddedEventHandler();
+    [Signal] public delegate void EmptiedEventHandler();
+    [Signal] public delegate void EntryAddedEventHandler();
 
-	private const float DefaultMsgDisplayLength = 5.0F;
-	private const string MetaTimeRemaining = "CombatLog::TimeRemaining";
+    private const float DefaultMsgDisplayLength = 5.0F;
+    private const string MetaTimeRemaining = "CombatLog::TimeRemaining";
 
-	private float _totalTime = 0f;
+    private float _totalTime = 0f;
 
-	// the time currently represents how long this will be at the top of the board.
-	public void PushMsg(string msg)
-	{
-		Label label = new Label()
-		{
-			Text = msg,
-		};
-		AddChild(label);
+    // the time currently represents how long this will be at the top of the board.
+    public void PushMsg(string msg)
+    {
+        Label label = new Label()
+        {
+            Text = msg,
+        };
+        AddChild(label);
 
-		float time = DefaultMsgDisplayLength - _totalTime;
+        float time = DefaultMsgDisplayLength - _totalTime;
 
-		label.SetMeta(MetaTimeRemaining, time);
-		_totalTime += time;
-		
-		EmitSignal(nameof(EntryAdded));
-	}
+        label.SetMeta(MetaTimeRemaining, time);
+        _totalTime += time;
 
-	public void Clear()
-	{
-		foreach (Node node in GetChildren())
-		{
-			node.QueueFree();
-		}
-	}
+        EmitSignal(nameof(EntryAdded));
+    }
 
-	public override void _Process(double delta)
-	{
-		_totalTime = Math.Max(_totalTime - (float)delta, 0.0f);
+    public void Clear()
+    {
+        foreach (Node node in GetChildren())
+        {
+            node.QueueFree();
+        }
+    }
 
-		int checkingChild = 0;
+    public override void _Process(double delta)
+    {
+        _totalTime = Math.Max(_totalTime - (float)delta, 0.0f);
 
-		while (delta > 0 && checkingChild < GetChildCount())
-		{
-			Node topOfBoard = GetChild(checkingChild);	
+        int checkingChild = 0;
 
-			float remainingTime = (float)topOfBoard.GetMeta(MetaTimeRemaining, 0.0f);
+        while (delta > 0 && checkingChild < GetChildCount())
+        {
+            Node topOfBoard = GetChild(checkingChild);
 
-			float subbed = Math.Min(remainingTime, (float)delta);
+            float remainingTime = (float)topOfBoard.GetMeta(MetaTimeRemaining, 0.0f);
 
-			remainingTime -= subbed;
-			delta -= subbed;
+            float subbed = Math.Min(remainingTime, (float)delta);
 
-			if (remainingTime < float.Epsilon)
-			{
-				topOfBoard.QueueFree();	
-			}
-			else
-			{
-				topOfBoard.SetMeta(MetaTimeRemaining, remainingTime);
-			}
+            remainingTime -= subbed;
+            delta -= subbed;
 
-			checkingChild += 1;
-		}
+            if (remainingTime < float.Epsilon)
+            {
+                topOfBoard.QueueFree();
+            }
+            else
+            {
+                topOfBoard.SetMeta(MetaTimeRemaining, remainingTime);
+            }
 
-		if (checkingChild != 0 && GetChild(checkingChild - 1).IsQueuedForDeletion())
-		{
-			EmitSignal(nameof(Emptied));
-		}
-	}
+            checkingChild += 1;
+        }
+
+        if (checkingChild != 0 && GetChild(checkingChild - 1).IsQueuedForDeletion())
+        {
+            EmitSignal(nameof(Emptied));
+        }
+    }
 }

@@ -1,10 +1,11 @@
 using Godot;
 using System;
 
-public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMeleeTargettable
+namespace PawsPlunder;
+public partial class Sniper : CharacterBody3D, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMeleeTargettable
 {
     public event Action Died;
-    public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
+    public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
 
     // frame of "Shoot" animation in which the shot is actually taken
     private const int ShootFrame = 6;
@@ -17,19 +18,19 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
     [Export] private PackedScene _bulletScene;
 
     private AnimatedSprite3D _sprite;
-    private Spatial _centerOfMassNode;
+    private Node3D _centerOfMassNode;
     private SniperSounds _sounds;
 
     private Vector3 _nextShotVelocity;
 
     public override void _Ready()
     {
-        _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");        
+        _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
         _sounds = GetNode<SniperSounds>("Sounds");
-        _centerOfMassNode = GetNode<Spatial>("CenterOfMass");
+        _centerOfMassNode = GetNode<Node3D>("CenterOfMass");
 
         _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount());
-        _sprite.Playing = true;
+        _sprite.Play();
     }
 
     public void AttackTarget(Player target)
@@ -40,12 +41,12 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
             return;
         }
 
-        float delayUntilShot = (ShootFrame - 1) / _sprite.Frames.GetAnimationSpeed("Shoot");
+        float delayUntilShot = (float)((ShootFrame - 1) / _sprite.SpriteFrames.GetAnimationSpeed("Shoot"));
 
         Vector3 bulletVelocity = SquadController.GetProjectileVelocity(
-            target.CenterOfMass, 
-            target.Velocity.x0z(), 
-            CenterOfMass, 
+            target.CenterOfMass,
+            target.Velocity.X0Z(),
+            CenterOfMass,
             ProjectileVelocity,
             delayUntilShot
         );
@@ -53,7 +54,7 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
         _nextShotVelocity = bulletVelocity;
 
         _sprite.Play("Shoot");
-        
+
         bool isFront = true;
 
         if (isFront)
@@ -65,12 +66,12 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
             _sounds.AttackBarkBack.PlayPitched(_attackBackDistro);
         }
     }
-    
+
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
-        Bullet bullet = _bulletScene.Instance<Bullet>();        
+        Bullet bullet = _bulletScene.Instantiate<Bullet>();
         GetParent().AddChild(bullet);
-        bullet.GlobalTranslation = CenterOfMass;
+        bullet.GlobalPosition = CenterOfMass;
         bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
@@ -105,7 +106,7 @@ public class Sniper : KinematicBody, IBulletHittable, IDeathPlaneEnterable, IPla
     private void DestroyModel()
     {
         Died?.Invoke();
-        
+
         CollisionLayer = 0;
         CollisionMask = 0;
 

@@ -1,14 +1,14 @@
 using Godot;
-
-public class MainMenu : CanvasLayer
+namespace PawsPlunder;
+public partial class MainMenu : CanvasLayer
 {
-	private Control _menu;
-	private Options _options;
-	private Control _storyPanel;	
-	private Label _storyLabel;
+	private Control _menu  = null!;
+	private Options _options = null!;
+	private Control _storyPanel = null!;	
+	private Label _storyLabel = null!;
 	
 	[Signal]
-	public delegate void StartGame();
+	public delegate void StartGameEventHandler();
 
 	public override void _Ready()
 	{

@@ -1,12 +1,14 @@
-using System;
 using Godot;
+using System;
 
-public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
+namespace PawsPlunder;
+
+public partial class Gunner : CharacterBody3D, IBulletHittable, IMeleeTargettable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
 {
     public event Action Died;
 
     private const int ParallelShots = 5;
-    private static readonly float TotalSpreadRad = Mathf.Deg2Rad(30);
+    private static readonly float TotalSpreadRad = Mathf.DegToRad(30);
     private const float BulletSpeed = 30.0f;
     private const int ShootFrame = 1;
     private static readonly Distro _footstepsDistro = (0.7f, 0.2f);
@@ -14,15 +16,15 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     private static readonly Distro _blunderbussDistro = (0.7f, 0.2f);
     private static readonly Distro _deathDistro = (0.7f, 0.2f);
 
-    public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
-    
+    public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
+
     private const float WalkSpeed = 8.0f;
     [Export] private PackedScene _bulletScene;
     [Export] private PackedScene _droppedGunScene;
 
     private AnimatedSprite3D _sprite;
-    private NavigationAgent _agent;
-    private Spatial _centerOfMassNode;
+    private NavigationAgent3D _agent;
+    private Node3D _centerOfMassNode;
     private GunnerSounds _sounds;
 
     private bool _hasMoveOrder = false;
@@ -31,18 +33,18 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
     public override void _Ready()
     {
-        _agent = GetNode<NavigationAgent>("NavigationAgent");
+        _agent = GetNode<NavigationAgent3D>("NavigationAgent");
         _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
-        _centerOfMassNode = GetNode<Spatial>("CenterOfMass");
+        _centerOfMassNode = GetNode<Node3D>("CenterOfMass");
         _sounds = GetNode<GunnerSounds>("Sounds");
 
         _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount());
-        _sprite.Playing = true;
+        _sprite.Play();
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
-        FollowPath(delta);
+        FollowPath((float)delta);
     }
 
     private void FollowPath(float delta)
@@ -59,8 +61,8 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
             return;
         }
 
-        Vector3 nextPosition = _agent.GetNextLocation();
-        GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, WalkSpeed * delta);
+        Vector3 nextPosition = _agent.GetNextPathPosition();
+        GlobalPosition = GlobalPosition.MoveToward(nextPosition, WalkSpeed * delta);
 
         _hasMoveOrder = !_agent.IsNavigationFinished();
 
@@ -73,9 +75,10 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
     public void GoTo(Vector3 point)
     {
-        _agent.SetTargetLocation(point);
+        // TODO: no longer exists in godot 4
+        // _agent.SetTargetLocation(point);
         _hasMoveOrder = true;
-        
+
         _sprite.Play("Walk");
         _sounds.Footsteps.PlayPitched(_footstepsDistro);
     }
@@ -83,7 +86,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     public void AttackTarget(Player player)
     {
         Vector3 forwardBulletVelocity = CenterOfMass.DirectionTo(player.CenterOfMass);
-        
+
         _queuedAttackDirection = forwardBulletVelocity;
 
         _sprite.Play("Shoot");
@@ -105,7 +108,7 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
     {
         if (_sprite.Animation == "Shoot")
         {
-            _queuedAttackDirection = null;            
+            _queuedAttackDirection = null;
             if (_hasMoveOrder)
             {
                 _sprite.Play("Walk");
@@ -128,9 +131,9 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
 
     private void ShootBulletWithVelocity(Vector3 velocity)
     {
-        Bullet bullet = _bulletScene.Instance<Bullet>();        
+        Bullet bullet = _bulletScene.Instantiate<Bullet>();
         GetParent().AddChild(bullet);
-        bullet.GlobalTranslation = CenterOfMass;
+        bullet.GlobalPosition = CenterOfMass;
         bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Player);
     }
 
@@ -151,14 +154,14 @@ public class Gunner : KinematicBody, IBulletHittable, IMeleeTargettable, IDeathP
         CollisionLayer = 0;
         CollisionMask = 0;
         _hasMoveOrder = false;
-    
+
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);
         _sounds.Footsteps.Stop();
 
-        Spatial droppedGun = _droppedGunScene.Instance<Spatial>();
+        Node3D droppedGun = _droppedGunScene.Instantiate<Node3D>();
         GetParent().AddChild(droppedGun);
-        droppedGun.GlobalTranslation = CenterOfMass;
+        droppedGun.GlobalPosition = CenterOfMass;
     }
 
     void IDeathPlaneEnterable.EnteredDeathPlane()

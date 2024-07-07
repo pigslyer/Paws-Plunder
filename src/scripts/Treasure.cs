@@ -3,6 +3,8 @@ using System;
 using System.Runtime.CompilerServices;
 using Godot;
 
+namespace PawsPlunder;
+
 public enum TreasureType : int
 {
     Lasagna,
@@ -14,7 +16,7 @@ public enum TreasureType : int
     CatBag
 }
 
-public class Treasure : Spatial, IItem
+public partial class Treasure : Node3D, IItem
 {
     [Export] private TreasureType _type;
 

@@ -1,8 +1,8 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Godot;
 
 namespace PawsPlunder;
 
@@ -40,9 +40,10 @@ public struct Range
     }
 }
 
-public static class Extensions {
+public static class Extensions
+{
     // swizzles
-    public static Vector3 X0Z(this Vector3 vec) => new(vec.X, 0, vec.Z); 
+    public static Vector3 X0Z(this Vector3 vec) => new(vec.X, 0, vec.Z);
     public static Vector3 X00(this Vector3 vec) => new(vec.X, 0, 0);
 
     /// <summary>
@@ -62,13 +63,14 @@ public static class Extensions {
     // ripped from https://stackoverflow.com/questions/273313/randomize-a-listt [sic]
     public static void Shuffle<T>(this RandomNumberGenerator rng, Span<T> list)
     {
-        int n = list.Length;  
+        int n = list.Length;
 
-        while (n > 1) {  
-            n -= 1;  
-            int k = rng.RandiRange(0, n - 1);  
+        while (n > 1)
+        {
+            n -= 1;
+            int k = rng.RandiRange(0, n - 1);
             (list[k], list[n]) = (list[n], list[k]);
-        }  
+        }
     }
 
     public static float Randfn(this RandomNumberGenerator rng, Distro distro)
@@ -86,6 +88,8 @@ public static class Extensions {
         return list[rng.RandiRange(0, list.Length - 1)];
     }
 
+    // TODO: Instance of type 'ReadOnlySpan<T>' cannot be used inside a nested function, query expression, iterator block or
+    /*
     public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> elements, int count, Predicate<T>? allowedElements = null)
     {
         int[] naturals = GetNaturalNumbers(elements.Length).ToArray(); 
@@ -118,6 +122,7 @@ public static class Extensions {
             index += 1;
         }
     }
+    */
 
     public static int FrameCount(this AnimatedSprite3D sprite)
     {
@@ -139,7 +144,8 @@ public static class Extensions {
 
         tween.TweenProperty(player, "volume_db", -60, duration).SetTrans(Tween.TransitionType.Expo);
         // is this dangerous due to GC stuff?
-        tween.TweenCallback(Callable.From(() => {
+        tween.TweenCallback(Callable.From(() =>
+        {
             player.Stop();
             player.VolumeDb = currentVolumeDb;
         }));
@@ -160,7 +166,7 @@ public static class Extensions {
         {
             if (fadeOut.HasValue)
             {
-                player.FadeOut(fadeOut.Value); 
+                player.FadeOut(fadeOut.Value);
             }
             else
             {
@@ -181,9 +187,9 @@ public static class Extensions {
         player.PitchScale = rng.Randfn(distribution);
         player.Play();
     }
-    
+
     private static int[] _naturalNumbers;
-    
+
     static Extensions()
     {
         const int StoredNaturalNumbers = 1000;

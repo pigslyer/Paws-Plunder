@@ -1,6 +1,8 @@
 using Godot;
 
-public class TraderMouseSounds : Node
+namespace PawsPlunder;
+
+public partial class TraderMouseSounds : Node
 {
     public AudioStreamPlayer3D Death;
     public AudioStreamPlayer3D Footsteps;

@@ -1,6 +1,7 @@
 using Godot;
 
-public class RatGruntSounds : Node
+namespace PawsPlunder;
+public partial class RatGruntSounds : Node
 {
     public AudioStreamPlayer3D Fire;
     public AudioStreamPlayer3D Death;

@@ -1,7 +1,8 @@
+using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Godot;
+
+namespace PawsPlunder;
 
 public interface IMoveable
 {
@@ -13,7 +14,7 @@ public interface IPlayerAttacker
     void AttackTarget(Player player);
 }
 
-public class SquadController : Node
+public partial class SquadController : Node
 {
     private readonly DetectionTracker<RatGrunt> _gruntTracker;
     private readonly DetectionTracker<Sniper> _sniperTracker;
@@ -48,7 +49,7 @@ public class SquadController : Node
 
     private RandomNumberGenerator _rng;
     private Player _player;
-    private RayCast _wallDetection;
+    private RayCast3D _wallDetection;
 
     private CustomTimer _updatePositionsTimer = null;
     private CustomTimer _runAttackRoutine = null;
@@ -58,26 +59,26 @@ public class SquadController : Node
         _rng = new RandomNumberGenerator();
 
         _gruntTracker = new DetectionTracker<RatGrunt>(
-            canSeeTarget: grunt => 
-                _player != null && 
+            canSeeTarget: grunt =>
+                _player != null &&
                 CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass),
-            cantSeeTarget: grunt => 
+            cantSeeTarget: grunt =>
                 _player == null
         );
 
         _sniperTracker = new DetectionTracker<Sniper>(
-            canSeeTarget: sniper => 
-                _player != null && 
+            canSeeTarget: sniper =>
+                _player != null &&
                 CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass),
-            cantSeeTarget: sniper => 
-                _player == null || !CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass) 
+            cantSeeTarget: sniper =>
+                _player == null || !CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass)
         );
 
         _gunnerTracker = new DetectionTracker<Gunner>(
             canSeeTarget: gunner =>
                 _player != null &&
                 CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass),
-            cantSeeTarget: gunner => 
+            cantSeeTarget: gunner =>
                 _player == null
         );
 
@@ -85,7 +86,7 @@ public class SquadController : Node
             canSeeTarget: trader =>
                 _player != null &&
                 CanPointBeSeen(trader.CenterOfMass, _player.CenterOfMass),
-            cantSeeTarget: trader => 
+            cantSeeTarget: trader =>
                 _player == null
         );
 
@@ -103,7 +104,7 @@ public class SquadController : Node
     {
         _rng.Randomize();
 
-        _wallDetection = new RayCast()
+        _wallDetection = new RayCast3D()
         {
             Enabled = false,
             CollisionMask = (int)PhysicsLayers3D.World,
@@ -115,7 +116,7 @@ public class SquadController : Node
             if (child is RatGrunt grunt)
             {
                 _gruntTracker.AddEnemy(grunt);
-                
+
                 grunt.Died += () => OnRatGruntDied(grunt);
             }
             else if (child is Sniper sniper)
@@ -143,7 +144,7 @@ public class SquadController : Node
     {
         _gruntTracker.RemoveEnemy(grunt);
         _gruntMovementQueue.RemoveElement(grunt);
-        
+
         _queuedAttackers.Clear();
         _queuedMovers.Clear();
 
@@ -178,7 +179,7 @@ public class SquadController : Node
         _queuedMovers.Clear();
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
         if (_player != null && _player.Health <= 0)
         {
@@ -189,9 +190,9 @@ public class SquadController : Node
         UpdateEnemyPositions();
 
         UpdateEnemyAttacking();
-        
-        RunQueuedMovers(delta);
-        RunQueuedAttackers(delta);
+
+        RunQueuedMovers((float)delta);
+        RunQueuedAttackers((float)delta);
     }
 
     private void UpdateInCombatEnemies()
@@ -216,7 +217,7 @@ public class SquadController : Node
         {
             _gunnerMovementQueue.AddElement(justEntered);
         }
-        
+
         foreach (Gunner justLeft in _gunnerTracker.JustLeftCombat)
         {
             _gunnerMovementQueue.RemoveElement(justLeft);
@@ -258,7 +259,7 @@ public class SquadController : Node
             return;
         }
 
-        Vector3 playerPosition = _player.GlobalTranslation;
+        Vector3 playerPosition = _player.GlobalPosition;
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
         // can't determine without testing
@@ -290,8 +291,8 @@ public class SquadController : Node
         {
             TraderMouse trader = _traderMovementQueue.NextElement();
 
-            Vector3 currentPosition = trader.GlobalTranslation;
-            
+            Vector3 currentPosition = trader.GlobalPosition;
+
             float angle = _rng.RandfRange(Range.Circle);
             float distance = _rng.Randfn(_distanceTraderMovement);
 
@@ -309,7 +310,7 @@ public class SquadController : Node
             _runAttackRoutine?.Stop();
             _runAttackRoutine = null;
             return;
-        }            
+        }
 
         if (_runAttackRoutine == null)
         {
@@ -328,7 +329,9 @@ public class SquadController : Node
         }
 
         int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Count);
-        foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)))
+        // TODO: fix type arguments cannot be inferred from usage
+        /*
+        foreach (RatGrunt grunt in _rng.RandEls<>(_gruntTracker.ActiveEnemies, gruntAttackers, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)))
         {
             _queuedAttackers.AddElement(grunt);
         }
@@ -344,7 +347,7 @@ public class SquadController : Node
         {
             _queuedAttackers.AddElement(gunner);
         }
-
+        */
         _queuedAttackers.RedistributeOver(_rng, _totalAttackTime);
     }
 
@@ -353,7 +356,7 @@ public class SquadController : Node
         foreach ((IMoveable movable, Vector3 targetPosition) in _queuedMovers.PopElements(delta))
         {
             movable.GoTo(targetPosition);
-        }        
+        }
     }
 
     private void RunQueuedAttackers(float delta)
@@ -389,14 +392,14 @@ public class SquadController : Node
 
     private bool CanPointBeSeen(Vector3 from, Vector3 to)
     {
-        _wallDetection.GlobalTranslation = from;
-        _wallDetection.CastTo = _wallDetection.ToLocal(to);
+        _wallDetection.GlobalPosition = from;
+        _wallDetection.TargetPosition = _wallDetection.ToLocal(to);
         _wallDetection.ForceRaycastUpdate();
 
         return !_wallDetection.IsColliding();
     }
 
-    private void PlayerEnteredArea(Spatial spatial)
+    private void PlayerEnteredArea(Node3D spatial)
     {
         if (spatial is Player player)
         {
@@ -404,7 +407,7 @@ public class SquadController : Node
         }
     }
 
-    private void PlayerExitedArea(Spatial spatial)
+    private void PlayerExitedArea(Node3D spatial)
     {
         if (_player == spatial)
         {
@@ -439,7 +442,7 @@ public class SquadController : Node
 
             List<T> ret = new List<T>();
             int poppedCount = 0;
-            while (poppedCount < _times.Count && _times[poppedCount] < _currentTime)            
+            while (poppedCount < _times.Count && _times[poppedCount] < _currentTime)
             {
                 ret.Add(_elements[poppedCount]);
                 poppedCount += 1;
@@ -450,7 +453,7 @@ public class SquadController : Node
 
             return ret;
         }
-        
+
         public void RedistributeOver(RandomNumberGenerator rng, float time)
         {
             _currentTime = 0.0f;
@@ -467,7 +470,7 @@ public class SquadController : Node
         public void Clear()
         {
             _elements.Clear();
-            _times.Clear();   
+            _times.Clear();
         }
     }
 
@@ -492,7 +495,7 @@ public class SquadController : Node
         {
             (_canSeeTarget, _cantSeeTarget) = (canSeeTarget, cantSeeTarget);
         }
-        
+
         public void UpdateVisibility()
         {
             _justEnteredCombat.Clear();

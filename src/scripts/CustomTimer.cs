@@ -1,7 +1,9 @@
-using System;
 using Godot;
+using System;
 
-public class CustomTimer : Timer 
+namespace PawsPlunder;
+
+public partial class CustomTimer : Timer
 {
     public event Action Timeout;
 
@@ -9,8 +11,12 @@ public class CustomTimer : Timer
     {
         CustomTimer timer = new CustomTimer();
         node.AddChild(timer);
-        timer.Connect("timeout", timer, nameof(OnTimeout));
-        timer.Start(timeout);         
+        // TODO: check if callable syntax ok
+        timer.Connect(
+            "timeout",
+            new Godot.Callable(timer, nameof(OnTimeout)),
+            (uint)ConnectFlags.OneShot);
+        timer.Start(timeout);
 
         return timer;
     }

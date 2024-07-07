@@ -1,13 +1,16 @@
 using Godot;
 
-public class BillboardedSpatial : Spatial
+namespace PawsPlunder;
+
+public partial class BillboardedSpatial : Node3D
 {
-    public override void _Process(float delta)
+
+    public override void _Process(double delta)
     {
-        Camera activeCamera = GetViewport().GetCamera();
+        Camera3D activeCamera = GetViewport().GetCamera3D();
 
         GlobalRotation = activeCamera.GlobalRotation;
 
-        Rotation -= Rotation.x00();
+        Rotation -= Rotation.X00();
     }
 }
