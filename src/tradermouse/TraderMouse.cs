@@ -1,35 +1,37 @@
 using System;
 using Godot;
 
-public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable, IMeleeTargettable, IMoveable
+namespace PawsPlunder;
+
+public partial class TraderMouse : CharacterBody3D, 
+    IDeathPlaneEnterable, 
+    IBulletHittable, 
+    IMeleeTargettable, 
+    IMoveable
 {
-    public event Action Died;
+    public event Action? Died;
     private const float Speed = 30.0f;
-    public Vector3 CenterOfMass => _centerOfMassNode.GlobalTranslation;
+    public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
     private static readonly Distro _footstepsDistro = (1.4f, 0.2f);
     private static readonly Distro _deathDistro = (1.6f, 0.2f);
 
     private bool _hasMoveTarget = false;
 
-    private NavigationAgent _agent;
-    private AnimatedSprite3D _sprite;
-    private Spatial _centerOfMassNode;
-    private TraderMouseSounds _sounds;
+    [Export] private NavigationAgent3D _agent = null!;
+    [Export] private AnimatedSprite3D _sprite = null!;
+    [Export] private Node3D _centerOfMassNode = null!;
+    [Export] private TraderMouseSounds _sounds = null!;
 
     public override void _Ready()
     {
-        _agent = GetNode<NavigationAgent>("NavigationAgent");
-        _sprite = GetNode<AnimatedSprite3D>("AnimatedSprite3D");
-        _centerOfMassNode = GetNode<Spatial>("CenterOfMass");
-        _sounds = GetNode<TraderMouseSounds>("Sounds");
-
         _sprite.Play("Idle");
         _sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount() - 1);
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
-        FollowPath(delta);
+        float fDelta = (float)delta;
+        FollowPath(fDelta);
     }
 
     private void FollowPath(float delta)
@@ -39,8 +41,8 @@ public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable,
             return;
         }
 
-        Vector3 nextPosition = _agent.GetNextLocation();
-        GlobalTranslation = GlobalTranslation.MoveToward(nextPosition, Speed * delta);
+        Vector3 nextPosition = _agent.GetNextPathPosition();
+        GlobalPosition = GlobalPosition.MoveToward(nextPosition, Speed * delta);
 
         _hasMoveTarget = !_agent.IsNavigationFinished();
 
@@ -54,7 +56,7 @@ public class TraderMouse : KinematicBody, IDeathPlaneEnterable, IBulletHittable,
     public void GoTo(Vector3 point)
     {
         _hasMoveTarget = true;
-        _agent.SetTargetLocation(point);
+        _agent.TargetPosition = point;
 
         _sounds.Footsteps.PlayPitched(_footstepsDistro);
         _sprite.Play("Walk");

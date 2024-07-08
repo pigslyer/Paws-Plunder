@@ -5,8 +5,8 @@ namespace PawsPlunder;
 
 public partial class CombatLog : VBoxContainer 
 {
-	[Signal] delegate void EmptiedEventHandler();
-	[Signal] delegate void EntryAddedEventHandler();
+	[Signal] public delegate void EmptiedEventHandler();
+	[Signal] public delegate void EntryAddedEventHandler();
 
 	private const float DefaultMsgDisplayLength = 5.0F;
 	private const string MetaTimeRemaining = "CombatLog::TimeRemaining";

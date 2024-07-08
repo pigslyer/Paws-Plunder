@@ -86,7 +86,7 @@ public static class Extensions {
         return list[rng.RandiRange(0, list.Length - 1)];
     }
 
-    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> elements, int count, Predicate<T>? allowedElements = null)
+    public static int RandEls<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> elements, Span<T> returnedStorage, Predicate<T>? allowedElements = null)
     {
         int[] naturals = GetNaturalNumbers(elements.Length).ToArray(); 
 
@@ -97,6 +97,41 @@ public static class Extensions {
         while (true)
         {
             if (index >= elements.Length)
+            {
+                break;
+            }   
+
+            if (takenElements >= returnedStorage.Length)
+            {
+                break;
+            }
+
+            if (allowedElements?.Invoke(elements[index]) == false)
+            {
+                index += 1;
+                continue;
+            }
+
+            returnedStorage[takenElements] = elements[index];
+            
+            takenElements += 1;
+            index += 1;
+        }
+
+        return takenElements;
+    }
+
+    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> elements, int count, Predicate<T>? allowedElements = null)
+    {
+        int[] naturals = GetNaturalNumbers(elements.Count).ToArray(); 
+
+        rng.Shuffle(naturals.AsSpan());
+
+        int takenElements = 0;
+        int index = 0;
+        while (true)
+        {
+            if (index >= elements.Count)
             {
                 break;
             }   
@@ -200,5 +235,13 @@ public static class Extensions {
         }
 
         return _naturalNumbers.AsSpan()[0..count];
+    }
+
+    public static void ForEach<T>(this IEnumerable<T> seq, Action<T> action)
+    {
+        foreach (T el in seq)
+        {
+            action.Invoke(el);
+        }
     }
 }

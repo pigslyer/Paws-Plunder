@@ -15,7 +15,7 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
     {
         _unretrievedElements = elements.ToList();
 
-        _rng.Shuffle(_unretrievedElements);
+        _rng.Shuffle(_unretrievedElements.AsSpan());
     }
 
     public void AddElement(T element)
@@ -34,7 +34,7 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
         if (_unretrievedElements.Count == 0 && _retrievedElements.Count > 0)
         {
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
-            _rng.Shuffle(_unretrievedElements);
+            _rng.Shuffle(_unretrievedElements.AsSpan());
         }
     }   
 
@@ -51,7 +51,7 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
         if (_unretrievedElements.Count == 0)
         {
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
-            _rng.Shuffle(_unretrievedElements);
+            _rng.Shuffle(_unretrievedElements.AsSpan());
         }   
 
         return nextElement;

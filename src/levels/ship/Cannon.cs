@@ -1,13 +1,11 @@
 using Godot;
 using System;
 
-public class Cannon : StaticBody
+namespace PawsPlunder;
+
+public partial class Cannon : StaticBody3D
 {
-	private Spatial _arrow;
-	public override void _Ready()
-	{
-		_arrow = GetNode<Spatial>("%Arrow");
-	}
+	[Export] private Node3D _arrow = null!;
 
 	public void EnableEscape()
 	{

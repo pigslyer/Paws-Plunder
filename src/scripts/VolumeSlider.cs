@@ -1,17 +1,19 @@
 using Godot;
 
-public class VolumeSlider : HSlider
+namespace PawsPlunder;
+
+public partial class VolumeSlider : HSlider
 {
-	[Export] private string _busName;
+	[Export] private string _busName = "";
 	
 	public void Adjust()
 	{
-		Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(_getBusIndex()));
+		Value = Mathf.DbToLinear(AudioServer.GetBusVolumeDb(_getBusIndex()));
 	}
 	
 	private void _on_slider_value_changed(float value)
 	{
-		AudioServer.SetBusVolumeDb(_getBusIndex(), GD.Linear2Db(value));
+		AudioServer.SetBusVolumeDb(_getBusIndex(), Mathf.LinearToDb(value));
 	}
 
 	private int _getBusIndex()

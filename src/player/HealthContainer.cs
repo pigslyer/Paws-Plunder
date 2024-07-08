@@ -1,22 +1,28 @@
-using Godot;
 using System;
+using System.Linq;
+using Godot;
 
-public class HealthContainer : VBoxContainer
+namespace PawsPlunder;
+
+public partial class HealthContainer : VBoxContainer
 {
-	private TextureRect[] _health = new TextureRect[3];
+	private TextureRect[] _health = [];
 
 	public override void _Ready()
 	{
-		_health[0] = GetNode<TextureRect>("Health1/TextureRect");
-		_health[1] = GetNode<TextureRect>("Health2/TextureRect");
-		_health[2] = GetNode<TextureRect>("Health3/TextureRect");
+		_health = GetChildren().OfType<TextureRect>().ToArray();
 	}
 
 	public void SetHealth(int health)
 	{
-		for (int i = 0; i < 3; i++)
+		foreach (TextureRect aliveHeart in _health.AsSpan()[..health])
 		{
-			_health[i].Modulate = i < health ? new Color(1.0F, 1.0F, 1.0F) : new Color(0.2F, 0.2F, 0.2F);
+			aliveHeart.SelfModulate = Colors.White;
+		}
+
+		foreach (TextureRect deadHeart in _health.AsSpan()[health..])
+		{
+			deadHeart.SelfModulate = new Color(0.2f, 0.2f, 0.2f);
 		}
 	}
 }

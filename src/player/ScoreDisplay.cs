@@ -1,44 +1,45 @@
 using System;
 using Godot;
 
-public class ScoreDisplay : Control
+namespace PawsPlunder;
+
+public partial class ScoreDisplay : Control
 {
-	private Label _label;
-	private int _shownScore;
-	private int _shownScore0;
+	[Export(hintString: "suffix:s")] private float _interpolationTime = 1.0f;
+
+	private int _startingInterpolatedScore;
+	private int _targetInterpolatedScore;
 	private float _lerp = 1.0F;
+	[Export] private Label _label = null!;
 	
 	public override void _Ready()
 	{
-		_label = GetNode<Label>("Number");
-		GlobalSignals.GetInstance().Connect(nameof(GlobalSignals.AddToPlayerScore), this, "AddScore");
+		GlobalSignals.GetInstance().AddToPlayerScore += newScore => 
+			InterpolateScoreTo(_targetInterpolatedScore + newScore);
 	}
 	
-	public void SetScore(int score)
+	public void InterpolateScoreTo(int newTargetScore)
 	{
-		_shownScore0 = GetScoreLerp();
-		_shownScore = score;
+		_startingInterpolatedScore = GetLerpedScore();
+		_targetInterpolatedScore = newTargetScore;
 		_lerp = 0.0F;
 	}
 
-	public void AddScore(int score)
+	public override void _PhysicsProcess(double delta)
 	{
-		SetScore(GetScore() + score);
+		float fDelta = (float)delta;
+
+		_lerp = Math.Min(1.0F, _lerp + fDelta / _interpolationTime);
+		_label.Text = " " + GetLerpedScore().ToString();
 	}
 
-	public int GetScore()
+	private int GetLerpedScore()
 	{
-		return _shownScore;
+		return LerpInt(_startingInterpolatedScore, _targetInterpolatedScore, _lerp);		
 	}
 
-	public int GetScoreLerp()
+	public static int LerpInt(int start, int end, float lerp)
 	{
-		return _shownScore0 + (int)Math.Floor(_lerp * (_shownScore - _shownScore0 - 1)) + (_lerp > 0.0F ? 1 : 0);
-	}
-
-	public override void _PhysicsProcess(float delta)
-	{
-		_lerp = Math.Min(1.0F, _lerp + delta);
-		_label.Text = " " + GetScoreLerp().ToString();
+		return start + (int)Math.Floor(lerp * (end - start - 1)) + (lerp > 0.0F ? 1 : 0);
 	}
 }

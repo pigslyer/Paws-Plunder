@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -7,12 +8,12 @@ public partial class Globals : Node
 {
     private static Globals _instance = null!;
 
-    private RandomNumberGenerator _rng = new RandomNumberGenerator();
+    private RandomNumberGenerator _rng = new();
     public static RandomNumberGenerator Rng => _instance._rng;
     
     public static float MouseSensitivity = 1.0F;
 
-    public static IReadOnlyList<string> CatNames = [
+    public static readonly IReadOnlyList<string> CatNames = [
         // generic
         "Blackfur",
         "Catbeard",
@@ -42,7 +43,7 @@ public partial class Globals : Node
         "Mini",
     ];
 
-    private RandomOrderQueue<string> _randomOrderedCatNames;
+    private readonly RandomOrderQueue<string> _randomOrderedCatNames;
     private string _protagonistName;
     public static string ProtagonistName => _instance._protagonistName;
     
@@ -91,15 +92,32 @@ public partial class Globals : Node
             _instance = null!;
         }
     }
-    
-    public static IEnumerable<Vector3> CalculateShotgunDirections(Vector3 baseDirection, float spread, int shotCount, float speed)
+
+    // TODO: move this math malarky to its own utility class?    
+    public static void CalculateShotgunDirections(Vector3 baseDirection, float spread, float speed, Span<Vector3> shotsStorage)
     {
-        for (int i = 0; i < shotCount; i++)
+        float baseAddend = -spread / 2;
+        float perElementFactor = spread / (shotsStorage.Length - 1);
+
+        for (int i = 0; i < shotsStorage.Length; i++)
         {
-            float currentAngleOffset = -spread / 2 + i * (spread / (shotCount - 1));
+            float currentAngleOffset = baseAddend + i * perElementFactor;
             Vector3 currentVelocity = baseDirection.Rotated(Vector3.Up, currentAngleOffset) * speed;
 
-            yield return currentVelocity;
+            shotsStorage[i] = currentVelocity;
         }
     }
+
+    public static Vector3 GetProjectileVelocity(Vector3 targetPosition, Vector3 targetVelocity, Vector3 startingPoint, float projectileSpeed, float delay = 0f)
+    {
+        float distanceToTarget = (targetPosition - startingPoint).Length();
+        float timeToHit = distanceToTarget / projectileSpeed + delay;
+
+        Vector3 finalPosition = targetPosition + targetVelocity * timeToHit;
+
+        Vector3 direction = startingPoint.DirectionTo(finalPosition); 
+
+        return direction * projectileSpeed;
+    }
+
 }

@@ -77,7 +77,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	private CustomTimer? _enamoredTimer;
 
 	// TODO: Remove both of these
-	private bool _gameWon = false;
 	private int _trackedScore = 0;
 
 	public override void _Ready()
@@ -105,7 +104,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
 
 		Health = MaxHealth;
-		_previousVelocity = Vector3.Zero;
+		Velocity = Vector3.Zero;
 
 		_remainingAmmo = 1;
 		_currentGun = GunTypes.Single;
@@ -211,7 +210,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			forward = forward.Normalized();
 
 			Vector3 globalizedInput = inputVector.Y * forward + inputVector.X * right;
-			Vector3 velocityXz = _previousVelocity.X0Z();
+			Vector3 velocityXz = Velocity.X0Z();
 
 			float currentNaturalMaxSpeed = sprint ? MaxSprintSpeed : MaxNaturalSpeed;
 
@@ -255,7 +254,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		// gravity
 		{
-			newVelocity += new Vector3(0, _previousVelocity.Y, 0);
+			newVelocity += new Vector3(0, Velocity.Y, 0);
 			newVelocity += GravityAcceleration * fDelta;
 		}
 
@@ -313,6 +312,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	private void RotateCameraTowards(Vector3 targetPosition)
 	{
+		// TODO: Cleanly interpolate this
 		_camera.LookAt(targetPosition, Vector3.Up);
 	}
 
@@ -328,26 +328,22 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		_bothHandsOrClawAnimationPlayer.Play("ClawAttack");
 
 		JustFired = true;
-		Godot.Collections.Array bodies = _meleeDetectionArea.GetOverlappingBodies();
+		Godot.Collections.Array<Node3D> bodies = _meleeDetectionArea.GetOverlappingBodies();
 
-		if (bodies.Count == 0) 
+		// determine target based on closeness to crosshair and distance?
+		IMeleeTargettable? target = null;
+		if (bodies.Count > 0)
 		{
-			_sounds.MeleeMiss.Play();
-			return;
-		} 
-		else
-		{
-			_sounds.Melee.Play();
+			target = bodies[0] as IMeleeTargettable;
 		}
-
-		// determine targetting heuristic based on closeness to crosshair and distance?
-		IMeleeTargettable target = bodies[0] as IMeleeTargettable;
 
 		if (target == null)
 		{
+			_sounds.MeleeMiss.Play();
 			return;
 		}
 
+		_sounds.Melee.Play();
 		target.Target(default);			
 	}
 
@@ -369,7 +365,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		JustFired = true;
 
-		Vector3 shotDirection = -_camera.GlobalTransform.basis.z;
+		Vector3 shotDirection = -_camera.GlobalTransform.Basis.Z;
 
 		if (_currentGun == GunTypes.Single)
 		{
@@ -383,7 +379,10 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			_gunAnimationPlayer.Play("ShootQuad");
 			_sounds.ShootQuad.Play();
 
-			foreach (Vector3 bulletVelocity in Globals.CalculateShotgunDirections(shotDirection, Mathf.Deg2Rad(30), 5, QuadBulletVelocity))
+			Span<Vector3> bulletVelocities = stackalloc Vector3[5];
+			Globals.CalculateShotgunDirections(shotDirection, float.DegreesToRadians(30), QuadBulletVelocity, bulletVelocities);
+
+			foreach (Vector3 bulletVelocity in bulletVelocities)
 			{
 				FireBullet(bulletVelocity);
 			}
@@ -391,32 +390,31 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		if (_remainingAmmo == 0)
 		{
-			_gunAnimationPlayer.Connect("animation_finished", this, nameof(OnGunAnimationFinished), flags: (uint)ConnectFlags.Oneshot);
+			_gunAnimationPlayer.Connect("animation_finished", Callable.From<string>(OnGunAnimationFinished), flags: (uint)ConnectFlags.OneShot);
 		}
 	}
 
-	private void OnGunAnimationFinished(string _)
+	private void OnGunAnimationFinished(string previousAnimation)
 	{
 		if (_remainingAmmo == 0)
 		{
 			_gunAnimationPlayer.Play("Drop");
+			GetTree().CallGroup("MUZZLE", "hide");
 		}
-
-		GetTree().CallGroup("MUZZLE", "hide");
 	}
 
 	private void FireBullet(Vector3 velocity)
 	{
-		Bullet bullet = _bulletScene.Instance<Bullet>();
+		Bullet bullet = _bulletScene.Instantiate<Bullet>();
 		GetParent().AddChild(bullet);
-		bullet.GlobalTranslation = CenterOfMass;
+		bullet.GlobalPosition = CenterOfMass;
 
 		bullet.Initialize(this, velocity, PhysicsLayers3D.World | PhysicsLayers3D.Enemy);
 	}
 
 	private void PickUpItems()
 	{
-		Godot.Collections.Array pickupables = _pickupDetectionArea.GetOverlappingBodies();
+		Godot.Collections.Array<Node3D> pickupables = _pickupDetectionArea.GetOverlappingBodies();
 
 		void PickupItem(IItem item)
 		{
@@ -429,6 +427,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			((Node)item).QueueFree();
 		}
 
+		// TODO: extract inner logic to method?
 		foreach (IItem item in pickupables.OfType<IItem>())
 		{
 			switch (item.ItemName)
@@ -514,21 +513,28 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			return;
 		}
 
-		// get all cannons (there should be only one, but just in case...
-		Godot.Collections.Array cannons = GetTree().GetNodesInGroup("Cannons");
-		// get closest cannon
-		Cannon closestCannon = cannons.OfType<Cannon>().OrderBy(
-			c => c.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)).FirstOrDefault();
+		Godot.Collections.Array<Node> cannons = GetTree().GetNodesInGroup("Cannons");
+		Cannon? closestCannon = cannons
+			.OfType<Cannon>()
+			.OrderBy(c => c.GlobalPosition.DistanceTo(GlobalPosition))
+			.FirstOrDefault();
 		
-		if (Mathf.Abs(closestCannon.GlobalTransform.origin.DistanceTo(GlobalTransform.origin)) < 12.0f)
+		if (closestCannon == null)
 		{
-			GetTree().ChangeSceneTo(_youWonScene);
+			GD.PushWarning("No cannons could be found for player's win condition!");
+			return;
+		}
+		
+		if (float.Abs(closestCannon.GlobalPosition.DistanceTo(GlobalPosition)) < 12.0f)
+		{
+			GetTree().ChangeSceneToPacked(_youWonScene);
 		}
 	}
 	
 	private void KillIfBelowWorld()
 	{
-		if (Health > 0 && GlobalTranslation.y < -200)
+		// remove this hackery?
+		if (Health > 0 && GlobalPosition.Y < -200)
 		{
 			KillWithCameraUpPan();
 		}
@@ -538,7 +544,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
 		{
-			EmitSignal("RespawnPlayer");
+			EmitSignal(SignalName.RespawnPlayer);
 		}
 	}
 
@@ -624,26 +630,21 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		{
 			LogControl.PushMsg($"{Globals.ProtagonistName} has died!");
 			_sounds.Death.Play();
-			EmitSignal(nameof(PlayerDied));
+			EmitSignal(SignalName.PlayerDied);
 			_hasEmittedDeathScreech = true;
 		}
 	}
 
-	private class DeathInfo
+	private class DeathInfo(Node3D killer)
 	{
-		private Spatial _killer;
-		private Vector3 _lastKillerPosition;
-
-		public DeathInfo(Spatial killer)
-		{
-			(_killer, _lastKillerPosition) = (killer, killer.GlobalTranslation);
-		}
+		private readonly Node3D _killer = killer;
+		private Vector3 _lastKillerPosition = killer.GlobalPosition;
 
 		public Vector3 GetKillerPosition()
 		{
 			if (IsInstanceValid(_killer))
 			{
-				_lastKillerPosition = _killer.GlobalTranslation;
+				_lastKillerPosition = _killer.GlobalPosition;
 			}
 
 			return _lastKillerPosition;

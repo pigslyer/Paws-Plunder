@@ -1,17 +1,11 @@
 using Godot;
 
-public class RatGruntSounds : Node
-{
-    public AudioStreamPlayer3D Fire;
-    public AudioStreamPlayer3D Death;
-    public AudioStreamPlayer3D Footsteps;
-    public AudioStreamPlayer3D AttackBark;
+namespace PawsPlunder;
 
-    public override void _Ready()
-    {
-        Fire = GetNode<AudioStreamPlayer3D>("Fire");
-        Death = GetNode<AudioStreamPlayer3D>("Death");
-        Footsteps = GetNode<AudioStreamPlayer3D>("Footsteps");
-        AttackBark = GetNode<AudioStreamPlayer3D>("AttackBark");
-    }
+public partial class RatGruntSounds : Node
+{
+    [Export] public AudioStreamPlayer3D Fire = null!;
+    [Export] public AudioStreamPlayer3D Death = null!;
+    [Export] public AudioStreamPlayer3D Footsteps = null!;
+    [Export] public AudioStreamPlayer3D AttackBark = null!;
 }

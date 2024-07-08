@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
+namespace PawsPlunder;
+
 public interface IMoveable
 {
     void GoTo(Vector3 point);
@@ -13,7 +15,7 @@ public interface IPlayerAttacker
     void AttackTarget(Player player);
 }
 
-public class SquadController : Node
+public partial class SquadController : Node
 {
     private readonly DetectionTracker<RatGrunt> _gruntTracker;
     private readonly DetectionTracker<Sniper> _sniperTracker;
@@ -47,16 +49,18 @@ public class SquadController : Node
     private readonly Distro _percentageAttackingGunners = (0.3f, 0.1f);
 
     private RandomNumberGenerator _rng;
-    private Player _player;
-    private RayCast _wallDetection;
+    private Player? _player;
 
-    private CustomTimer _updatePositionsTimer = null;
-    private CustomTimer _runAttackRoutine = null;
+    private CustomTimer? _updatePositionsTimer = null;
+    private CustomTimer? _runAttackRoutine = null;
+
+    [Export] private RayCast3D _wallDetection = null!;
 
     public SquadController()
     {
         _rng = new RandomNumberGenerator();
 
+        // TODO: make detection trackers properly track player
         _gruntTracker = new DetectionTracker<RatGrunt>(
             canSeeTarget: grunt => 
                 _player != null && 
@@ -103,7 +107,7 @@ public class SquadController : Node
     {
         _rng.Randomize();
 
-        _wallDetection = new RayCast()
+        _wallDetection = new RayCast3D()
         {
             Enabled = false,
             CollisionMask = (int)PhysicsLayers3D.World,
@@ -178,8 +182,10 @@ public class SquadController : Node
         _queuedMovers.Clear();
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
+        float fDelta = (float)delta;
+
         if (_player != null && _player.Health <= 0)
         {
             _player = null;
@@ -190,8 +196,8 @@ public class SquadController : Node
 
         UpdateEnemyAttacking();
         
-        RunQueuedMovers(delta);
-        RunQueuedAttackers(delta);
+        RunQueuedMovers(fDelta);
+        RunQueuedAttackers(fDelta);
     }
 
     private void UpdateInCombatEnemies()
@@ -201,7 +207,7 @@ public class SquadController : Node
         _gunnerTracker.UpdateVisibility();
         _traderTracker.UpdateVisibility();
 
-        // can't wait for when this has to be updated for more than just combat people
+        // TODO: rework just entered/left combat to be more automated? 
         foreach (RatGrunt justEntered in _gruntTracker.JustEnteredCombat)
         {
             _gruntMovementQueue.AddElement(justEntered);
@@ -235,7 +241,7 @@ public class SquadController : Node
 
     private void UpdateEnemyPositions()
     {
-        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count + _traderTracker.ActiveEnemies.Count == 0)
+        if (GetActiveMoversCount() == 0)
         {
             _updatePositionsTimer?.Stop();
             _updatePositionsTimer = null;
@@ -258,14 +264,15 @@ public class SquadController : Node
             return;
         }
 
-        Vector3 playerPosition = _player.GlobalTranslation;
+        Vector3 playerPosition = _player.GlobalPosition;
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
         // can't determine without testing
-        int movedGrunts = GetNormClamped(_percentageOfMovingRatGrunts, _gruntTracker.ActiveEnemies.Count);
+        int movedGrunts = GetNormClamped(_percentageOfMovingRatGrunts, _gruntTracker.ActiveEnemies.Length);
         for (int i = 0; i < movedGrunts; i++)
         {
-            RatGrunt grunt = _gruntMovementQueue.NextElement();
+            RatGrunt grunt = _gruntMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
+
             float angle = _rng.RandfRange(Range.Circle);
             float distance = _rng.Randfn(_distanceToPlayerRatGrunt);
 
@@ -273,10 +280,10 @@ public class SquadController : Node
             _queuedMovers.AddElement((grunt, newPosition));
         }
 
-        int movedGunners = GetNormClamped(_percentageOfMovingGunners, _gunnerTracker.ActiveEnemies.Count);
+        int movedGunners = GetNormClamped(_percentageOfMovingGunners, _gunnerTracker.ActiveEnemies.Length);
         for (int i = 0; i < movedGunners; i++)
         {
-            Gunner gunner = _gunnerMovementQueue.NextElement();
+            Gunner gunner = _gunnerMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
 
             float angle = _rng.RandfRange(Range.Circle);
             float distance = _rng.Randfn(_distanceToPlayerGunner);
@@ -285,12 +292,12 @@ public class SquadController : Node
             _queuedMovers.AddElement((gunner, newPosition));
         }
 
-        int movedTraders = GetNormClamped(_percentageOfMovingTraders, _traderTracker.ActiveEnemies.Count);
+        int movedTraders = GetNormClamped(_percentageOfMovingTraders, _traderTracker.ActiveEnemies.Length);
         for (int i = 0; i < movedTraders; i++)
         {
-            TraderMouse trader = _traderMovementQueue.NextElement();
+            TraderMouse trader = _traderMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
 
-            Vector3 currentPosition = trader.GlobalTranslation;
+            Vector3 currentPosition = trader.GlobalPosition;
             
             float angle = _rng.RandfRange(Range.Circle);
             float distance = _rng.Randfn(_distanceTraderMovement);
@@ -304,7 +311,7 @@ public class SquadController : Node
 
     private void UpdateEnemyAttacking()
     {
-        if (_gruntTracker.ActiveEnemies.Count + _gunnerTracker.ActiveEnemies.Count + _sniperTracker.ActiveEnemies.Count == 0)
+        if (GetActiveAttackersCount() == 0)
         {
             _runAttackRoutine?.Stop();
             _runAttackRoutine = null;
@@ -327,20 +334,30 @@ public class SquadController : Node
             return;
         }
 
-        int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Count);
-        foreach (RatGrunt grunt in _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass)))
+        // TODO: avoid array allocations
+        int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Length);
+        Span<RatGrunt> attackingGruntsStorage = new RatGrunt[gruntAttackers];
+        gruntAttackers = _rng.RandEls(_gruntTracker.ActiveEnemies, attackingGruntsStorage, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass));
+
+        foreach (RatGrunt grunt in attackingGruntsStorage[..gruntAttackers])
         {
             _queuedAttackers.AddElement(grunt);
         }
 
-        int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Count);
-        foreach (Sniper sniper in _rng.RandEls(_sniperTracker.ActiveEnemies, sniperAttackers, sniper => CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass)))
+        int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Length);
+        Span<Sniper> attackingSniperStorage = new Sniper[sniperAttackers];
+        sniperAttackers = _rng.RandEls(_sniperTracker.ActiveEnemies, attackingSniperStorage, sniper => CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass));
+
+        foreach (Sniper sniper in attackingSniperStorage[..sniperAttackers])
         {
             _queuedAttackers.AddElement(sniper);
         }
 
-        int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Count);
-        foreach (Gunner gunner in _rng.RandEls(_gunnerTracker.ActiveEnemies, gunnerAttackers, gunner => CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)))
+        int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Length);
+        Span<Gunner> attackingGunnerStorage = new Gunner[gunnerAttackers];
+        gunnerAttackers = _rng.RandEls(_gunnerTracker.ActiveEnemies, attackingGunnerStorage, gunner => CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)); 
+
+        foreach (Gunner gunner in attackingGunnerStorage[..gunnerAttackers]) 
         {
             _queuedAttackers.AddElement(gunner);
         }
@@ -369,44 +386,50 @@ public class SquadController : Node
         }
     }
 
+
+    private int GetActiveMoversCount()
+    {
+        return 
+            _gruntTracker.ActiveEnemies.Length + 
+            _gunnerTracker.ActiveEnemies.Length + 
+            _traderTracker.ActiveEnemies.Length;
+    }
+    
+
+    private int GetActiveAttackersCount()
+    {
+        return 
+            _gruntTracker.ActiveEnemies.Length + 
+            _gunnerTracker.ActiveEnemies.Length + 
+            _sniperTracker.ActiveEnemies.Length;
+    }
+
     private int GetNormClamped(Distro distro, int max)
     {
         float percentage = _rng.Randfn(distro);
-        return Mathf.Clamp(Mathf.CeilToInt(percentage * max), 0, max);
-    }
-
-    public static Vector3 GetProjectileVelocity(Vector3 targetPosition, Vector3 targetVelocity, Vector3 startingPoint, float projectileSpeed, float delay = 0f)
-    {
-        float distanceToTarget = (targetPosition - startingPoint).Length();
-        float timeToHit = distanceToTarget / projectileSpeed + delay;
-
-        Vector3 finalPosition = targetPosition + targetVelocity * timeToHit;
-
-        Vector3 direction = (finalPosition - startingPoint).Normalized();
-
-        return direction * projectileSpeed;
+        return int.Clamp(Mathf.CeilToInt(percentage * max), 0, max);
     }
 
     private bool CanPointBeSeen(Vector3 from, Vector3 to)
     {
-        _wallDetection.GlobalTranslation = from;
-        _wallDetection.CastTo = _wallDetection.ToLocal(to);
+        _wallDetection.GlobalPosition = from;
+        _wallDetection.TargetPosition = _wallDetection.ToLocal(to);
         _wallDetection.ForceRaycastUpdate();
 
         return !_wallDetection.IsColliding();
     }
 
-    private void PlayerEnteredArea(Spatial spatial)
+    private void PlayerEnteredArea(Node3D node3d)
     {
-        if (spatial is Player player)
+        if (node3d is Player player)
         {
             _player = player;
         }
     }
 
-    private void PlayerExitedArea(Spatial spatial)
+    private void PlayerExitedArea(Node3D node3d)
     {
-        if (_player == spatial)
+        if (_player == node3d)
         {
             _player = null;
 
@@ -417,88 +440,35 @@ public class SquadController : Node
         }
     }
 
-    private class DelayedQueue<T>
-    {
-        private readonly List<T> _elements = new List<T>();
-        private readonly List<float> _times = new List<float>();
-        private float _currentTime;
-
-        public void AddElement(T element)
-        {
-            _elements.Add(element);
-        }
-
-        public IReadOnlyList<T> PopElements(float delta)
-        {
-            _currentTime += delta;
-
-            if (_times.Count == 0 || _times[0] > _currentTime)
-            {
-                return Array.Empty<T>();
-            }
-
-            List<T> ret = new List<T>();
-            int poppedCount = 0;
-            while (poppedCount < _times.Count && _times[poppedCount] < _currentTime)            
-            {
-                ret.Add(_elements[poppedCount]);
-                poppedCount += 1;
-            }
-
-            _elements.RemoveRange(0, poppedCount);
-            _times.RemoveRange(0, poppedCount);
-
-            return ret;
-        }
-        
-        public void RedistributeOver(RandomNumberGenerator rng, float time)
-        {
-            _currentTime = 0.0f;
-            _times.Clear();
-
-            for (int i = 0; i < _elements.Count; i++)
-            {
-                _times.Add(rng.Randf() * time);
-            }
-
-            _times.Sort();
-        }
-
-        public void Clear()
-        {
-            _elements.Clear();
-            _times.Clear();   
-        }
-    }
-
     private class DetectionTracker<T>
     {
         private readonly Predicate<T> _canSeeTarget;
         private readonly Predicate<T> _cantSeeTarget;
 
-        private readonly List<T> _inactiveEnemies = new List<T>();
-        private readonly List<T> _activeEnemies = new List<T>();
-        private readonly List<T> _justLeftCombat = new List<T>();
-        private readonly List<T> _justEnteredCombat = new List<T>();
+        private readonly List<T> _inactiveEnemies = [];
+        private readonly List<T> _activeEnemies = [];
+        private readonly List<T> _justLeftCombat = [];
+        private readonly List<T> _justEnteredCombat = [];
 
         // these lists are guarnateed to never be recreated and will only shift their contents with UpdateVisibility and Add/RemoveEnemy
-        public IReadOnlyList<T> InactiveEnemies => _inactiveEnemies;
-        public IReadOnlyList<T> ActiveEnemies => _activeEnemies;
+        public ReadOnlySpan<T> InactiveEnemies => _inactiveEnemies.AsSpan();
+        public ReadOnlySpan<T> ActiveEnemies => _activeEnemies.AsSpan();
 
-        public IReadOnlyList<T> JustLeftCombat => _justLeftCombat;
-        public IReadOnlyList<T> JustEnteredCombat => _justEnteredCombat;
+        public ReadOnlySpan<T> JustLeftCombat => _justLeftCombat.AsSpan();
+        public ReadOnlySpan<T> JustEnteredCombat => _justEnteredCombat.AsSpan();
 
         public DetectionTracker(Predicate<T> canSeeTarget, Predicate<T> cantSeeTarget)
         {
             (_canSeeTarget, _cantSeeTarget) = (canSeeTarget, cantSeeTarget);
         }
-        
+
         public void UpdateVisibility()
         {
             _justEnteredCombat.Clear();
             _justLeftCombat.Clear();
 
-            List<(bool isEntering, T enemy)> enteringCombat = new List<(bool, T)>();
+            // stackalloc/rent array here
+            List<(bool isEntering, T enemy)> enteringCombat = [];
 
             foreach (T enemy in _inactiveEnemies)
             {

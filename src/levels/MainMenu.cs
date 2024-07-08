@@ -1,22 +1,19 @@
 using Godot;
 
-public class MainMenu : CanvasLayer
+namespace PawsPlunder;
+
+public partial class MainMenu : CanvasLayer
 {
-	private Control _menu;
-	private Options _options;
-	private Control _storyPanel;	
-	private Label _storyLabel;
+	[Export] private Control _menu = null!;
+	[Export] private Options _options = null!;
+	[Export] private Control _storyPanel = null!;	
+	[Export] private Label _storyLabel = null!;
 	
 	[Signal]
-	public delegate void StartGame();
+	public delegate void StartGameEventHandler();
 
 	public override void _Ready()
 	{
-		_menu = GetNode<Control>("Menu");
-		_options = GetNode<Options>("Options");
-		_storyPanel = GetNode<Control>("Menu/StoryPanel");
-		_storyLabel = GetNode<Label>("Menu/StoryPanel/MarginContainer/VBoxContainer/Intro");
-
 		_menu.Visible = true;
 		_options.Visible = false;
 		_options.Load();
@@ -40,7 +37,7 @@ public class MainMenu : CanvasLayer
 
 	private void OnIntroButtonPressed()
 	{
-		EmitSignal("StartGame");
+		EmitSignal(SignalName.StartGame);
 	}
 	
 	private void _on_OptionsButton_pressed()

@@ -1,6 +1,8 @@
 using Godot;
 using System;
 
+namespace PawsPlunder;
+
 public enum DoomPortraitType
 {
 	Idle,
@@ -13,45 +15,44 @@ public enum DoomPortraitType
 // reason for this class: animated sprites don't fit into controls well,
 // rather just set it up manually
 // this also makes it easier to fine tune animations compared to adding 4 of the same frame
-public class DoomPortrait : Node
+public partial class DoomPortrait : Node
 {
-	private static readonly (int frame, float secondsPerFrame, int yOffset)[][] _animations = {
+	private static readonly (int frame, float secondsPerFrame, int yOffset)[][] _animations = [
 		// Idle
-		new (int, float, int)[] {
+		[
 			(1, 0.5f, 0), (2, 0.3f, 0), (1, 0.5f, 0), (0, 0.3f, 0),
-		},
+		],
 		// Treasure
-		new (int, float, int)[] {
+		[
 			(3, 0.2f, 0), (4, 0.2f, 0), (5, 0.2f, 0),
-		},
+		],
 		// Pain
-		new (int, float, int)[] {
+		[
 			(6, 0.3f, 0), (-1, 0.3f, 0),
-		},
+		],
 		// Death
-		new (int, float, int)[] {
+		[
 			(7, 2.0f, 0), (-1, 2.0f, 0),
-		},
+		],
 		// Flying
-		new (int, float, int)[] {
+		[
 			(9, 0.1f, 0), (10, 0.1f, -1), (11, 0.1f, 0),
-		},
+		],
 
-	};
+	];
 
-	private static readonly Vector2 Seperation = new Vector2(4, 5);
-	private static readonly Vector2 FrameSize = new Vector2(49, 46);
+	private static readonly Vector2 Seperation = new(4, 5);
+	private static readonly Vector2 FrameSize = new(49, 46);
 	private const int FramesPerRow = 3;
 
-	private AtlasTexture _portraitAtlas;
 	[Export] private DoomPortraitType _activePortrait = DoomPortraitType.Idle;
 	private int _currentIndex;
 	private float _timer;
 
+	[Export] private AtlasTexture _portraitAtlas = null!;
+
 	public override void _Ready()
 	{
-		_portraitAtlas = (AtlasTexture)GetNode<TextureRect>("MarginContainer/TextureRect").Texture;
-
 		UpdateAtlas();
 	}
 
@@ -68,11 +69,12 @@ public class DoomPortrait : Node
 		UpdateAtlas();
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
+		float fDelta = (float)delta;
 		(int frame, float secondsPerFrame, int yOffset)[] activeAnimation = _animations[(int)_activePortrait];
 
-		_timer += delta;
+		_timer += fDelta;
 
 		bool didAnimationUpdate = false;
 

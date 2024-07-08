@@ -3,7 +3,12 @@ using Godot;
 
 namespace PawsPlunder;
 
-public partial class RatGrunt : CharacterBody3D, IMeleeTargettable, IBulletHittable, IDeathPlaneEnterable, IPlayerAttacker, IMoveable
+public partial class RatGrunt : CharacterBody3D, 
+    IMeleeTargettable, 
+    IBulletHittable, 
+    IDeathPlaneEnterable, 
+    IPlayerAttacker, 
+    IMoveable
 {
     public event Action? Died;
 

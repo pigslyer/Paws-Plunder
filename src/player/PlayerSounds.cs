@@ -1,33 +1,19 @@
 using Godot;
 
-public class PlayerSounds : Node
-{
-    public AudioStreamPlayer PickupTreasure;
-    public AudioStreamPlayer Hurt;
-    public AudioStreamPlayer Death;
-    public AudioStreamPlayer Footsteps;
-    public AudioStreamPlayer Jumping;
-    public AudioStreamPlayer Landing;
-    public AudioStreamPlayer ShootSingle;
-    public AudioStreamPlayer PickupSingle;
-    public AudioStreamPlayer ShootQuad;
-    public AudioStreamPlayer PickupQuad;
-    public AudioStreamPlayer Melee;
-    public AudioStreamPlayer MeleeMiss;
+namespace PawsPlunder;
 
-    public override void _Ready()
-    {
-        PickupTreasure = GetNode<AudioStreamPlayer>("PickupTreasure");
-        Hurt = GetNode<AudioStreamPlayer>("Hurt");
-        Death = GetNode<AudioStreamPlayer>("Death");
-        Footsteps = GetNode<AudioStreamPlayer>("Footsteps");
-        Jumping = GetNode<AudioStreamPlayer>("Jumping");
-        Landing = GetNode<AudioStreamPlayer>("Landing");
-        ShootSingle = GetNode<AudioStreamPlayer>("ShootSingle");
-        PickupSingle = GetNode<AudioStreamPlayer>("PickupSingle");
-        ShootQuad = GetNode<AudioStreamPlayer>("ShootQuad");
-        PickupQuad = GetNode<AudioStreamPlayer>("PickupQuad");
-        Melee = GetNode<AudioStreamPlayer>("Melee");
-        MeleeMiss = GetNode<AudioStreamPlayer>("MeleeMiss");
-    }
+public partial class PlayerSounds : Node
+{
+    [Export] public AudioStreamPlayer PickupTreasure = null!;
+    [Export] public AudioStreamPlayer Hurt = null!;
+    [Export] public AudioStreamPlayer Death = null!;
+    [Export] public AudioStreamPlayer Footsteps = null!;
+    [Export] public AudioStreamPlayer Jumping = null!;
+    [Export] public AudioStreamPlayer Landing = null!;
+    [Export] public AudioStreamPlayer ShootSingle = null!;
+    [Export] public AudioStreamPlayer PickupSingle = null!;
+    [Export] public AudioStreamPlayer ShootQuad = null!;
+    [Export] public AudioStreamPlayer PickupQuad = null!;
+    [Export] public AudioStreamPlayer Melee = null!;
+    [Export] public AudioStreamPlayer MeleeMiss = null!;
 }

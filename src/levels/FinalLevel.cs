@@ -1,29 +1,22 @@
 using Godot;
 using System;
 
-public class FinalLevel : Spatial
-{
-	private Player _player;
-	private Path _catapultPath;
-	private PathFollow _catapultPathFollow;
+namespace PawsPlunder;
 
-	private AudioStreamPlayer _musicMenu;
-	private AudioStreamPlayer _musicGameplay;
-	private AudioStreamPlayer _musicDeath;
-	private AudioStreamPlayer _windPlayer;
-	private AudioStreamPlayer _cannonPlayer;
+public partial class FinalLevel : Node3D
+{
+	[Export] private Player _player = null!;
+	[Export] private Path3D _catapultPath = null!;
+	[Export] private PathFollow3D _catapultPathFollow = null!;
+
+	[Export] private AudioStreamPlayer _musicMenu = null!;
+	[Export] private AudioStreamPlayer _musicGameplay = null!;
+	[Export] private AudioStreamPlayer _musicDeath = null!;
+	[Export] private AudioStreamPlayer _windPlayer = null!;
+	[Export] private AudioStreamPlayer _cannonPlayer = null!;
 
 	public override void _Ready()
 	{
-		_player = GetNode<Player>("%Player");
-		_catapultPath = GetNode<Path>("CatapultPath");
-		_catapultPathFollow = GetNode<PathFollow>("CatapultPath/CatapultPathFollow");
-		_musicMenu = GetNode<AudioStreamPlayer>("MusicMenu");
-		_musicGameplay = GetNode<AudioStreamPlayer>("MusicGameplay");
-		_musicDeath = GetNode<AudioStreamPlayer>("MusicDeath");
-		_windPlayer = GetNode<AudioStreamPlayer>("Wind");
-		_cannonPlayer = GetNode<AudioStreamPlayer>("Cannon");
-
 		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
 		catapultOverlay.Material.Set("shader_param/alpha", 1f);
 		catapultOverlay.Material.Set("shader_param/inner_radius", 0.9f);
@@ -51,20 +44,34 @@ public class FinalLevel : Spatial
 		_musicMenu.Stop();
 
 		//_player.ToggleGravity(false);
-		_player.Translation = Vector3.Zero;
+		_player.Position = Vector3.Zero;
 		_player.DoomPortrait.SetAnimation(DoomPortraitType.Flying);
 
-		var catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
+		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
 		catapultOverlay.Visible = true;
 		
-		var tween = GetNode<Tween>("%CatapultTween");
-		tween.InterpolateProperty(_catapultPathFollow, "unit_offset", 0f, 1f, 1.5f, Tween.TransitionType.Quad, Tween.EaseType.Out);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/alpha", 1f, 0f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/inner_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
-		tween.InterpolateProperty(catapultOverlay.Material, "shader_param/outer_radius", 0.9f, 1f, 0.5f, Tween.TransitionType.Quad, Tween.EaseType.InOut);
-		tween.InterpolateProperty(_player, nameof(_player.LockInPlace), true, false, 1f);
-		tween.InterpolateCallback(_player.DoomPortrait, 1.5f, nameof(_player.DoomPortrait.SetAnimation), DoomPortraitType.Idle);
-		tween.Start();
+		Tween tween = CreateTween().SetParallel();
+		
+		tween.TweenProperty(_catapultPathFollow, "unit_offset", 1f, 1.5)
+			.From(0f)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.Out);
+
+		tween.TweenProperty(catapultOverlay.Material, "shader_param/alpha", 0f, 0.5)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.InOut);
+		
+		tween.TweenProperty(catapultOverlay.Material, "shader_param/inner_radius", 1f, 0.5)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.OutIn);
+		
+		tween.TweenProperty(catapultOverlay.Material, "shader_param/outer_radius", 1f, 0.5)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.InOut);
+
+		tween.TweenProperty(_player, nameof(_player.LockInPlace), false, 1f);
+		tween.TweenCallback(Callable.From(() => _player.DoomPortrait.SetAnimation(DoomPortraitType.Idle))).SetDelay(1.5f);
+
 		
 		_windPlayer.Play();
 		_cannonPlayer.Play();		

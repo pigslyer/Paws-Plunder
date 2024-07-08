@@ -1,15 +1,17 @@
 using Godot;
 
+namespace PawsPlunder;
+
 public interface IDeathPlaneEnterable
 {
     void EnteredDeathPlane();
 }
 
-public class DeathPlane : Area
+public partial class DeathPlane : Area3D
 {
     public override void _Ready()
     {
-        Connect("body_entered", this, nameof(OnBodyEntered));
+        BodyEntered += OnBodyEntered;
     }
 
     private void OnBodyEntered(Node body)
