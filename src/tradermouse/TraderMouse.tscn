@@ -1,113 +1,219 @@
-[gd_scene load_steps=43 format=2]
+[gd_scene load_steps=43 format=3 uid="uid://dl8l2grgbxvc3"]
 
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0008.png" type="Texture" id=1]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0001.png" type="Texture" id=2]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0004.png" type="Texture" id=3]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0009.png" type="Texture" id=4]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0003.png" type="Texture" id=5]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0005.png" type="Texture" id=6]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0002.png" type="Texture" id=7]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0006.png" type="Texture" id=8]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0018.png" type="Texture" id=9]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0007.png" type="Texture" id=10]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0012.png" type="Texture" id=11]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0011.png" type="Texture" id=12]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0010.png" type="Texture" id=13]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0016.png" type="Texture" id=14]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0014.png" type="Texture" id=15]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0019.png" type="Texture" id=16]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0013.png" type="Texture" id=17]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0015.png" type="Texture" id=18]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0017.png" type="Texture" id=19]
-[ext_resource path="res://src/assets/trader idle 1/Trader_idle0000.png" type="Texture" id=20]
-[ext_resource path="res://src/assets/trader death/Trader_dead0001.png" type="Texture" id=21]
-[ext_resource path="res://src/assets/trader death/Trader_dead0002.png" type="Texture" id=22]
-[ext_resource path="res://src/assets/trader death/Trader_dead0000.png" type="Texture" id=23]
-[ext_resource path="res://src/assets/trader death/Trader_dead0003.png" type="Texture" id=24]
-[ext_resource path="res://src/assets/trader death/Trader_dead0004.png" type="Texture" id=25]
-[ext_resource path="res://src/assets/trader death/Trader_dead0005.png" type="Texture" id=26]
-[ext_resource path="res://src/tradermouse/TraderMouse.cs" type="Script" id=27]
-[ext_resource path="res://src/assets/sounds/enemies/enemy_footsteps.mp3" type="AudioStream" id=28]
-[ext_resource path="res://src/assets/sounds/enemies/trader_panic.mp3" type="AudioStream" id=29]
-[ext_resource path="res://src/assets/sounds/enemies/enemy_damage.mp3" type="AudioStream" id=30]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0007.png" type="Texture" id=31]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0004.png" type="Texture" id=32]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0001.png" type="Texture" id=33]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0005.png" type="Texture" id=34]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0003.png" type="Texture" id=35]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0006.png" type="Texture" id=36]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0002.png" type="Texture" id=37]
-[ext_resource path="res://src/assets/trader walk/Trader_walk0000.png" type="Texture" id=38]
-[ext_resource path="res://src/tradermouse/TraderMouseSounds.cs" type="Script" id=39]
+[ext_resource type="Texture2D" uid="uid://fof7c7epaf4t" path="res://src/assets/trader idle 1/Trader_idle0008.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://db2sx2nr3wjox" path="res://src/assets/trader idle 1/Trader_idle0001.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://btab6tduucp8p" path="res://src/assets/trader idle 1/Trader_idle0004.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cq171aqycttn4" path="res://src/assets/trader idle 1/Trader_idle0009.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://bdmwato1y30n0" path="res://src/assets/trader idle 1/Trader_idle0003.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://cpbqbh5ia10hc" path="res://src/assets/trader idle 1/Trader_idle0005.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://k5uly6xjjesd" path="res://src/assets/trader idle 1/Trader_idle0002.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://c2awibog6g84d" path="res://src/assets/trader idle 1/Trader_idle0006.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://d37rq1yvw6uii" path="res://src/assets/trader idle 1/Trader_idle0018.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://do4w0x77or0ut" path="res://src/assets/trader idle 1/Trader_idle0007.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://u6m02unwhv7o" path="res://src/assets/trader idle 1/Trader_idle0012.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://cr0e22dpye0bm" path="res://src/assets/trader idle 1/Trader_idle0011.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://hvnaaq5qlg5s" path="res://src/assets/trader idle 1/Trader_idle0010.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://0sx2y5hwmtlj" path="res://src/assets/trader idle 1/Trader_idle0016.png" id="14"]
+[ext_resource type="Texture2D" uid="uid://305flbsto3c1" path="res://src/assets/trader idle 1/Trader_idle0014.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://ebnbk85glekg" path="res://src/assets/trader idle 1/Trader_idle0019.png" id="16"]
+[ext_resource type="Texture2D" uid="uid://uayph8mou5tg" path="res://src/assets/trader idle 1/Trader_idle0013.png" id="17"]
+[ext_resource type="Texture2D" uid="uid://bvnfpa6cx28x5" path="res://src/assets/trader idle 1/Trader_idle0015.png" id="18"]
+[ext_resource type="Texture2D" uid="uid://dh36u3hl8qy7l" path="res://src/assets/trader idle 1/Trader_idle0017.png" id="19"]
+[ext_resource type="Texture2D" uid="uid://b0wvqiuby4ftb" path="res://src/assets/trader idle 1/Trader_idle0000.png" id="20"]
+[ext_resource type="Texture2D" uid="uid://cfj30hpsnt4uj" path="res://src/assets/trader death/Trader_dead0001.png" id="21"]
+[ext_resource type="Texture2D" uid="uid://cbhb4hxurbjmr" path="res://src/assets/trader death/Trader_dead0002.png" id="22"]
+[ext_resource type="Texture2D" uid="uid://r2a8tstcc256" path="res://src/assets/trader death/Trader_dead0000.png" id="23"]
+[ext_resource type="Texture2D" uid="uid://bibrphwt72u8x" path="res://src/assets/trader death/Trader_dead0003.png" id="24"]
+[ext_resource type="Texture2D" uid="uid://bmq6k6yuwbmhn" path="res://src/assets/trader death/Trader_dead0004.png" id="25"]
+[ext_resource type="Texture2D" uid="uid://ltpj66vh62ee" path="res://src/assets/trader death/Trader_dead0005.png" id="26"]
+[ext_resource type="Script" path="res://src/tradermouse/TraderMouse.cs" id="27"]
+[ext_resource type="AudioStream" uid="uid://ddltxy2mxydmo" path="res://src/assets/sounds/enemies/enemy_footsteps.mp3" id="28"]
+[ext_resource type="AudioStream" uid="uid://clarf4lpml256" path="res://src/assets/sounds/enemies/trader_panic.mp3" id="29"]
+[ext_resource type="AudioStream" uid="uid://b22nqp5ypb64d" path="res://src/assets/sounds/enemies/enemy_damage.mp3" id="30"]
+[ext_resource type="Texture2D" uid="uid://bdqctk3ki4pad" path="res://src/assets/trader walk/Trader_walk0007.png" id="31"]
+[ext_resource type="Texture2D" uid="uid://3ublbk5qfj2i" path="res://src/assets/trader walk/Trader_walk0004.png" id="32"]
+[ext_resource type="Texture2D" uid="uid://bgrcja4mx551x" path="res://src/assets/trader walk/Trader_walk0001.png" id="33"]
+[ext_resource type="Texture2D" uid="uid://mg5plic41eph" path="res://src/assets/trader walk/Trader_walk0005.png" id="34"]
+[ext_resource type="Texture2D" uid="uid://c2r0emrq7jva5" path="res://src/assets/trader walk/Trader_walk0003.png" id="35"]
+[ext_resource type="Texture2D" uid="uid://dewd6dv6q8m3g" path="res://src/assets/trader walk/Trader_walk0006.png" id="36"]
+[ext_resource type="Texture2D" uid="uid://bnrrq2by6dk8w" path="res://src/assets/trader walk/Trader_walk0002.png" id="37"]
+[ext_resource type="Texture2D" uid="uid://c3qd5wrtu4deb" path="res://src/assets/trader walk/Trader_walk0000.png" id="38"]
+[ext_resource type="Script" path="res://src/tradermouse/TraderMouseSounds.cs" id="39"]
 
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 23 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 26 ) ],
+[sub_resource type="SpriteFrames" id="1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26")
+}],
 "loop": false,
-"name": "Death",
+"name": &"Death",
 "speed": 7.0
 }, {
-"frames": [ ExtResource( 20 ), ExtResource( 2 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 3 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 1 ), ExtResource( 4 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 11 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 18 ), ExtResource( 14 ), ExtResource( 19 ), ExtResource( 9 ), ExtResource( 16 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16")
+}],
 "loop": true,
-"name": "Idle",
+"name": &"Idle",
 "speed": 7.5
 }, {
-"frames": [ ExtResource( 38 ), ExtResource( 33 ), ExtResource( 37 ), ExtResource( 35 ), ExtResource( 32 ), ExtResource( 34 ), ExtResource( 36 ), ExtResource( 31 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("38")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31")
+}],
 "loop": true,
-"name": "Walk",
+"name": &"Walk",
 "speed": 14.0
-} ]
+}]
 
-[sub_resource type="CapsuleShape" id=2]
+[sub_resource type="CapsuleShape3D" id="2"]
 
-[sub_resource type="CapsuleShape" id=3]
-radius = 1.5
+[sub_resource type="CapsuleShape3D" id="3"]
+radius = 0.2
 height = 0.4
 
-[node name="TraderMouse" type="KinematicBody"]
+[node name="TraderMouse" type="CharacterBody3D" node_paths=PackedStringArray("_agent", "_sprite", "_centerOfMassNode", "_sounds")]
 collision_layer = 4
-script = ExtResource( 27 )
+script = ExtResource("27")
+_agent = NodePath("NavigationAgent")
+_sprite = NodePath("AnimatedSprite3D")
+_centerOfMassNode = NodePath("CenterOfMass")
+_sounds = NodePath("Sounds")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0 )
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 pixel_size = 0.1
 billboard = 2
-frames = SubResource( 1 )
-animation = "Idle"
+sprite_frames = SubResource("1")
+animation = &"Idle"
 
-[node name="Legs" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.5, 0 )
-shape = SubResource( 2 )
+[node name="Legs" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.5, 0)
+shape = SubResource("2")
 
-[node name="Backpack" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 3, 0 )
-shape = SubResource( 3 )
+[node name="Backpack" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 3, 0)
+shape = SubResource("3")
 
-[node name="NavigationAgent" type="NavigationAgent" parent="."]
+[node name="NavigationAgent" type="NavigationAgent3D" parent="."]
 
-[node name="CenterOfMass" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.281, 0 )
+[node name="CenterOfMass" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.281, 0)
 
-[node name="Sounds" type="Spatial" parent="."]
-script = ExtResource( 39 )
+[node name="Sounds" type="Node3D" parent="." node_paths=PackedStringArray("Death", "Footsteps", "Panic")]
+script = ExtResource("39")
+Death = NodePath("Death")
+Footsteps = NodePath("Footsteps")
+Panic = NodePath("Panic")
 
 [node name="Footsteps" type="AudioStreamPlayer3D" parent="Sounds"]
-stream = ExtResource( 28 )
-unit_db = 6.0
+stream = ExtResource("28")
 unit_size = 20.0
 max_db = 6.0
-bus = "SFX"
+bus = &"SFX"
 
 [node name="Panic" type="AudioStreamPlayer3D" parent="Sounds"]
-stream = ExtResource( 29 )
-unit_db = 6.0
+stream = ExtResource("29")
 unit_size = 20.0
 max_db = 6.0
-bus = "Voice"
+bus = &"Voice"
 
 [node name="Death" type="AudioStreamPlayer3D" parent="Sounds"]
-stream = ExtResource( 30 )
-unit_db = 6.0
+stream = ExtResource("30")
 unit_size = 20.0
 max_db = 6.0
-bus = "Voice"
+bus = &"Voice"

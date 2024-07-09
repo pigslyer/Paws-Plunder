@@ -1,395 +1,337 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=16 format=3 uid="uid://ddn2p0fo5whkv"]
 
-[ext_resource path="res://src/globals/Styling.tres" type="Theme" id=1]
-[ext_resource path="res://src/assets/fonts/coralines_cat.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://src/ui/CombatLogTheme.tres" type="Theme" id=3]
-[ext_resource path="res://src/levels/MainMenu.cs" type="Script" id=4]
-[ext_resource path="res://src/scripts/VolumeSlider.cs" type="Script" id=5]
-[ext_resource path="res://src/ui/Deus EX Console.ttf" type="DynamicFontData" id=6]
-[ext_resource path="res://src/scripts/Options.cs" type="Script" id=7]
-[ext_resource path="res://src/ui/Credits.tscn" type="PackedScene" id=8]
+[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/globals/Styling.tres" id="1"]
+[ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="3"]
+[ext_resource type="Script" path="res://src/levels/MainMenu.cs" id="4"]
+[ext_resource type="Script" path="res://src/scripts/VolumeSlider.cs" id="5"]
+[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/ui/Deus EX Console.ttf" id="6"]
+[ext_resource type="Script" path="res://src/scripts/Options.cs" id="7"]
+[ext_resource type="PackedScene" path="res://src/ui/Credits.tscn" id="8"]
 
-[sub_resource type="StyleBoxEmpty" id=7]
+[sub_resource type="StyleBoxEmpty" id="7"]
 
-[sub_resource type="StyleBoxEmpty" id=8]
+[sub_resource type="StyleBoxEmpty" id="8"]
 
-[sub_resource type="StyleBoxFlat" id=9]
-bg_color = Color( 0.207843, 0.207843, 0.207843, 1 )
+[sub_resource type="StyleBoxFlat" id="9"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
-border_color = Color( 1, 1, 1, 1 )
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color( 0, 0, 0, 1 )
+[sub_resource type="StyleBoxFlat" id="6"]
+bg_color = Color(0, 0, 0, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
-border_color = Color( 1, 1, 1, 1 )
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id=10]
-bg_color = Color( 1, 1, 1, 1 )
+[sub_resource type="StyleBoxFlat" id="10"]
+bg_color = Color(1, 1, 1, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
-border_color = Color( 0, 0, 0, 1 )
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id=5]
-bg_color = Color( 0.141176, 0.141176, 0.141176, 1 )
+[sub_resource type="StyleBoxFlat" id="5"]
+bg_color = Color(0.141176, 0.141176, 0.141176, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
-border_color = Color( 1, 1, 1, 1 )
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 6
 
-[sub_resource type="DynamicFont" id=11]
-outline_size = 1
-outline_color = Color( 0, 0, 0, 1 )
-font_data = ExtResource( 6 )
+[sub_resource type="FontFile" id="11"]
+fallbacks = Array[Font]([ExtResource("6")])
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/28/0 = Vector2(0, 0)
+cache/0/21/0/ascent = 0.0
+cache/0/21/0/descent = 0.0
+cache/0/21/0/underline_position = 0.0
+cache/0/21/0/underline_thickness = 0.0
+cache/0/21/0/scale = 1.0
+cache/0/21/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/28/0 = Vector2(0, 0)
+cache/0/28/0/ascent = 0.0
+cache/0/28/0/descent = 0.0
+cache/0/28/0/underline_position = 0.0
+cache/0/28/0/underline_thickness = 0.0
+cache/0/28/0/scale = 1.0
+cache/0/28/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/28/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/28/0/kerning_overrides/28/0 = Vector2(0, 0)
 
-[sub_resource type="Theme" id=4]
-default_font = SubResource( 11 )
-Button/styles/disabled = SubResource( 7 )
-Button/styles/focus = SubResource( 8 )
-Button/styles/hover = SubResource( 9 )
-Button/styles/normal = SubResource( 6 )
-Button/styles/pressed = SubResource( 10 )
-PanelContainer/styles/panel = SubResource( 5 )
+[sub_resource type="Theme" id="4"]
+default_font = SubResource("11")
+default_font_size = 21
+Button/styles/disabled = SubResource("7")
+Button/styles/focus = SubResource("8")
+Button/styles/hover = SubResource("9")
+Button/styles/normal = SubResource("6")
+Button/styles/pressed = SubResource("10")
+PanelContainer/styles/panel = SubResource("5")
 
-[sub_resource type="DynamicFont" id=1]
-size = 64
-outline_size = 8
-outline_color = Color( 0, 0, 0, 1 )
-font_data = ExtResource( 2 )
-
-[sub_resource type="DynamicFont" id=2]
-size = 32
-outline_size = 4
-outline_color = Color( 0, 0, 0, 1 )
-font_data = ExtResource( 2 )
-
-[node name="MainMenu" type="CanvasLayer"]
-script = ExtResource( 4 )
+[node name="MainMenu" type="CanvasLayer" node_paths=PackedStringArray("_menu", "_options", "_storyPanel", "_storyLabel")]
+script = ExtResource("4")
+_menu = NodePath("Menu")
+_options = NodePath("Options")
+_storyPanel = NodePath("Menu/StoryPanel")
+_storyLabel = NodePath("Menu/StoryPanel/MarginContainer/VBoxContainer/Intro")
 
 [node name="MouseCapture" type="ColorRect" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 1, 1, 1, 0 )
+color = Color(1, 1, 1, 0)
 
 [node name="Menu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = SubResource( 4 )
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("4")
 
 [node name="LogoLabel" type="Label" parent="Menu"]
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.21
+anchor_top = 0.2
 anchor_right = 0.5
-anchor_bottom = 0.21
-margin_left = -451.0
-margin_top = -65.5
-margin_right = 451.0
-margin_bottom = 65.5
-theme = ExtResource( 1 )
-custom_fonts/font = SubResource( 1 )
+anchor_bottom = 0.2
+offset_left = -112.5
+offset_top = -16.5
+offset_right = 112.5
+offset_bottom = 16.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
 text = "Paws and Plunder"
 
 [node name="LogoLabel2" type="Label" parent="Menu"]
 visible = false
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.128
 anchor_right = 0.5
 anchor_bottom = 0.128
-margin_left = -395.0
-margin_top = 162.76
-margin_right = 422.0
-margin_bottom = 240.76
-theme = ExtResource( 1 )
-custom_fonts/font = SubResource( 2 )
+theme = ExtResource("1")
 text = "A tale of mighty cat pirates"
 
 [node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
-anchor_left = 0.5
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.35
 anchor_top = 0.6
-anchor_right = 0.5
+anchor_right = 0.65
 anchor_bottom = 0.6
-margin_left = -150.0
-margin_top = -199.0
-margin_right = 150.0
-margin_bottom = 199.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/MainMenuContainer"]
-margin_right = 300.0
-margin_bottom = 398.0
-rect_min_size = Vector2( 300, 300 )
-custom_constants/separation = 64
+layout_mode = 2
 
 [node name="PlayButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
-margin_right = 300.0
-margin_bottom = 90.0
-theme = ExtResource( 1 )
+layout_mode = 2
+theme = ExtResource("1")
 text = "Play"
 
 [node name="OptionsButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
-margin_top = 154.0
-margin_right = 300.0
-margin_bottom = 244.0
-theme = ExtResource( 1 )
+layout_mode = 2
+theme = ExtResource("1")
 text = "Options"
 
 [node name="Credits" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
-margin_top = 308.0
-margin_right = 300.0
-margin_bottom = 398.0
-theme = ExtResource( 1 )
+layout_mode = 2
+theme = ExtResource("1")
 text = "Credits"
 
 [node name="StoryPanel" type="PanelContainer" parent="Menu"]
 visible = false
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.6
 anchor_right = 0.5
 anchor_bottom = 0.6
-margin_left = -212.0
-margin_top = -195.0
-margin_right = 212.0
-margin_bottom = 195.0
-theme = SubResource( 4 )
+theme = SubResource("4")
 
 [node name="MarginContainer" type="MarginContainer" parent="Menu/StoryPanel"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 420.0
-margin_bottom = 386.0
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/StoryPanel/MarginContainer"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 408.0
-margin_bottom = 374.0
+layout_mode = 2
 alignment = 1
 
 [node name="Intro" type="Label" parent="Menu/StoryPanel/MarginContainer/VBoxContainer"]
-margin_top = 103.0
-margin_right = 400.0
-margin_bottom = 232.0
-rect_min_size = Vector2( 400, 0 )
+layout_mode = 2
 size_flags_vertical = 5
 text = "\"Give the word %NAME% and we'll begin. Just remember, once you're on board, you need to get as much treasure as you can, taking out any of their dastardly rat guards along the way before the ship sinks.\"
 \"Alright... 3, 2, 1...\""
-autowrap = true
 
 [node name="Fire" type="Button" parent="Menu/StoryPanel/MarginContainer/VBoxContainer"]
-margin_top = 236.0
-margin_right = 400.0
-margin_bottom = 263.0
+layout_mode = 2
 text = "Fire!"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu"]
 visible = false
+layout_mode = 0
 anchor_left = 0.1
 anchor_top = 0.1
 anchor_right = 0.9
 anchor_bottom = 0.9
 
-[node name="Credits" parent="Menu/VBoxContainer" instance=ExtResource( 8 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 1536.0
-margin_bottom = 781.0
+[node name="Credits" parent="Menu/VBoxContainer" instance=ExtResource("8")]
+layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Button" type="Button" parent="Menu/VBoxContainer"]
-margin_top = 785.0
-margin_right = 1536.0
-margin_bottom = 864.0
+layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 text = "Exit"
 
 [node name="Options" type="Control" parent="."]
 visible = false
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 7 )
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7")
 
 [node name="Container" type="MarginContainer" parent="Options"]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -315.84
-margin_top = -360.0
-margin_right = 315.84
-margin_bottom = 360.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container"]
-margin_right = 631.0
-margin_bottom = 720.0
-rect_min_size = Vector2( 300, 300 )
-custom_constants/separation = 64
+layout_mode = 2
 
 [node name="Mouse" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-margin_right = 631.0
-margin_bottom = 62.0
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Mouse"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 624.0
-margin_bottom = 55.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Options/Container/VBoxContainer/Mouse/VBoxContainer"]
-margin_right = 617.0
-margin_bottom = 28.0
-theme = ExtResource( 3 )
+layout_mode = 2
+theme = ExtResource("3")
 text = "Mouse sensitivity"
 
 [node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Mouse/VBoxContainer"]
-margin_top = 32.0
-margin_right = 617.0
-margin_bottom = 48.0
+layout_mode = 2
 min_value = 0.001
 max_value = 2.0
 step = 0.0
 value = 1.0
 
 [node name="Master" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-margin_top = 126.0
-margin_right = 631.0
-margin_bottom = 188.0
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Master"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 624.0
-margin_bottom = 55.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Options/Container/VBoxContainer/Master/VBoxContainer"]
-margin_right = 617.0
-margin_bottom = 28.0
-theme = ExtResource( 3 )
+layout_mode = 2
+theme = ExtResource("3")
 text = "Master volume"
 
 [node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Master/VBoxContainer"]
-margin_top = 32.0
-margin_right = 617.0
-margin_bottom = 48.0
+layout_mode = 2
 max_value = 2.0
 step = 0.0
 value = 1.0
-script = ExtResource( 5 )
+script = ExtResource("5")
 _busName = "Master"
 
 [node name="Music" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-margin_top = 252.0
-margin_right = 631.0
-margin_bottom = 314.0
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Music"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 624.0
-margin_bottom = 55.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Options/Container/VBoxContainer/Music/VBoxContainer"]
-margin_right = 617.0
-margin_bottom = 28.0
-theme = ExtResource( 3 )
+layout_mode = 2
+theme = ExtResource("3")
 text = "Music volume"
 
 [node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Music/VBoxContainer"]
-margin_top = 32.0
-margin_right = 617.0
-margin_bottom = 48.0
+layout_mode = 2
 max_value = 2.0
 step = 0.0
 value = 1.0
-script = ExtResource( 5 )
+script = ExtResource("5")
 _busName = "Music"
 
 [node name="SFX" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-margin_top = 378.0
-margin_right = 631.0
-margin_bottom = 440.0
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/SFX"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 624.0
-margin_bottom = 55.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Options/Container/VBoxContainer/SFX/VBoxContainer"]
-margin_right = 617.0
-margin_bottom = 28.0
-theme = ExtResource( 3 )
+layout_mode = 2
+theme = ExtResource("3")
 text = "SFX volume"
 
 [node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/SFX/VBoxContainer"]
-margin_top = 32.0
-margin_right = 617.0
-margin_bottom = 48.0
+layout_mode = 2
 max_value = 2.0
 step = 0.0
 value = 1.0
-script = ExtResource( 5 )
+script = ExtResource("5")
 _busName = "SFX"
 
 [node name="Voice" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-margin_top = 504.0
-margin_right = 631.0
-margin_bottom = 566.0
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Voice"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 624.0
-margin_bottom = 55.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Options/Container/VBoxContainer/Voice/VBoxContainer"]
-margin_right = 617.0
-margin_bottom = 28.0
-theme = ExtResource( 3 )
+layout_mode = 2
+theme = ExtResource("3")
 text = "Voice volume"
 
 [node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Voice/VBoxContainer"]
-margin_top = 32.0
-margin_right = 617.0
-margin_bottom = 48.0
+layout_mode = 2
 max_value = 2.0
 step = 0.0
 value = 1.0
-script = ExtResource( 5 )
+script = ExtResource("5")
 _busName = "Voice"
 
 [node name="BackButton" type="Button" parent="Options/Container/VBoxContainer"]
-margin_top = 630.0
-margin_right = 631.0
-margin_bottom = 720.0
-theme = ExtResource( 1 )
+layout_mode = 2
+theme = ExtResource("1")
 text = "Back"
 
 [connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]

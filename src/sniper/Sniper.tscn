@@ -1,81 +1,180 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=36 format=3 uid="uid://bbop0l2h577xh"]
 
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0008.png" type="Texture" id=1]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0009.png" type="Texture" id=2]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0010.png" type="Texture" id=3]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0011.png" type="Texture" id=4]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0003.png" type="Texture" id=5]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0012.png" type="Texture" id=6]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0000.png" type="Texture" id=7]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0006.png" type="Texture" id=8]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0002.png" type="Texture" id=9]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0001.png" type="Texture" id=10]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0004.png" type="Texture" id=11]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0005.png" type="Texture" id=12]
-[ext_resource path="res://src/assets/sniper idle/Sniper_idle0007.png" type="Texture" id=13]
-[ext_resource path="res://src/sniper/Sniper.cs" type="Script" id=14]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0003.png" type="Texture" id=15]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0005.png" type="Texture" id=16]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0007.png" type="Texture" id=17]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0000.png" type="Texture" id=18]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0002.png" type="Texture" id=19]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0009.png" type="Texture" id=20]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0004.png" type="Texture" id=21]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0008.png" type="Texture" id=22]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0006.png" type="Texture" id=23]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0001.png" type="Texture" id=24]
-[ext_resource path="res://src/assets/sniper fire/Sniper_fire0010.png" type="Texture" id=25]
-[ext_resource path="res://src/bullet/Bullet.tscn" type="PackedScene" id=26]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0000.png" type="Texture" id=27]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0002.png" type="Texture" id=28]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0003.png" type="Texture" id=29]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0004.png" type="Texture" id=30]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0005.png" type="Texture" id=31]
-[ext_resource path="res://src/assets/sniper dead/Sniper_dead0001.png" type="Texture" id=32]
-[ext_resource path="res://src/sniper/SniperSounds.cs" type="Script" id=33]
+[ext_resource type="Texture2D" uid="uid://60elfg01veiu" path="res://src/assets/sniper idle/Sniper_idle0008.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://dq0f7vsxjlt13" path="res://src/assets/sniper idle/Sniper_idle0009.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c1i20upqyswrm" path="res://src/assets/sniper idle/Sniper_idle0010.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://deqbv32nrnccu" path="res://src/assets/sniper idle/Sniper_idle0011.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://clx0jtpi4814j" path="res://src/assets/sniper idle/Sniper_idle0003.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://csg8nbk0dspgk" path="res://src/assets/sniper idle/Sniper_idle0012.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://dt35ql44usns8" path="res://src/assets/sniper idle/Sniper_idle0000.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://4rcpr1oaptd5" path="res://src/assets/sniper idle/Sniper_idle0006.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://jfw5qe22y7st" path="res://src/assets/sniper idle/Sniper_idle0002.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://dcocxsjujl0yw" path="res://src/assets/sniper idle/Sniper_idle0001.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://boixucm6hgnu7" path="res://src/assets/sniper idle/Sniper_idle0004.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://cevly44xsnh3r" path="res://src/assets/sniper idle/Sniper_idle0005.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://co22ek12v8j7h" path="res://src/assets/sniper idle/Sniper_idle0007.png" id="13"]
+[ext_resource type="Script" path="res://src/sniper/Sniper.cs" id="14"]
+[ext_resource type="Texture2D" uid="uid://b0lof6d7a347p" path="res://src/assets/sniper fire/Sniper_fire0003.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://d1x167x28l17" path="res://src/assets/sniper fire/Sniper_fire0005.png" id="16"]
+[ext_resource type="Texture2D" uid="uid://i3h2f3ahglwo" path="res://src/assets/sniper fire/Sniper_fire0007.png" id="17"]
+[ext_resource type="Texture2D" uid="uid://nfcgr83mi5n1" path="res://src/assets/sniper fire/Sniper_fire0000.png" id="18"]
+[ext_resource type="Texture2D" uid="uid://011mr0pr5np2" path="res://src/assets/sniper fire/Sniper_fire0002.png" id="19"]
+[ext_resource type="Texture2D" uid="uid://xr48udpr1flo" path="res://src/assets/sniper fire/Sniper_fire0009.png" id="20"]
+[ext_resource type="Texture2D" uid="uid://cqpj6hmo0nkxq" path="res://src/assets/sniper fire/Sniper_fire0004.png" id="21"]
+[ext_resource type="Texture2D" uid="uid://b5mwukqcdap4r" path="res://src/assets/sniper fire/Sniper_fire0008.png" id="22"]
+[ext_resource type="Texture2D" uid="uid://bnhtrc0dggt05" path="res://src/assets/sniper fire/Sniper_fire0006.png" id="23"]
+[ext_resource type="Texture2D" uid="uid://daf524ks2xplg" path="res://src/assets/sniper fire/Sniper_fire0001.png" id="24"]
+[ext_resource type="Texture2D" uid="uid://c1rt1ube5hmby" path="res://src/assets/sniper fire/Sniper_fire0010.png" id="25"]
+[ext_resource type="PackedScene" path="res://src/bullet/Bullet.tscn" id="26"]
+[ext_resource type="Texture2D" uid="uid://bghypgvvdql0s" path="res://src/assets/sniper dead/Sniper_dead0000.png" id="27"]
+[ext_resource type="Texture2D" uid="uid://bkbpsqfras3em" path="res://src/assets/sniper dead/Sniper_dead0002.png" id="28"]
+[ext_resource type="Texture2D" uid="uid://dwmkjx3xxy0yy" path="res://src/assets/sniper dead/Sniper_dead0003.png" id="29"]
+[ext_resource type="Texture2D" uid="uid://l3xek7n13dxy" path="res://src/assets/sniper dead/Sniper_dead0004.png" id="30"]
+[ext_resource type="Texture2D" uid="uid://c7bvne5xh1ivc" path="res://src/assets/sniper dead/Sniper_dead0005.png" id="31"]
+[ext_resource type="Texture2D" uid="uid://xuk0hqccttah" path="res://src/assets/sniper dead/Sniper_dead0001.png" id="32"]
+[ext_resource type="Script" path="res://src/sniper/SniperSounds.cs" id="33"]
 
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 27 ), ExtResource( 32 ), ExtResource( 28 ), ExtResource( 29 ), ExtResource( 30 ), ExtResource( 31 ) ],
+[sub_resource type="SpriteFrames" id="1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31")
+}],
 "loop": false,
-"name": "Death",
+"name": &"Death",
 "speed": 8.0
 }, {
-"frames": [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 5 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 13 ), ExtResource( 1 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 6 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6")
+}],
 "loop": true,
-"name": "Idle",
+"name": &"Idle",
 "speed": 8.0
 }, {
-"frames": [ ExtResource( 18 ), ExtResource( 24 ), ExtResource( 19 ), ExtResource( 15 ), ExtResource( 21 ), ExtResource( 16 ), ExtResource( 23 ), ExtResource( 17 ), ExtResource( 22 ), ExtResource( 20 ), ExtResource( 25 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25")
+}],
 "loop": false,
-"name": "Shoot",
+"name": &"Shoot",
 "speed": 8.0
-} ]
+}]
 
-[sub_resource type="CapsuleShape" id=2]
+[sub_resource type="CapsuleShape3D" id="2"]
+radius = 0.25
 height = 0.5
 
-[node name="Sniper" type="KinematicBody"]
+[node name="Sniper" type="CharacterBody3D" node_paths=PackedStringArray("_sprite", "_centerOfMassNode", "_sounds")]
 collision_layer = 4
-script = ExtResource( 14 )
-_bulletScene = ExtResource( 26 )
+script = ExtResource("14")
+_bulletScene = ExtResource("26")
+_sprite = NodePath("AnimatedSprite3D")
+_centerOfMassNode = NodePath("CenterOfMass")
+_sounds = NodePath("Sounds")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.42565, 0 )
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.42565, 0)
 pixel_size = 0.1
 billboard = 2
-frames = SubResource( 1 )
-animation = "Idle"
+texture_filter = 4
+sprite_frames = SubResource("1")
+animation = &"Idle"
 
-[node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.25663, 0 )
-shape = SubResource( 2 )
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.25663, 0)
+shape = SubResource("2")
 
-[node name="CenterOfMass" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3265, 0 )
+[node name="CenterOfMass" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3265, 0)
 
-[node name="Sounds" type="Spatial" parent="."]
-script = ExtResource( 33 )
+[node name="Sounds" type="Node3D" parent="." node_paths=PackedStringArray("Death", "Shoot", "AttackBarkFront", "AttackBarkBack")]
+script = ExtResource("33")
+Death = NodePath("Death")
+Shoot = NodePath("Shoot")
+AttackBarkFront = NodePath("AttackBarkFront")
+AttackBarkBack = NodePath("AttackBarkBack")
 
 [node name="Death" type="AudioStreamPlayer3D" parent="Sounds"]
 

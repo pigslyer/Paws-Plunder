@@ -4,7 +4,7 @@ using Godot;
 
 namespace PawsPlunder;
 
-public partial class HealthContainer : VBoxContainer
+public partial class HealthContainer : Control 
 {
 	private TextureRect[] _health = [];
 

@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Black Cat 2024"
+config/name="Paws & Plunder"
 run/main_scene="res://src/levels/FinalLevel.tscn"
 config/features=PackedStringArray("4.2", "C#")
 config/icon="res://icon.png"
@@ -140,5 +140,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 quality/filters/use_fxaa=true
 environment/default_environment="res://default_env.tres"
