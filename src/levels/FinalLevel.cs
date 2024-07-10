@@ -18,9 +18,9 @@ public partial class FinalLevel : Node3D
 	public override void _Ready()
 	{
 		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
-		catapultOverlay.Material.Set("shader_param/alpha", 1f);
-		catapultOverlay.Material.Set("shader_param/inner_radius", 0.9f);
-		catapultOverlay.Material.Set("shader_param/outer_radius", 0.9f);
+		catapultOverlay.Material.Set("shader_parameter/alpha", 1f);
+		catapultOverlay.Material.Set("shader_parameter/inner_radius", 0.9f);
+		catapultOverlay.Material.Set("shader_parameter/outer_radius", 0.9f);
 
 		_musicMenu.Play();
 
@@ -52,20 +52,20 @@ public partial class FinalLevel : Node3D
 		
 		Tween tween = CreateTween().SetParallel();
 		
-		tween.TweenProperty(_catapultPathFollow, "unit_offset", 1f, 1.5)
+		tween.TweenProperty(_catapultPathFollow, "progress_ratio", 1f, 1.5)
 			.From(0f)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.Out);
 
-		tween.TweenProperty(catapultOverlay.Material, "shader_param/alpha", 0f, 0.5)
+		tween.TweenProperty(catapultOverlay.Material, "shader_parameter/alpha", 0f, 0.5)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.InOut);
 		
-		tween.TweenProperty(catapultOverlay.Material, "shader_param/inner_radius", 1f, 0.5)
+		tween.TweenProperty(catapultOverlay.Material, "shader_parameter/inner_radius", 1f, 0.5)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.OutIn);
 		
-		tween.TweenProperty(catapultOverlay.Material, "shader_param/outer_radius", 1f, 0.5)
+		tween.TweenProperty(catapultOverlay.Material, "shader_parameter/outer_radius", 1f, 0.5)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.InOut);
 
