@@ -73,8 +73,14 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	private DeathInfo? _deathInfo = null;
 
-	private CustomTimer? _invulTimer;
-	private CustomTimer? _enamoredTimer;
+	private readonly StatelessTimer _invulTimer;
+	private readonly StatelessTimer _enamoredTimer;
+
+	public Player()
+	{
+		_invulTimer = new(this);
+		_enamoredTimer = new(this);
+	}
 
 	// TODO: Remove both of these
 	private int _trackedScore = 0;
@@ -478,19 +484,10 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 						UpdateHealthDisplays();
 					}
 
-					if (_enamoredTimer != null)
-					{
-						_enamoredTimer.Start(EnamoredByTreasureTime);
-					}
-					else
-					{
-						_enamoredTimer = CustomTimer.Start(this, EnamoredByTreasureTime);
-						_enamoredTimer.Timeout += () => {
-							_enamoredTimer = null;
-							DoomPortrait.SetAnimation(DoomPortraitType.Idle);
-						};
-						_sounds.PickupTreasure.Play();
-					}
+					_enamoredTimer.Start(EnamoredByTreasureTime, () => 
+						DoomPortrait.SetAnimation(DoomPortraitType.Idle)
+					);
+					_sounds.PickupTreasure.PlayPitched((1.0f, 0.2f));
 
 					PickupItem(item);
 				}
@@ -570,15 +567,14 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			return;
 		}
 
-		if (_invulTimer != null)
+		if (_invulTimer.IsRunning())
 		{
 			return;
 		}
 
 		Health -= 1;
 
-		_enamoredTimer?.Stop();
-		_enamoredTimer = null;
+		_enamoredTimer.Stop();
 
 		UpdateHealthDisplays();
 
@@ -586,14 +582,12 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		{
 			DoomPortrait.SetAnimation(DoomPortraitType.Pain);
 			_damageEffect.Material.Set("shader_param/enable", true);
-			_invulTimer = CustomTimer.Start(this, InvulPeriod);
-			_sounds.Hurt.Play();
-
-			_invulTimer.Timeout += () => {
-				_invulTimer = null;
+			_invulTimer.Start(InvulPeriod, () => {
 				_damageEffect.Material.Set("shader_param/enable", false);
 				DoomPortrait.SetAnimation(DoomPortraitType.Idle);
-			};
+			});
+
+			_sounds.Hurt.Play();
 		}
 		else
 		{
