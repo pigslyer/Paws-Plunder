@@ -16,6 +16,7 @@ public partial class MainMenu : Control
 	public override void _Ready()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Visible;
+		Logger.Debug("Mouse mode set to visible.");
 		_menu.Visible = true;
 		_options.Visible = false;
 		_options.Load();
@@ -24,6 +25,7 @@ public partial class MainMenu : Control
 	private void _on_PlayButton_pressed()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+		Logger.Debug("Mouse mode set to captured.");
 		_musicMenu.Stop();
 
 		/*

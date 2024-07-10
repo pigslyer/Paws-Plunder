@@ -471,7 +471,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		if (ev is InputEventMouseMotion motion)
 		{
 			_mouseMotion = motion.Relative;
-			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
 	}
 	void IBulletHittable.Hit(BulletHitInfo info)

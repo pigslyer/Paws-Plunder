@@ -173,12 +173,13 @@ grow_vertical = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.35
-anchor_top = 0.6
+anchor_top = 0.46
 anchor_right = 0.65
-anchor_bottom = 0.6
+anchor_bottom = 0.927
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/ButtonsContainer"]
 layout_mode = 2
+theme_override_constants/separation = 16
 
 [node name="PlayButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
@@ -190,10 +191,15 @@ layout_mode = 2
 theme = ExtResource("3_fr8vf")
 text = "Options"
 
-[node name="Credits" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+[node name="CreditsButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
 theme = ExtResource("3_fr8vf")
 text = "Credits"
+
+[node name="ExitButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+layout_mode = 2
+theme = ExtResource("3_fr8vf")
+text = "Exit"
 
 [node name="StoryPanel" type="PanelContainer" parent="Menu"]
 visible = false
@@ -363,7 +369,8 @@ stream = ExtResource("8_wi0rd")
 
 [connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/OptionsButton" to="." method="_on_OptionsButton_pressed"]
-[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/Credits" to="Menu/VBoxContainer" method="show"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/CreditsButton" to="Menu/VBoxContainer" method="show"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/ExitButton" to="Menu/VBoxContainer" method="show"]
 [connection signal="pressed" from="Menu/StoryPanel/MarginContainer/VBoxContainer/Fire" to="." method="OnIntroButtonPressed"]
 [connection signal="pressed" from="Menu/VBoxContainer/Button" to="Menu/VBoxContainer" method="hide"]
 [connection signal="value_changed" from="Options/Container/VBoxContainer/Mouse/VBoxContainer/Slider" to="Options" method="_on_mouse_value_changed"]
