@@ -39,7 +39,6 @@ public partial class MainMenu : Control
 		//_storyLabel.Text = _storyLabel.Text.Replace("%NAME%", Globals.ProtagonistName);
 
 		OnIntroButtonPressed();
-		QueueFree();
 	}
 
 	private void OnIntroButtonPressed()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://ddn2p0fo5whkv"]
 
-[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/ui/Styling.tres" id="1"]
 [ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="3"]
+[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/ui/Styling.tres" id="3_fr8vf"]
 [ext_resource type="Script" path="res://src/ui/MainMenu.cs" id="4"]
 [ext_resource type="Script" path="res://src/scripts/VolumeSlider.cs" id="5"]
 [ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/assets/fonts/Deus EX Console.ttf" id="6"]
@@ -135,7 +135,7 @@ offset_bottom = 44.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 12
 text = "Paws and Plunder"
@@ -151,7 +151,7 @@ offset_left = -257.5
 offset_right = 257.5
 offset_bottom = 44.0
 grow_horizontal = 2
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "A tale of mighty cat pirates"
@@ -182,17 +182,17 @@ layout_mode = 2
 
 [node name="PlayButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 text = "Play"
 
 [node name="OptionsButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 text = "Options"
 
 [node name="Credits" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 text = "Credits"
 
 [node name="StoryPanel" type="PanelContainer" parent="Menu"]
@@ -355,7 +355,7 @@ _busName = "Voice"
 
 [node name="BackButton" type="Button" parent="Options/Container/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1")
+theme = ExtResource("3_fr8vf")
 text = "Back"
 
 [node name="MusicMenu" type="AudioStreamPlayer" parent="."]
