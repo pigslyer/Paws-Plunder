@@ -6,6 +6,7 @@ public partial class CurrentScene : Node3D
 {
 	[Export] private Level _level = null!;
 	[Export] private MainMenu _mainMenu = null!;
+	[Export] private Pause _pause = null!;
 	[Signal]
 	public delegate void GameStartEventHandler();
 	public override void _Ready()
@@ -26,9 +27,9 @@ public partial class CurrentScene : Node3D
 
 	public override void _Input(InputEvent @event)
 	{
-		if (Input.IsActionJustPressed("ui_quit"))
+		if (Input.IsActionJustPressed("ui_pause"))
 		{
-//			GetTree().Quit();
+			_pause.TogglePause(!_pause.Visible);
 		}
 	}
 }
