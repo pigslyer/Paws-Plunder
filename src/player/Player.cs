@@ -70,6 +70,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	[Export] private Node3D _centerOfMassNode = null!;
 	[Export] private ColorRect _damageEffect = null!;
 	[Export] private PlayerSounds _sounds = null!;
+	[Export] private CanvasLayer _hud = null!;
 
 	private DeathInfo? _deathInfo = null;
 
@@ -84,11 +85,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	public override void _Ready()
 	{
-		// TODO: these probably shouldn't be here?
-		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
-		GetNode<Sprite3D>("%Camera/Claw").Visible = false;
-		GetNode<Sprite3D>("%Camera/Gun").Visible = false;
-
+		DisplayHUD(false);
 		if (_initializeOnStartup)
 		{
 			Initialize();
@@ -97,11 +94,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	public void Initialize()
 	{
-		// TODO: these probably shouldn't be here?
-		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
-		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
-		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
-
+		DisplayHUD(true);
 		Health = MaxHealth;
 		Velocity = Vector3.Zero;
 
@@ -468,9 +461,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			}
 		}
 	}
-	
-
-	
 	private void KillIfBelowWorld()
 	{
 		// TODO: remove this hackery?
@@ -494,8 +484,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
 	}
-
-
 	void IBulletHittable.Hit(BulletHitInfo info)
 	{
 		if (Health <= 0)
@@ -544,6 +532,13 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		_bothHandsOrClawAnimationPlayer.Play("Death");
 		LockInPlace = true;
+	}
+
+	public void DisplayHUD(bool enable)
+	{
+		_hud.Visible = enable;
+		GetNode<Sprite3D>("%Camera/Claw").Visible = enable;
+		GetNode<Sprite3D>("%Camera/Gun").Visible = enable;
 	}
 
 	private void UpdateHealthDisplays()
