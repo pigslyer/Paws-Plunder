@@ -1,12 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://ddn2p0fo5whkv"]
+[gd_scene load_steps=17 format=3 uid="uid://ddn2p0fo5whkv"]
 
 [ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/globals/Styling.tres" id="1"]
 [ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="3"]
-[ext_resource type="Script" path="res://src/levels/MainMenu.cs" id="4"]
+[ext_resource type="Script" path="res://src/ui/MainMenu.cs" id="4"]
 [ext_resource type="Script" path="res://src/scripts/VolumeSlider.cs" id="5"]
-[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/ui/Deus EX Console.ttf" id="6"]
+[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/assets/fonts/Deus EX Console.ttf" id="6"]
 [ext_resource type="Script" path="res://src/scripts/Options.cs" id="7"]
 [ext_resource type="PackedScene" path="res://src/ui/Credits.tscn" id="8"]
+[ext_resource type="AudioStream" uid="uid://g0degvjci103" path="res://src/assets/sounds/music/cats at sea.mp3" id="8_wi0rd"]
 
 [sub_resource type="StyleBoxEmpty" id="7"]
 
@@ -62,6 +63,9 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="FontFile" id="11"]
 fallbacks = Array[Font]([ExtResource("6")])
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
@@ -97,21 +101,22 @@ Button/styles/normal = SubResource("6")
 Button/styles/pressed = SubResource("10")
 PanelContainer/styles/panel = SubResource("5")
 
-[node name="MainMenu" type="CanvasLayer" node_paths=PackedStringArray("_menu", "_options", "_storyPanel", "_storyLabel")]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("_menu", "_options", "_storyPanel", "_storyLabel", "_musicMenu")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("4")
 _menu = NodePath("Menu")
 _options = NodePath("Options")
 _storyPanel = NodePath("Menu/StoryPanel")
 _storyLabel = NodePath("Menu/StoryPanel/MarginContainer/VBoxContainer/Intro")
-
-[node name="MouseCapture" type="ColorRect" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(1, 1, 1, 0)
+_musicMenu = NodePath("MusicMenu")
 
 [node name="Menu" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -121,31 +126,50 @@ theme = SubResource("4")
 
 [node name="LogoLabel" type="Label" parent="Menu"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.2
 anchor_right = 0.5
-anchor_bottom = 0.2
-offset_left = -112.5
-offset_top = -16.5
-offset_right = 112.5
-offset_bottom = 16.5
+offset_left = -149.0
+offset_right = 149.0
+offset_bottom = 44.0
 grow_horizontal = 2
-grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 theme = ExtResource("1")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
 text = "Paws and Plunder"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="LogoLabel2" type="Label" parent="Menu"]
-visible = false
-layout_mode = 0
+[node name="SubheaderLabel" type="Label" parent="Menu"]
+layout_mode = 1
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.128
 anchor_right = 0.5
-anchor_bottom = 0.128
+offset_left = -257.5
+offset_right = 257.5
+offset_bottom = 44.0
+grow_horizontal = 2
 theme = ExtResource("1")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
 text = "A tale of mighty cat pirates"
 
-[node name="MainMenuContainer" type="MarginContainer" parent="Menu"]
+[node name="LogoContainer" type="MarginContainer" parent="Menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.11
+anchor_right = 0.521
+anchor_bottom = 0.311
+offset_left = -244.5
+offset_right = 244.5
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ButtonsContainer" type="MarginContainer" parent="Menu"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.35
@@ -153,20 +177,20 @@ anchor_top = 0.6
 anchor_right = 0.65
 anchor_bottom = 0.6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Menu/MainMenuContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/ButtonsContainer"]
 layout_mode = 2
 
-[node name="PlayButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+[node name="PlayButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
 theme = ExtResource("1")
 text = "Play"
 
-[node name="OptionsButton" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+[node name="OptionsButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
 theme = ExtResource("1")
 text = "Options"
 
-[node name="Credits" type="Button" parent="Menu/MainMenuContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+[node name="Credits" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
 layout_mode = 2
 theme = ExtResource("1")
 text = "Credits"
@@ -217,7 +241,7 @@ text = "Exit"
 
 [node name="Options" type="Control" parent="."]
 visible = false
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -334,9 +358,12 @@ layout_mode = 2
 theme = ExtResource("1")
 text = "Back"
 
-[connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
-[connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/OptionsButton" to="." method="_on_OptionsButton_pressed"]
-[connection signal="pressed" from="Menu/MainMenuContainer/VBoxContainer/Credits" to="Menu/VBoxContainer" method="show"]
+[node name="MusicMenu" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_wi0rd")
+
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/OptionsButton" to="." method="_on_OptionsButton_pressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/Credits" to="Menu/VBoxContainer" method="show"]
 [connection signal="pressed" from="Menu/StoryPanel/MarginContainer/VBoxContainer/Fire" to="." method="OnIntroButtonPressed"]
 [connection signal="pressed" from="Menu/VBoxContainer/Button" to="Menu/VBoxContainer" method="hide"]
 [connection signal="value_changed" from="Options/Container/VBoxContainer/Mouse/VBoxContainer/Slider" to="Options" method="_on_mouse_value_changed"]

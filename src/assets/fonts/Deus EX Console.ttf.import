@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://bn7p6wcfoyop4"
-path="res://.godot/imported/Deus EX Console.ttf-3c0cd1dc78a9510b59cb62c087e7e6cf.fontdata"
+path="res://.godot/imported/Deus EX Console.ttf-bb018ed608a101b7b714874ffbfa015a.fontdata"
 
 [deps]
 
-source_file="res://src/ui/Deus EX Console.ttf"
-dest_files=["res://.godot/imported/Deus EX Console.ttf-3c0cd1dc78a9510b59cb62c087e7e6cf.fontdata"]
+source_file="res://src/assets/fonts/Deus EX Console.ttf"
+dest_files=["res://.godot/imported/Deus EX Console.ttf-bb018ed608a101b7b714874ffbfa015a.fontdata"]
 
 [params]
 

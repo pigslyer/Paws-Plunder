@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://clf4nmfolif54"]
 
-[ext_resource type="PackedScene" uid="uid://ddn2p0fo5whkv" path="res://src/levels/MainMenu.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://ddn2p0fo5whkv" path="res://src/ui/MainMenu.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://1i468o8r1dou" path="res://src/levels/TwoShips.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://yviereyjsr6d" path="res://src/player/Player.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://bawdwa4b2q4f0" path="res://src/assets/skybox/FS003_Night.png" id="3_c4na6"]
@@ -62,12 +62,12 @@ size = Vector3(200, 2, 600)
 [sub_resource type="BoxShape3D" id="8"]
 size = Vector3(582.886, 2, 752.672)
 
-[node name="FinalLevel" type="Node3D" node_paths=PackedStringArray("_player", "_catapultPath", "_catapultPathFollow", "_musicMenu", "_musicGameplay", "_musicDeath", "_windPlayer", "_cannonPlayer")]
+[node name="FinalLevel" type="Node3D" node_paths=PackedStringArray("_player", "_catapultPath", "_catapultPathFollow", "_catapultOverlay", "_musicGameplay", "_musicDeath", "_windPlayer", "_cannonPlayer")]
 script = ExtResource("5")
 _player = NodePath("CatapultPath/CatapultPathFollow/Player")
 _catapultPath = NodePath("CatapultPath")
 _catapultPathFollow = NodePath("CatapultPath/CatapultPathFollow")
-_musicMenu = NodePath("MusicMenu")
+_catapultOverlay = NodePath("CatapultEffect")
 _musicGameplay = NodePath("MusicGameplay")
 _musicDeath = NodePath("MusicDeath")
 _windPlayer = NodePath("Wind")

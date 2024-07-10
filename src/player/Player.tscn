@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://ckei03hq1auw4" path="res://src/assets/ui heart.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://cer0gc3j17utn" path="res://src/assets/right_paw.png" id="10"]
 [ext_resource type="Script" path="res://src/player/ScoreDisplay.cs" id="11"]
-[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/ui/Deus EX Console.ttf" id="12"]
+[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/assets/fonts/Deus EX Console.ttf" id="12"]
 [ext_resource type="Shader" path="res://src/shaders/damage.gdshader" id="13"]
 [ext_resource type="Texture2D" uid="uid://cf3an8g36pvce" path="res://src/assets/gun effect-Sheet.png" id="14"]
 [ext_resource type="AudioStream" uid="uid://lf35w63ixa1e" path="res://src/assets/sounds/player/pickup.mp3" id="15"]
@@ -29,6 +29,7 @@
 [ext_resource type="AudioStream" uid="uid://cixvyjaoew1ud" path="res://src/assets/sounds/player/swipe_hit.mp3" id="27"]
 [ext_resource type="PackedScene" path="res://src/levels/YouWon.tscn" id="28"]
 [ext_resource type="Script" path="res://src/player/EscapeText.gd" id="29"]
+
 
 [sub_resource type="CapsuleShape3D" id="1"]
 height = 1.3

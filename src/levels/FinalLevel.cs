@@ -8,8 +8,8 @@ public partial class FinalLevel : Node3D
 	[Export] private Player _player = null!;
 	[Export] private Path3D _catapultPath = null!;
 	[Export] private PathFollow3D _catapultPathFollow = null!;
+	[Export] private ColorRect _catapultOverlay = null!;
 
-	[Export] private AudioStreamPlayer _musicMenu = null!;
 	[Export] private AudioStreamPlayer _musicGameplay = null!;
 	[Export] private AudioStreamPlayer _musicDeath = null!;
 	[Export] private AudioStreamPlayer _windPlayer = null!;
@@ -17,33 +17,22 @@ public partial class FinalLevel : Node3D
 
 	public override void _Ready()
 	{
-		ColorRect catapultOverlay = GetNode<ColorRect>("%CatapultEffect");
-		catapultOverlay.Material.Set("shader_parameter/alpha", 1f);
-		catapultOverlay.Material.Set("shader_parameter/inner_radius", 0.9f);
-		catapultOverlay.Material.Set("shader_parameter/outer_radius", 0.9f);
-
-		_musicMenu.Play();
-
+		_catapultOverlay.Material.Set("shader_parameter/alpha", 1f);
+		_catapultOverlay.Material.Set("shader_parameter/inner_radius", 0.9f);
+		_catapultOverlay.Material.Set("shader_parameter/outer_radius", 0.9f);
 		_player.LockInPlace = true;
 	}
 
 	private void _on_MainMenu_StartGame()
 	{
 		_player.LockInPlace = true;
-
-		_musicMenu.Stop();
 		_musicGameplay.Play();
-
-		GetNode<CanvasLayer>("%MainMenu").Visible = false;
 		_player.Initialize();
 		_SpawnPlayer();		
 	}
 
 	private void _SpawnPlayer()
 	{
-		_musicMenu.Stop();
-
-		//_player.ToggleGravity(false);
 		_player.Position = Vector3.Zero;
 		_player.DoomPortrait.SetAnimation(DoomPortraitType.Flying);
 
@@ -84,7 +73,6 @@ public partial class FinalLevel : Node3D
 
 	private void OnPlayerDied()
 	{
-		_musicMenu.Stop();
 		_musicGameplay.Stop();
 		_musicDeath.Play();
 	}
