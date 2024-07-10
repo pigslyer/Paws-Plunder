@@ -14,9 +14,12 @@ public partial class Level1 : Level
 	[Export] private AudioStreamPlayer _windPlayer = null!;
 	[Export] private AudioStreamPlayer _cannonPlayer = null!;
 
+	private const int DEATH_SCORE_PENALTY = -1000;
+	private const int WIN_SCORE = 100000;
 	public override void _Ready()
 	{
 		_player.LockInPlace = true;
+		GlobalSignals.GetInstance().AddToPlayerScore += newScore => CheckScoreCondition(newScore);
 	}
 
 	public override void OnStart()
@@ -25,12 +28,19 @@ public partial class Level1 : Level
 		// TODO: lock movement, not moving camera
 		_player.LockInPlace = true;
 		_musicGameplay.Play();
-		_player.Initialize();
-		_SpawnPlayer();		
+		_SpawnPlayer();
+	}
+
+	public bool CheckScoreCondition(int score) => (score >= WIN_SCORE);
+	public override bool CheckWinConditions()
+	{
+		// TODO: figure out getting score signals
+		return false;
 	}
 
 	private void _SpawnPlayer()
 	{
+		_player.Initialize();
 		_player.Position = Vector3.Zero;
 		_player.DoomPortrait.SetAnimation(DoomPortraitType.Flying);
 		var tween = CreateTween().SetParallel();
@@ -62,14 +72,65 @@ public partial class Level1 : Level
 		Globals.RandomizeProtag();
 
 		_player.LockInPlace = true;
-		_player.Initialize();
-		_SpawnPlayer();		
+		_SpawnPlayer();
 
 		_player.LogControl.PushMsg($"Good luck {Globals.ProtagonistName}!");
-		GlobalSignals.AddScore(-1000);
+		GlobalSignals.AddScore(DEATH_SCORE_PENALTY);
 
 		_musicDeath.Stop();
 		_musicGameplay.Play();
+	}
+
+	/*
+	 *
+	 * 	private void OnScoreAdded(int score)
+	{
+		bool hadWon = HasWon();
+
+		if (!hadWon && HasWon())
+		{
+			LogControl.PushMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
+
+			GetNode<CanvasItem>("%EscapeText").Show();
+			GetNode<ScoreDisplay>("%ScoreDisplay").Modulate = Colors.Yellow;
+
+			GetTree().CallGroup("Cannons", "EnableEscape");
+		}
+	}
+	 */
+	/*
+	 * 	private void EscapeShip()
+	{
+		bool use = Input.IsActionJustPressed("plr_use");
+
+		if (!use)
+		{
+			return;
+		}
+
+		Godot.Collections.Array<Node> cannons = GetTree().GetNodesInGroup("Cannons");
+		Cannon? closestCannon = cannons
+			.OfType<Cannon>()
+			.OrderBy(c => c.GlobalPosition.DistanceTo(GlobalPosition))
+			.FirstOrDefault();
+
+		if (closestCannon == null)
+		{
+			GD.PushWarning("No cannons could be found for player's win condition!");
+			return;
+		}
+
+		if (float.Abs(closestCannon.GlobalPosition.DistanceTo(GlobalPosition)) < 12.0f)
+		{
+			GetTree().ChangeSceneToPacked(_youWonScene);
+		}
+	}
+
+
+	 */
+	public override void _ExitTree()
+	{
+
 	}
 }
 

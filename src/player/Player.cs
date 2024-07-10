@@ -82,14 +82,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		_enamoredTimer = new(this);
 	}
 
-	// TODO: Remove both of these
-	private int _trackedScore = 0;
-
 	public override void _Ready()
 	{
-		// TODO: move this somewhere else!
-		Input.MouseMode = Input.MouseModeEnum.Visible;
-
 		// TODO: these probably shouldn't be here?
 		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = false;
@@ -99,12 +93,11 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		{
 			Initialize();
 		}
-
-		GlobalSignals.GetInstance().AddToPlayerScore += OnScoreAdded;
 	}
 
 	public void Initialize()
 	{
+		// TODO: these probably shouldn't be here?
 		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
 		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
@@ -120,23 +113,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		_camera.RotationDegrees = Vector3.Zero;
 		DoomPortrait.SetAnimation(DoomPortraitType.Idle);
 		_bothHandsOrClawAnimationPlayer.Play("RESET");
-	}
-
-	private void OnScoreAdded(int score)
-	{
-		bool hadWon = HasWon();
-
-		_trackedScore += score;		
-
-		if (!hadWon && HasWon())
-		{
-			LogControl.PushMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
-
-			GetNode<CanvasItem>("%EscapeText").Show();
-			GetNode<ScoreDisplay>("%ScoreDisplay").Modulate = Colors.Yellow;
-
-			GetTree().CallGroup("Cannons", "EnableEscape");
-		}
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -158,11 +134,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 				MouseRotateCamera(fDelta);
 				MeleeAttack();
 				ShootAttack();
-
 				PickUpItems();
-
-				EscapeShip();
-			}	
+			}
 		}
 		else if (_deathInfo != null)
 		{
@@ -496,47 +469,16 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		}
 	}
 	
-	private void EscapeShip()
-	{
-		if (!HasWon())
-		{
-			return;
-		}		
 
-		bool use = Input.IsActionJustPressed("plr_use");
-
-		if (!use)
-		{
-			return;
-		}
-
-		Godot.Collections.Array<Node> cannons = GetTree().GetNodesInGroup("Cannons");
-		Cannon? closestCannon = cannons
-			.OfType<Cannon>()
-			.OrderBy(c => c.GlobalPosition.DistanceTo(GlobalPosition))
-			.FirstOrDefault();
-		
-		if (closestCannon == null)
-		{
-			GD.PushWarning("No cannons could be found for player's win condition!");
-			return;
-		}
-		
-		if (float.Abs(closestCannon.GlobalPosition.DistanceTo(GlobalPosition)) < 12.0f)
-		{
-			GetTree().ChangeSceneToPacked(_youWonScene);
-		}
-	}
 	
 	private void KillIfBelowWorld()
 	{
-		// remove this hackery?
+		// TODO: remove this hackery?
 		if (Health > 0 && GlobalPosition.Y < -200)
 		{
 			KillWithCameraUpPan();
 		}
 	}
-
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
@@ -544,12 +486,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			EmitSignal(SignalName.RespawnPlayer);
 		}
 	}
-
-	private bool HasWon()
-	{
-		return _trackedScore >= WinScoreCondition;
-	}
-
 	public override void _UnhandledInput(InputEvent ev)
 	{
 		if (ev is InputEventMouseMotion motion)

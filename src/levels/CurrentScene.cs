@@ -5,26 +5,18 @@ namespace PawsPlunder;
 public partial class CurrentScene : Node3D
 {
 	[Export] private Level _level = null!;
-	[Export] private Control _mainMenu = null!;
+	[Export] private MainMenu _mainMenu = null!;
 	[Signal]
 	public delegate void GameStartEventHandler();
 	public override void _Ready()
 	{
-		_mainMenu.Connect(
-			"StartGame",
-			Callable.From(OnGameStart),
-			(uint)ConnectFlags.OneShot
-		);
-		Connect(
-			nameof(GameStart),
-			Callable.From(_level.OnStart),
-			(uint)ConnectFlags.OneShot
-		);
+		_mainMenu.StartGame += OnGameStart;
+		GameStart += _level.OnStart;
 	}
 	private void OnGameStart()
 	{
+		EmitSignal(SignalName.GameStart);
 		_mainMenu.QueueFree();
-		EmitSignal(nameof(GameStart));
 	}
 
 	public override void _Input(InputEvent @event)
@@ -34,4 +26,6 @@ public partial class CurrentScene : Node3D
 //			GetTree().Quit();
 		}
 	}
+
+
 }
