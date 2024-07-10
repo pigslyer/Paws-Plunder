@@ -4,6 +4,7 @@ public static class Constants
 {
     public const string SETTINGS_PATH = "user://settings.ini";
 }
+
 public enum PhysicsLayers3D
 {
     World       = 0b0000_0001,

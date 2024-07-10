@@ -15,7 +15,7 @@ public interface IPlayerAttacker
     void AttackTarget(Player player);
 }
 
-public partial class SquadController : Node
+public partial class ArenaSquadController : Node
 {
     private readonly DetectionTracker<RatGrunt> _gruntTracker;
     private readonly DetectionTracker<Sniper> _sniperTracker;
@@ -56,7 +56,7 @@ public partial class SquadController : Node
 
     [Export] private RayCast3D _wallDetection = null!;
 
-    public SquadController()
+    public ArenaSquadController()
     {
         _rng = new RandomNumberGenerator();
 
