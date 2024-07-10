@@ -1,9 +1,9 @@
 [gd_scene load_steps=29 format=3 uid="uid://1i468o8r1dou"]
 
 [ext_resource type="Shader" path="res://src/shaders/fog.gdshader" id="1"]
-[ext_resource type="Script" path="res://src/scripts/SquadController.cs" id="2"]
 [ext_resource type="PackedScene" path="res://src/shaders/FogOverlay.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://up1bheb2c068" path="res://src/levels/ship/Ship.tscn" id="4"]
+[ext_resource type="Script" path="res://src/scripts/ArenaSquadController.cs" id="4_4s4m2"]
 [ext_resource type="PackedScene" path="res://src/levels/shared/TreasureItem.tscn" id="5"]
 [ext_resource type="Shader" path="res://src/shaders/water.gdshader" id="6"]
 [ext_resource type="Environment" uid="uid://cxthks8o4t4u0" path="res://src/shaders/WorldEnvironment.tres" id="7"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://dr1missawmthy" path="res://src/gunner/Gunner.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://bbop0l2h577xh" path="res://src/sniper/Sniper.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://dl8l2grgbxvc3" path="res://src/tradermouse/TraderMouse.tscn" id="12"]
-
 
 [sub_resource type="PhysicsMaterial" id="5"]
 
@@ -132,7 +131,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.25882, -53.1714, -23.2226)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
-script = ExtResource("2")
+script = ExtResource("4_4s4m2")
 
 [node name="CollisionShape" type="CollisionShape3D" parent="ShipMouse/Area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 59.805, 0)
