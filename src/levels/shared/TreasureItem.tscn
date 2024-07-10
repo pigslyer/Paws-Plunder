@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture" uid="uid://bphrgsyratvx1" path="res://src/assets/images/treasures-Sheet.png" id="1"]
+[ext_resource type="PackedScene" path="res://src/levels/shared/TreasureBase.tscn" id="2"]
+[ext_resource type="Script" path="res://src/scripts/Treasure.cs" id="3"]
+
+
+[sub_resource type="BoxShape" id=1]
+
+[node name="TreasureBase" instance=ExtResource( 2 )]
+script = ExtResource( 3 )
+_type = 0
+
+[node name="Sprite3D" parent="." index="0"]
+pixel_size = 0.1
+billboard = 2
+texture = ExtResource( 1 )
+hframes = 7
+
+[node name="CollisionShape" parent="." index="1"]
+shape = SubResource( 1 )

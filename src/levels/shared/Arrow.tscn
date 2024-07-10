@@ -1,0 +1,78 @@
+[gd_scene load_steps=61 format=3]
+
+[ext_resource type="Texture" uid="uid://bc572jofsqh2o" path="res://src/assets/images/arrow/Yellow Arrow 1/File3.png" id="1"]
+[ext_resource type="Texture" uid="uid://c11vd0lg2mtpi" path="res://src/assets/images/arrow/Yellow Arrow 1/File7.png" id="2"]
+[ext_resource type="Texture" uid="uid://ioux17dtltxq" path="res://src/assets/images/arrow/Yellow Arrow 1/File5.png" id="3"]
+[ext_resource type="Texture" uid="uid://bbwo2qtufqdek" path="res://src/assets/images/arrow/Yellow Arrow 1/File8.png" id="4"]
+[ext_resource type="Texture" uid="uid://c4b505blbdhh4" path="res://src/assets/images/arrow/Yellow Arrow 1/File6.png" id="5"]
+[ext_resource type="Texture" uid="uid://bbtp1rrebplma" path="res://src/assets/images/arrow/Yellow Arrow 1/File4.png" id="6"]
+[ext_resource type="Texture" uid="uid://nlakn53iafjn" path="res://src/assets/images/arrow/Yellow Arrow 1/File9.png" id="7"]
+[ext_resource type="Texture" uid="uid://ds53b16lk2if6" path="res://src/assets/images/arrow/Yellow Arrow 1/File1.png" id="8"]
+[ext_resource type="Texture" uid="uid://dvf0kwstbvq63" path="res://src/assets/images/arrow/Yellow Arrow 1/File2.png" id="9"]
+[ext_resource type="Texture" uid="uid://cndieibr4axpc" path="res://src/assets/images/arrow/Yellow Arrow 1/File10.png" id="10"]
+[ext_resource type="Texture" uid="uid://5huhv5eqcvp5" path="res://src/assets/images/arrow/Yellow Arrow 1/File56.png" id="12"]
+[ext_resource type="Texture" uid="uid://cicfucs5kgh2t" path="res://src/assets/images/arrow/Yellow Arrow 1/File35.png" id="13"]
+[ext_resource type="Texture" uid="uid://bibconwgc8w7" path="res://src/assets/images/arrow/Yellow Arrow 1/File53.png" id="14"]
+[ext_resource type="Texture" uid="uid://c286t1spdorsx" path="res://src/assets/images/arrow/Yellow Arrow 1/File58.png" id="15"]
+[ext_resource type="Texture" uid="uid://bk4xmi5lwglqr" path="res://src/assets/images/arrow/Yellow Arrow 1/File50.png" id="16"]
+[ext_resource type="Texture" uid="uid://6lntffjsjweh" path="res://src/assets/images/arrow/Yellow Arrow 1/File33.png" id="17"]
+[ext_resource type="Texture" uid="uid://dy3tbvdhcsdh3" path="res://src/assets/images/arrow/Yellow Arrow 1/File13.png" id="18"]
+[ext_resource type="Texture" uid="uid://v80fm3cj5f7v" path="res://src/assets/images/arrow/Yellow Arrow 1/File41.png" id="19"]
+[ext_resource type="Texture" uid="uid://dkbjelh0ooi2u" path="res://src/assets/images/arrow/Yellow Arrow 1/File21.png" id="20"]
+[ext_resource type="Texture" uid="uid://b4viynh2bxi2v" path="res://src/assets/images/arrow/Yellow Arrow 1/File36.png" id="21"]
+[ext_resource type="Texture" uid="uid://dpepm0esjns0h" path="res://src/assets/images/arrow/Yellow Arrow 1/File43.png" id="22"]
+[ext_resource type="Texture" uid="uid://c3sl7ywr3mdd" path="res://src/assets/images/arrow/Yellow Arrow 1/File23.png" id="23"]
+[ext_resource type="Texture" uid="uid://44ehvjgarmkd" path="res://src/assets/images/arrow/Yellow Arrow 1/File51.png" id="24"]
+[ext_resource type="Texture" uid="uid://bkvqqxnf2lrjl" path="res://src/assets/images/arrow/Yellow Arrow 1/File59.png" id="25"]
+[ext_resource type="Texture" uid="uid://qdwgpm1vsu70" path="res://src/assets/images/arrow/Yellow Arrow 1/File17.png" id="26"]
+[ext_resource type="Texture" uid="uid://bmmp1qt83jipi" path="res://src/assets/images/arrow/Yellow Arrow 1/File16.png" id="27"]
+[ext_resource type="Texture" uid="uid://dk06yny0pgo7" path="res://src/assets/images/arrow/Yellow Arrow 1/File14.png" id="28"]
+[ext_resource type="Texture" uid="uid://cqgr5n1qqr5f7" path="res://src/assets/images/arrow/Yellow Arrow 1/File24.png" id="29"]
+[ext_resource type="Texture" uid="uid://wofftapabgee" path="res://src/assets/images/arrow/Yellow Arrow 1/File19.png" id="30"]
+[ext_resource type="Texture" uid="uid://dcuirkbah1tj2" path="res://src/assets/images/arrow/Yellow Arrow 1/File29.png" id="31"]
+[ext_resource type="Texture" uid="uid://e1a35k2wuqf2" path="res://src/assets/images/arrow/Yellow Arrow 1/File15.png" id="32"]
+[ext_resource type="Texture" uid="uid://bamjiy164y8xf" path="res://src/assets/images/arrow/Yellow Arrow 1/File26.png" id="33"]
+[ext_resource type="Texture" uid="uid://bru3qcxes7i1o" path="res://src/assets/images/arrow/Yellow Arrow 1/File27.png" id="34"]
+[ext_resource type="Texture" uid="uid://e8qg4iqka0r5" path="res://src/assets/images/arrow/Yellow Arrow 1/File18.png" id="35"]
+[ext_resource type="Texture" uid="uid://dbn4mfy8obt62" path="res://src/assets/images/arrow/Yellow Arrow 1/File31.png" id="36"]
+[ext_resource type="Texture" uid="uid://n1akbvj8wdf5" path="res://src/assets/images/arrow/Yellow Arrow 1/File38.png" id="37"]
+[ext_resource type="Texture" uid="uid://ck40quxngtffq" path="res://src/assets/images/arrow/Yellow Arrow 1/File39.png" id="38"]
+[ext_resource type="Texture" uid="uid://ddk2rc1hnh2vc" path="res://src/assets/images/arrow/Yellow Arrow 1/File46.png" id="39"]
+[ext_resource type="Texture" uid="uid://cph8h016i1yiw" path="res://src/assets/images/arrow/Yellow Arrow 1/File37.png" id="40"]
+[ext_resource type="Texture" uid="uid://cg541ftv32pr4" path="res://src/assets/images/arrow/Yellow Arrow 1/File49.png" id="41"]
+[ext_resource type="Texture" uid="uid://nu07sgauwqwx" path="res://src/assets/images/arrow/Yellow Arrow 1/File22.png" id="42"]
+[ext_resource type="Texture" uid="uid://drqhymq1ld642" path="res://src/assets/images/arrow/Yellow Arrow 1/File30.png" id="43"]
+[ext_resource type="Texture" uid="uid://bp87odvjlpmxc" path="res://src/assets/images/arrow/Yellow Arrow 1/File48.png" id="44"]
+[ext_resource type="Texture" uid="uid://dp782k8i1x85v" path="res://src/assets/images/arrow/Yellow Arrow 1/File52.png" id="45"]
+[ext_resource type="Texture" uid="uid://7lx13bms8f7g" path="res://src/assets/images/arrow/Yellow Arrow 1/File28.png" id="46"]
+[ext_resource type="Texture" uid="uid://btfom4tfu88v4" path="res://src/assets/images/arrow/Yellow Arrow 1/File20.png" id="47"]
+[ext_resource type="Texture" uid="uid://m6ljtlwanrf1" path="res://src/assets/images/arrow/Yellow Arrow 1/File55.png" id="48"]
+[ext_resource type="Texture" uid="uid://mdnswqx41hh2" path="res://src/assets/images/arrow/Yellow Arrow 1/File12.png" id="49"]
+[ext_resource type="Texture" uid="uid://bc5fv6vd0rxs8" path="res://src/assets/images/arrow/Yellow Arrow 1/File54.png" id="50"]
+[ext_resource type="Texture" uid="uid://cymbjow6rxwr3" path="res://src/assets/images/arrow/Yellow Arrow 1/File42.png" id="51"]
+[ext_resource type="Texture" uid="uid://ddupbtxd1hm3t" path="res://src/assets/images/arrow/Yellow Arrow 1/File44.png" id="52"]
+[ext_resource type="Texture" uid="uid://g1eyrgg7p5ba" path="res://src/assets/images/arrow/Yellow Arrow 1/File47.png" id="53"]
+[ext_resource type="Texture" uid="uid://b4pu76w2n3so6" path="res://src/assets/images/arrow/Yellow Arrow 1/File40.png" id="54"]
+[ext_resource type="Texture" uid="uid://cvhvkdmod04ml" path="res://src/assets/images/arrow/Yellow Arrow 1/File57.png" id="55"]
+[ext_resource type="Texture" uid="uid://bg48ph0j37xer" path="res://src/assets/images/arrow/Yellow Arrow 1/File32.png" id="56"]
+[ext_resource type="Texture" uid="uid://60hf7463otwl" path="res://src/assets/images/arrow/Yellow Arrow 1/File25.png" id="57"]
+[ext_resource type="Texture" uid="uid://b00kdxuyfyo6p" path="res://src/assets/images/arrow/Yellow Arrow 1/File34.png" id="58"]
+[ext_resource type="Texture" uid="uid://dsp3n2pgm2gn5" path="res://src/assets/images/arrow/Yellow Arrow 1/File45.png" id="59"]
+[ext_resource type="Texture" uid="uid://4elqugixvbyr" path="res://src/assets/images/arrow/Yellow Arrow 1/File11.png" id="60"]
+
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 1 ), ExtResource( 6 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 2 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 10 ), ExtResource( 60 ), ExtResource( 49 ), ExtResource( 18 ), ExtResource( 28 ), ExtResource( 32 ), ExtResource( 27 ), ExtResource( 26 ), ExtResource( 35 ), ExtResource( 30 ), ExtResource( 47 ), ExtResource( 20 ), ExtResource( 42 ), ExtResource( 23 ), ExtResource( 29 ), ExtResource( 57 ), ExtResource( 33 ), ExtResource( 34 ), ExtResource( 46 ), ExtResource( 31 ), ExtResource( 43 ), ExtResource( 36 ), ExtResource( 56 ), ExtResource( 17 ), ExtResource( 58 ), ExtResource( 13 ), ExtResource( 21 ), ExtResource( 40 ), ExtResource( 37 ), ExtResource( 38 ), ExtResource( 54 ), ExtResource( 19 ), ExtResource( 51 ), ExtResource( 22 ), ExtResource( 52 ), ExtResource( 59 ), ExtResource( 39 ), ExtResource( 53 ), ExtResource( 44 ), ExtResource( 41 ), ExtResource( 16 ), ExtResource( 24 ), ExtResource( 45 ), ExtResource( 14 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 12 ), ExtResource( 55 ), ExtResource( 15 ), ExtResource( 25 ) ],
+"loop": true,
+"name": "arrow",
+"speed": 60.0
+} ]
+
+[node name="Arrow" type="Spatial"]
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
+frames = SubResource( 1 )
+animation = "arrow"
+frame = 55
+playing = true

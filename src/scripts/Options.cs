@@ -24,7 +24,9 @@ public partial class Options : Control
 		if (saveError != Error.Ok)
 		{
 			Logger.Error($"Got save error {saveError} while trying to read settings file");
+			return;
 		}
+		Logger.Info($"Settings file saved to {SETTINGS_PATH}");
 	}
 
 	// TODO: make this not use Show, figure out what the editor is doing

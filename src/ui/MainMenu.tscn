@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://ddn2p0fo5whkv"]
 
-[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/globals/Styling.tres" id="1"]
+[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/ui/Styling.tres" id="1"]
 [ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="3"]
 [ext_resource type="Script" path="res://src/ui/MainMenu.cs" id="4"]
 [ext_resource type="Script" path="res://src/scripts/VolumeSlider.cs" id="5"]
