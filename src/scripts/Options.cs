@@ -5,7 +5,7 @@ namespace PawsPlunder;
 public partial class Options : Control
 {
 	private ConfigFile _configFile = new();
-	private const string SettingsPath = "user://settings.ini";
+	private const string SETTINGS_PATH = "user://settings.ini";
 	
 	[Export] private HSlider _mouse = null!;
 	[Export] private VolumeSlider _master = null!;
@@ -20,7 +20,11 @@ public partial class Options : Control
 		_configFile.SetValue("Volume", "Music", Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("Music"))));
 		_configFile.SetValue("Volume", "SFX", Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("SFX"))));
 		_configFile.SetValue("Volume", "Voice", Mathf.DbToLinear(AudioServer.GetBusVolumeDb(AudioServer.GetBusIndex("Voice"))));
-		_configFile.Save(SettingsPath);
+		Error saveError = _configFile.Save(SETTINGS_PATH);
+		if (saveError != Error.Ok)
+		{
+			Logger.Error($"Got save error {saveError} while trying to read settings file");
+		}
 	}
 
 	// TODO: make this not use Show, figure out what the editor is doing
@@ -33,17 +37,20 @@ public partial class Options : Control
 		_voice.Adjust();
 		_master.Adjust();
 	}
-	
 	public void Load()
 	{
-		Error loadError = _configFile.Load(SettingsPath);
-
-		if (loadError != Error.Ok)
+		Error loadError = _configFile.Load(SETTINGS_PATH);
+		if (loadError == Error.FileNotFound)
 		{
-			GD.PushError($"Got load error {loadError} while trying to read settings file");
+			Logger.Warn("Settings file not found, creating new one");
+			Save();
+		}
+		else if (loadError != Error.Ok)
+		{
+			Logger.Error($"Got load error {loadError} while trying to read settings file");
 			return;
 		}
-
+		Logger.Info($"Settings file loaded from {SETTINGS_PATH}");
 		Globals.MouseSensitivity = (float)_configFile.GetValue("Misc", "MouseSensitivity", 1.0F);
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Master"), Mathf.LinearToDb((float)_configFile.GetValue("Volume", "Master", 1.0F)));
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Music"), Mathf.LinearToDb((float)_configFile.GetValue("Volume", "Music", 1.0F)));

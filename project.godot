@@ -30,6 +30,26 @@ window/size/height=1080
 
 project/assembly_name="Black Cat 2024"
 
+[file_customization]
+
+folder_colors={
+"res://Properties/": "gray",
+"res://export/": "gray",
+"res://src/assets/": "red",
+"res://src/bullet/": "yellow",
+"res://src/cats/": "red",
+"res://src/globals/": "orange",
+"res://src/gunner/": "yellow",
+"res://src/levels/": "yellow",
+"res://src/player/": "yellow",
+"res://src/ratgrunt/": "yellow",
+"res://src/scripts/": "yellow",
+"res://src/shaders/": "purple",
+"res://src/sniper/": "yellow",
+"res://src/tradermouse/": "yellow",
+"res://src/ui/": "orange"
+}
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true

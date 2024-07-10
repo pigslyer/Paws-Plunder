@@ -22,3 +22,4 @@ mono_crash.*.json
 .import
 .vs
 .vscode
+Properties/launchSettings.json

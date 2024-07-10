@@ -581,9 +581,9 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		if (Health > 0)
 		{
 			DoomPortrait.SetAnimation(DoomPortraitType.Pain);
-			_damageEffect.Material.Set("shader_param/enable", true);
+			_damageEffect.Material.Set("shader_parameter/enable", true);
 			_invulTimer.Start(InvulPeriod, () => {
-				_damageEffect.Material.Set("shader_param/enable", false);
+				_damageEffect.Material.Set("shader_parameter/enable", false);
 				DoomPortrait.SetAnimation(DoomPortraitType.Idle);
 			});
 
@@ -616,7 +616,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		_healthContainer.SetHealth(Health);
 		DoomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
-		_damageEffect.Material.Set("shader_param/enable", isDead);
+		_damageEffect.Material.Set("shader_parameter/enable", isDead);
 		GetNode<Label>("%DeathLabel").Visible = isDead;
 		_crosshair.Visible = !isDead;
 
