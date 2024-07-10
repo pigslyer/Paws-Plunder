@@ -26,6 +26,10 @@ public partial class CurrentScene : Node3D
 //			GetTree().Quit();
 		}
 	}
-
-
 }
+
+
+// TODO: add debug menu?
+/*
+_debugLabel.Text = $"Velocity: {newVelocity}\nSpeed: {newVelocity.Length()}\nSpeed xz: {newVelocity.X0Z().Length()}";
+*/

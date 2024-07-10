@@ -1,0 +1,143 @@
+[gd_scene load_steps=12 format=3 uid="uid://bq6otmbhuxosk"]
+
+[ext_resource type="Script" path="res://src/player/HUD.cs" id="1_y76nr"]
+[ext_resource type="Script" path="res://src/player/CombatLog.cs" id="2_7dqb6"]
+[ext_resource type="Texture2D" uid="uid://b1qf5l4runsfi" path="res://src/assets/images/crosshair.png" id="3_yaujn"]
+[ext_resource type="Script" path="res://src/player/HealthContainer.cs" id="4_mfcu4"]
+[ext_resource type="Texture2D" uid="uid://ckei03hq1auw4" path="res://src/assets/images/ui heart.png" id="5_mni3c"]
+[ext_resource type="PackedScene" uid="uid://b2bqgadgr6r3h" path="res://src/player/DoomPortrait.tscn" id="6_p8abl"]
+[ext_resource type="Script" path="res://src/player/ScoreDisplay.cs" id="7_717te"]
+[ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="8_wojr4"]
+[ext_resource type="Shader" path="res://src/shaders/damage.gdshader" id="9_jpd74"]
+[ext_resource type="Script" path="res://src/player/EscapeText.gd" id="10_3jte7"]
+
+[sub_resource type="ShaderMaterial" id="4"]
+shader = ExtResource("9_jpd74")
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
+shader_parameter/vignette_rgb = Color(0.8, 0, 0, 1)
+shader_parameter/enable = false
+
+[node name="HUD" type="CanvasLayer" node_paths=PackedStringArray("_healthContainer", "_logControl", "_damageEffect", "_doomPortrait", "_crosshair", "_deathLabel")]
+script = ExtResource("1_y76nr")
+_healthContainer = NodePath("HealthContainer")
+_logControl = NodePath("CombatLogContainer/CombatLog")
+_damageEffect = NodePath("DamageEffect")
+_doomPortrait = NodePath("DoomPortrait")
+_crosshair = NodePath("Crosshair")
+_deathLabel = NodePath("DeathLabel")
+
+[node name="CombatLogContainer" type="MarginContainer" parent="."]
+offset_right = 128.0
+
+[node name="CombatLog" type="VBoxContainer" parent="CombatLogContainer"]
+layout_mode = 2
+script = ExtResource("2_7dqb6")
+
+[node name="Crosshair" type="TextureRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+mouse_filter = 2
+texture = ExtResource("3_yaujn")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HealthContainer" type="VBoxContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.68
+anchor_right = 0.43
+anchor_bottom = 1.0
+grow_vertical = 0
+script = ExtResource("4_mfcu4")
+
+[node name="Health1" type="TextureRect" parent="HealthContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("5_mni3c")
+stretch_mode = 5
+
+[node name="Health2" type="TextureRect" parent="HealthContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("5_mni3c")
+stretch_mode = 5
+
+[node name="Health3" type="TextureRect" parent="HealthContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("5_mni3c")
+stretch_mode = 5
+
+[node name="DoomPortrait" parent="." instance=ExtResource("6_p8abl")]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+offset_left = -81.5
+offset_top = -208.0
+offset_right = 81.5
+grow_vertical = 0
+
+[node name="ScoreDisplay" type="Control" parent="DoomPortrait" node_paths=PackedStringArray("_label")]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("7_717te")
+_label = NodePath("Number")
+
+[node name="Number" type="Label" parent="DoomPortrait/ScoreDisplay"]
+layout_mode = 0
+anchor_right = 1.0
+theme = ExtResource("8_wojr4")
+text = "25121"
+
+[node name="DamageEffect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(1, 0.890196, 0, 1)
+
+[node name="DeathLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -20.5
+offset_right = 94.0
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_wojr4")
+text = "You died!
+Press [R] to respawn"
+
+[node name="EscapeText" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -565.0
+offset_bottom = 23.0
+grow_horizontal = 0
+text = "\"You have pillaged enough goods! Find a cannon and press [E] to escape!\""
+script = ExtResource("10_3jte7")
+color1 = Color(1, 0, 0, 1)
+color2 = Color(0.945098, 1, 0, 1)
+
+[node name="Timer" type="Timer" parent="EscapeText"]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="EscapeText/Timer" to="EscapeText" method="_on_Timer_timeout"]

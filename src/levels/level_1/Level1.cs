@@ -19,7 +19,7 @@ public partial class Level1 : Level
 	public override void _Ready()
 	{
 		_player.LockInPlace = true;
-		GlobalSignals.GetInstance().AddToPlayerScore += newScore => CheckScoreCondition(newScore);
+		GlobalSignals.GetInstance().AddToPlayerScore += newScore => _CheckScoreCondition(newScore);
 	}
 
 	public override void OnStart()
@@ -31,7 +31,7 @@ public partial class Level1 : Level
 		_SpawnPlayer();
 	}
 
-	public bool CheckScoreCondition(int score) => (score >= WIN_SCORE);
+	private bool _CheckScoreCondition(int score) => (score >= WIN_SCORE);
 	public override bool CheckWinConditions()
 	{
 		// TODO: figure out getting score signals
@@ -42,7 +42,7 @@ public partial class Level1 : Level
 	{
 		_player.Initialize();
 		_player.Position = Vector3.Zero;
-		_player.DoomPortrait.SetAnimation(DoomPortraitType.Flying);
+		_player.Hud.SetDoomPortrait(DoomPortraitType.Flying);
 		var tween = CreateTween().SetParallel();
 		tween.TweenProperty(_catapultPathFollow, "progress_ratio", 1f, 1.5)
 			.From(0f)
@@ -50,7 +50,7 @@ public partial class Level1 : Level
 			.SetEase(Tween.EaseType.Out);
 		_catapultOverlay.FadeOut(ref tween);
 		tween.TweenProperty(_player, nameof(_player.LockInPlace), false, 1f); // lock player input until landing
-		tween.TweenCallback(Callable.From(() => _player.DoomPortrait.SetAnimation(DoomPortraitType.Idle))).SetDelay(1.5f);
+		tween.TweenCallback(Callable.From(() => _player.Hud.SetDoomPortrait(DoomPortraitType.Idle))).SetDelay(1.5f);
 
 		_windPlayer.Play();
 		_cannonPlayer.Play();		
@@ -61,7 +61,7 @@ public partial class Level1 : Level
 		};
 	}
 
-	private void OnPlayerDied()
+	private void _OnPlayerDied()
 	{
 		_musicGameplay.Stop();
 		_musicDeath.Play();
@@ -74,7 +74,7 @@ public partial class Level1 : Level
 		_player.LockInPlace = true;
 		_SpawnPlayer();
 
-		_player.LogControl.PushMsg($"Good luck {Globals.ProtagonistName}!");
+		_player.Hud.PushLog($"Good luck {Globals.ProtagonistName}!");
 		GlobalSignals.AddScore(DEATH_SCORE_PENALTY);
 
 		_musicDeath.Stop();

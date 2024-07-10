@@ -40,7 +40,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 100000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -58,19 +57,13 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	[Export] private Node3D _head = null!;
 	[Export] private Camera3D _camera = null!;
 	[Export] private Sprite3D _gun = null!;
-	[Export] private Label _debugLabel = null!;
-	[Export] private TextureRect _crosshair = null!;
 	[Export] private Area3D _meleeDetectionArea = null!;
 	[Export] private Area3D _pickupDetectionArea = null!;
 	[Export] private AnimationPlayer _bothHandsOrClawAnimationPlayer = null!;
 	[Export] private AnimationPlayer _gunAnimationPlayer = null!;
-	[Export] public DoomPortrait DoomPortrait = null!;
-	[Export] public CombatLog LogControl = null!;
-	[Export] private HealthContainer _healthContainer = null!;
 	[Export] private Node3D _centerOfMassNode = null!;
-	[Export] private ColorRect _damageEffect = null!;
 	[Export] private PlayerSounds _sounds = null!;
-	[Export] private CanvasLayer _hud = null!;
+	[Export] public HUD Hud = null!;
 
 	private DeathInfo? _deathInfo = null;
 
@@ -104,7 +97,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		UpdateHealthDisplays();
 		_camera.RotationDegrees = Vector3.Zero;
-		DoomPortrait.SetAnimation(DoomPortraitType.Idle);
+		Hud.SetDoomPortrait(DoomPortraitType.Idle);
 		_bothHandsOrClawAnimationPlayer.Play("RESET");
 	}
 
@@ -156,7 +149,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	private void ApplyMovement(float fDelta, bool hasControls)
 	{
 		Vector3 newVelocity = Vector3.Zero;
-
 		Vector2 inputVector = Vector2.Zero;
 		bool jump = false; 
 		bool sprint = false;
@@ -262,7 +254,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		bool wasOnFloor = IsOnFloor();
 		Velocity = newVelocity;
 		MoveAndSlide();
-		_debugLabel.Text = $"Velocity: {newVelocity}\nSpeed: {newVelocity.Length()}\nSpeed xz: {newVelocity.X0Z().Length()}";
 
 		_sounds.Footsteps.SetPlaying(IsOnFloor() && hasControls && inputVector.LengthSquared() > 0.001f);	
 		_sounds.Footsteps.PitchScale = sprint ? SprintPitchScale : WalkPitchScale;
@@ -394,8 +385,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			{
 				GlobalSignals.AddScore(item.AssociatedScore);
 			}
-
-			LogControl.PushMsg($"Picked up a {item.DisplayName}!");
+			Hud.PushLog($"Picked up a {item.DisplayName}!");
 			((Node)item).QueueFree();
 		}
 
@@ -442,7 +432,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 				case "Treasure":
 				{
-					DoomPortrait.SetAnimation(DoomPortraitType.Treasure);
+					Hud.SetDoomPortrait(DoomPortraitType.Treasure);
 
 					if (Health < MaxHealth)
 					{
@@ -450,8 +440,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 						UpdateHealthDisplays();
 					}
 
-					_enamoredTimer.Start(EnamoredByTreasureTime, () => 
-						DoomPortrait.SetAnimation(DoomPortraitType.Idle)
+					_enamoredTimer.Start(EnamoredByTreasureTime, () =>
+						Hud.SetDoomPortrait(DoomPortraitType.Idle)
 					);
 					_sounds.PickupTreasure.PlayPitched((1.0f, 0.2f));
 
@@ -504,18 +494,14 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		if (Health > 0)
 		{
-			DoomPortrait.SetAnimation(DoomPortraitType.Pain);
-			_damageEffect.Material.Set("shader_parameter/enable", true);
+			Hud.TakeDamage();
 			_invulTimer.Start(InvulPeriod, () => {
-				_damageEffect.Material.Set("shader_parameter/enable", false);
-				DoomPortrait.SetAnimation(DoomPortraitType.Idle);
+				Hud.HealDamage();
 			});
-
 			_sounds.Hurt.Play();
 		}
 		else
 		{
-			UpdateHealthDisplays();
 			_deathInfo = new DeathInfo(info.Source);
 		}
 	}
@@ -536,24 +522,17 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	public void DisplayHUD(bool enable)
 	{
-		_hud.Visible = enable;
+		Hud.Visible = enable;
 		GetNode<Sprite3D>("%Camera/Claw").Visible = enable;
 		GetNode<Sprite3D>("%Camera/Gun").Visible = enable;
 	}
 
 	private void UpdateHealthDisplays()
 	{
-		bool isDead = Health <= 0;
-
-		_healthContainer.SetHealth(Health);
-		DoomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
-		_damageEffect.Material.Set("shader_parameter/enable", isDead);
-		GetNode<Label>("%DeathLabel").Visible = isDead;
-		_crosshair.Visible = !isDead;
-
-		if (isDead && !_hasEmittedDeathScreech)
+		Hud.UpdateHealth(Health);
+		if (Health <= 0 && !_hasEmittedDeathScreech)
 		{
-			LogControl.PushMsg($"{Globals.ProtagonistName} has died!");
+			Hud.PushLog($"{Globals.ProtagonistName} has died!");
 			_sounds.Death.Play();
 			EmitSignal(SignalName.PlayerDied);
 			_hasEmittedDeathScreech = true;
