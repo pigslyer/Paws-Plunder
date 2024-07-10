@@ -40,7 +40,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 	private const float WalkPitchScale = 1.0f;
 	private const float SprintPitchScale = 1.3f;
-	private const int WinScoreCondition = 100000;
 
 	private const int MaxHealth = 3;
 	public int Health { get; private set; } = MaxHealth;
@@ -58,18 +57,13 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	[Export] private Node3D _head = null!;
 	[Export] private Camera3D _camera = null!;
 	[Export] private Sprite3D _gun = null!;
-	[Export] private Label _debugLabel = null!;
-	[Export] private TextureRect _crosshair = null!;
 	[Export] private Area3D _meleeDetectionArea = null!;
 	[Export] private Area3D _pickupDetectionArea = null!;
 	[Export] private AnimationPlayer _bothHandsOrClawAnimationPlayer = null!;
 	[Export] private AnimationPlayer _gunAnimationPlayer = null!;
-	[Export] public DoomPortrait DoomPortrait = null!;
-	[Export] public CombatLog LogControl = null!;
-	[Export] private HealthContainer _healthContainer = null!;
 	[Export] private Node3D _centerOfMassNode = null!;
-	[Export] private ColorRect _damageEffect = null!;
 	[Export] private PlayerSounds _sounds = null!;
+	[Export] public HUD Hud = null!;
 
 	private DeathInfo? _deathInfo = null;
 
@@ -82,33 +76,18 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		_enamoredTimer = new(this);
 	}
 
-	// TODO: Remove both of these
-	private int _trackedScore = 0;
-
 	public override void _Ready()
 	{
-		// TODO: move this somewhere else!
-		Input.MouseMode = Input.MouseModeEnum.Visible;
-
-		// TODO: these probably shouldn't be here?
-		GetNode<CanvasLayer>("CanvasLayer").Visible = false;
-		GetNode<Sprite3D>("%Camera/Claw").Visible = false;
-		GetNode<Sprite3D>("%Camera/Gun").Visible = false;
-
+		DisplayHUD(false);
 		if (_initializeOnStartup)
 		{
 			Initialize();
 		}
-
-		GlobalSignals.GetInstance().AddToPlayerScore += OnScoreAdded;
 	}
 
 	public void Initialize()
 	{
-		GetNode<CanvasLayer>("CanvasLayer").Visible = true;
-		GetNode<Sprite3D>("%Camera/Claw").Visible = true;
-		GetNode<Sprite3D>("%Camera/Gun").Visible = true;
-
+		DisplayHUD(true);
 		Health = MaxHealth;
 		Velocity = Vector3.Zero;
 
@@ -118,25 +97,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		UpdateHealthDisplays();
 		_camera.RotationDegrees = Vector3.Zero;
-		DoomPortrait.SetAnimation(DoomPortraitType.Idle);
+		Hud.SetDoomPortrait(DoomPortraitType.Idle);
 		_bothHandsOrClawAnimationPlayer.Play("RESET");
-	}
-
-	private void OnScoreAdded(int score)
-	{
-		bool hadWon = HasWon();
-
-		_trackedScore += score;		
-
-		if (!hadWon && HasWon())
-		{
-			LogControl.PushMsg("You have pillaged enough goods! Find a cannon and press [E] to escape!");
-
-			GetNode<CanvasItem>("%EscapeText").Show();
-			GetNode<ScoreDisplay>("%ScoreDisplay").Modulate = Colors.Yellow;
-
-			GetTree().CallGroup("Cannons", "EnableEscape");
-		}
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -158,11 +120,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 				MouseRotateCamera(fDelta);
 				MeleeAttack();
 				ShootAttack();
-
 				PickUpItems();
-
-				EscapeShip();
-			}	
+			}
 		}
 		else if (_deathInfo != null)
 		{
@@ -190,7 +149,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 	private void ApplyMovement(float fDelta, bool hasControls)
 	{
 		Vector3 newVelocity = Vector3.Zero;
-
 		Vector2 inputVector = Vector2.Zero;
 		bool jump = false; 
 		bool sprint = false;
@@ -296,7 +254,6 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		bool wasOnFloor = IsOnFloor();
 		Velocity = newVelocity;
 		MoveAndSlide();
-		_debugLabel.Text = $"Velocity: {newVelocity}\nSpeed: {newVelocity.Length()}\nSpeed xz: {newVelocity.X0Z().Length()}";
 
 		_sounds.Footsteps.SetPlaying(IsOnFloor() && hasControls && inputVector.LengthSquared() > 0.001f);	
 		_sounds.Footsteps.PitchScale = sprint ? SprintPitchScale : WalkPitchScale;
@@ -428,8 +385,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			{
 				GlobalSignals.AddScore(item.AssociatedScore);
 			}
-
-			LogControl.PushMsg($"Picked up a {item.DisplayName}!");
+			Hud.PushLog($"Picked up a {item.DisplayName}!");
 			((Node)item).QueueFree();
 		}
 
@@ -476,7 +432,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 				case "Treasure":
 				{
-					DoomPortrait.SetAnimation(DoomPortraitType.Treasure);
+					Hud.SetDoomPortrait(DoomPortraitType.Treasure);
 
 					if (Health < MaxHealth)
 					{
@@ -484,8 +440,8 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 						UpdateHealthDisplays();
 					}
 
-					_enamoredTimer.Start(EnamoredByTreasureTime, () => 
-						DoomPortrait.SetAnimation(DoomPortraitType.Idle)
+					_enamoredTimer.Start(EnamoredByTreasureTime, () =>
+						Hud.SetDoomPortrait(DoomPortraitType.Idle)
 					);
 					_sounds.PickupTreasure.PlayPitched((1.0f, 0.2f));
 
@@ -495,48 +451,14 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			}
 		}
 	}
-	
-	private void EscapeShip()
-	{
-		if (!HasWon())
-		{
-			return;
-		}		
-
-		bool use = Input.IsActionJustPressed("plr_use");
-
-		if (!use)
-		{
-			return;
-		}
-
-		Godot.Collections.Array<Node> cannons = GetTree().GetNodesInGroup("Cannons");
-		Cannon? closestCannon = cannons
-			.OfType<Cannon>()
-			.OrderBy(c => c.GlobalPosition.DistanceTo(GlobalPosition))
-			.FirstOrDefault();
-		
-		if (closestCannon == null)
-		{
-			GD.PushWarning("No cannons could be found for player's win condition!");
-			return;
-		}
-		
-		if (float.Abs(closestCannon.GlobalPosition.DistanceTo(GlobalPosition)) < 12.0f)
-		{
-			GetTree().ChangeSceneToPacked(_youWonScene);
-		}
-	}
-	
 	private void KillIfBelowWorld()
 	{
-		// remove this hackery?
+		// TODO: remove this hackery?
 		if (Health > 0 && GlobalPosition.Y < -200)
 		{
 			KillWithCameraUpPan();
 		}
 	}
-
 	private void RestartOnRequest()
 	{
 		if (Input.IsActionJustPressed("plr_restart"))
@@ -544,22 +466,13 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 			EmitSignal(SignalName.RespawnPlayer);
 		}
 	}
-
-	private bool HasWon()
-	{
-		return _trackedScore >= WinScoreCondition;
-	}
-
 	public override void _UnhandledInput(InputEvent ev)
 	{
 		if (ev is InputEventMouseMotion motion)
 		{
 			_mouseMotion = motion.Relative;
-			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
 	}
-
-
 	void IBulletHittable.Hit(BulletHitInfo info)
 	{
 		if (Health <= 0)
@@ -580,18 +493,14 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		if (Health > 0)
 		{
-			DoomPortrait.SetAnimation(DoomPortraitType.Pain);
-			_damageEffect.Material.Set("shader_param/enable", true);
+			Hud.TakeDamage();
 			_invulTimer.Start(InvulPeriod, () => {
-				_damageEffect.Material.Set("shader_param/enable", false);
-				DoomPortrait.SetAnimation(DoomPortraitType.Idle);
+				Hud.HealDamage();
 			});
-
 			_sounds.Hurt.Play();
 		}
 		else
 		{
-			UpdateHealthDisplays();
 			_deathInfo = new DeathInfo(info.Source);
 		}
 	}
@@ -610,19 +519,19 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 		LockInPlace = true;
 	}
 
+	public void DisplayHUD(bool enable)
+	{
+		Hud.Visible = enable;
+		GetNode<Sprite3D>("%Camera/Claw").Visible = enable;
+		GetNode<Sprite3D>("%Camera/Gun").Visible = enable;
+	}
+
 	private void UpdateHealthDisplays()
 	{
-		bool isDead = Health <= 0;
-
-		_healthContainer.SetHealth(Health);
-		DoomPortrait.SetAnimation(isDead ? DoomPortraitType.Death : DoomPortraitType.Idle);
-		_damageEffect.Material.Set("shader_param/enable", isDead);
-		GetNode<Label>("%DeathLabel").Visible = isDead;
-		_crosshair.Visible = !isDead;
-
-		if (isDead && !_hasEmittedDeathScreech)
+		Hud.UpdateHealth(Health);
+		if (Health <= 0 && !_hasEmittedDeathScreech)
 		{
-			LogControl.PushMsg($"{Globals.ProtagonistName} has died!");
+			Hud.PushLog($"{Globals.ProtagonistName} has died!");
 			_sounds.Death.Play();
 			EmitSignal(SignalName.PlayerDied);
 			_hasEmittedDeathScreech = true;

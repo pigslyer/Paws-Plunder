@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxjtdjrsnr2k0"]
+
+[ext_resource type="Script" path="res://src/levels/CurrentScene.cs" id="1_48hlt"]
+[ext_resource type="PackedScene" uid="uid://clf4nmfolif54" path="res://src/levels/level_1/Level1.tscn" id="2_4pnlr"]
+[ext_resource type="PackedScene" uid="uid://t7i6b5c7uytx" path="res://src/ui/Pause.tscn" id="4_ohfju"]
+[ext_resource type="PackedScene" uid="uid://ddn2p0fo5whkv" path="res://src/ui/MainMenu.tscn" id="5_oripf"]
+
+[node name="CurrentScene" type="Node3D" node_paths=PackedStringArray("_level", "_mainMenu", "_pause")]
+process_mode = 3
+script = ExtResource("1_48hlt")
+_level = NodePath("Level/Level1")
+_mainMenu = NodePath("MainMenu")
+_pause = NodePath("Pause")
+
+[node name="Level" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="Level1" parent="Level" instance=ExtResource("2_4pnlr")]
+
+[node name="MainMenu" parent="." instance=ExtResource("5_oripf")]
+process_mode = 1
+
+[node name="Pause" parent="." instance=ExtResource("4_ohfju")]
+process_mode = 2
+visible = false

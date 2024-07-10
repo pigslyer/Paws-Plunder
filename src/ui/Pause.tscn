@@ -1,0 +1,242 @@
+[gd_scene load_steps=15 format=3 uid="uid://t7i6b5c7uytx"]
+
+[ext_resource type="Script" path="res://src/ui/Pause.cs" id="1_h0lie"]
+[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/assets/fonts/Deus EX Console.ttf" id="2_doqx8"]
+[ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/ui/Styling.tres" id="3_x5u8c"]
+[ext_resource type="FontFile" uid="uid://e118rqpcl26d" path="res://src/assets/fonts/coralines_cat.ttf" id="4_entru"]
+[ext_resource type="PackedScene" uid="uid://ymtj1s3d8h13" path="res://src/ui/Options.tscn" id="6_34e4g"]
+[ext_resource type="AudioStream" uid="uid://g0degvjci103" path="res://src/assets/sounds/music/cats at sea.mp3" id="7_lyvjf"]
+
+[sub_resource type="StyleBoxEmpty" id="7"]
+
+[sub_resource type="StyleBoxEmpty" id="8"]
+
+[sub_resource type="StyleBoxFlat" id="9"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="6"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="10"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="5"]
+bg_color = Color(0.141176, 0.141176, 0.141176, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 6
+
+[sub_resource type="FontFile" id="11"]
+fallbacks = Array[Font]([ExtResource("2_doqx8")])
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/28/0 = Vector2(0, 0)
+cache/0/21/0/ascent = 0.0
+cache/0/21/0/descent = 0.0
+cache/0/21/0/underline_position = 0.0
+cache/0/21/0/underline_thickness = 0.0
+cache/0/21/0/scale = 1.0
+cache/0/21/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/28/0 = Vector2(0, 0)
+cache/0/28/0/ascent = 0.0
+cache/0/28/0/descent = 0.0
+cache/0/28/0/underline_position = 0.0
+cache/0/28/0/underline_thickness = 0.0
+cache/0/28/0/scale = 1.0
+cache/0/28/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/28/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/28/0/kerning_overrides/28/0 = Vector2(0, 0)
+
+[sub_resource type="Theme" id="4"]
+default_font = SubResource("11")
+default_font_size = 21
+Button/styles/disabled = SubResource("7")
+Button/styles/focus = SubResource("8")
+Button/styles/hover = SubResource("9")
+Button/styles/normal = SubResource("6")
+Button/styles/pressed = SubResource("10")
+PanelContainer/styles/panel = SubResource("5")
+
+[node name="Pause" type="Control" node_paths=PackedStringArray("_menu", "_options", "_saveOptionsButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h0lie")
+_menu = NodePath("Menu")
+_options = NodePath("Options")
+_saveOptionsButton = NodePath("SaveSettingsButton")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0784314, 0.0784314, 0.25098)
+
+[node name="Menu" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("4")
+
+[node name="LogoLabel" type="Label" parent="Menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.087
+anchor_right = 0.5
+anchor_bottom = 0.1
+offset_left = -394.0
+offset_right = 394.0
+offset_bottom = 104.64
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("3_x5u8c")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 56
+text = "Paws and Plunder"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubheaderLabel" type="Label" parent="Menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.2625
+anchor_right = 0.5
+anchor_bottom = 0.319445
+grow_horizontal = 2
+theme = ExtResource("3_x5u8c")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_entru")
+theme_override_font_sizes/font_size = 18
+text = "A tale of mighty cat pirates"
+
+[node name="ButtonsContainer" type="MarginContainer" parent="Menu"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.35
+anchor_top = 0.473
+anchor_right = 0.65
+anchor_bottom = 0.927
+offset_top = -0.200012
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/ButtonsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PlayButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+layout_mode = 2
+theme = ExtResource("3_x5u8c")
+text = "Resume game"
+
+[node name="OptionsButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+layout_mode = 2
+theme = ExtResource("3_x5u8c")
+text = "Options"
+
+[node name="MainMenuButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+layout_mode = 2
+theme = ExtResource("3_x5u8c")
+text = "Return to main menu"
+
+[node name="QuitButton" type="Button" parent="Menu/ButtonsContainer/VBoxContainer" groups=["MAIN_BUTTON"]]
+layout_mode = 2
+theme = ExtResource("3_x5u8c")
+text = "Quit"
+
+[node name="Options" parent="." instance=ExtResource("6_34e4g")]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -225.0
+offset_top = -468.0
+offset_right = 225.0
+offset_bottom = -138.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SaveSettingsButton" type="Button" parent="." groups=["MAIN_BUTTON"]]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -192.0
+offset_top = -119.0
+offset_right = 192.0
+offset_bottom = -62.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_x5u8c")
+theme_override_font_sizes/font_size = 21
+text = "Save settings"
+
+[node name="MusicMenu" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_lyvjf")
+
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/PlayButton" to="." method="_OnPlayButtonPressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/OptionsButton" to="." method="_OnOptionsButtonPressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/QuitButton" to="." method="_OnQuitButtonPressed"]
+[connection signal="pressed" from="SaveSettingsButton" to="." method="_OnSaveSettingsButtonPressed"]

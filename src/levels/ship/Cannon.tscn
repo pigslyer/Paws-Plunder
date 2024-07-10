@@ -1,11 +1,12 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=13 format=3]
 
-[ext_resource path="res://src/assets/models/black metal.material" type="Material" id=1]
-[ext_resource path="res://src/assets/models/wood.material" type="Material" id=2]
-[ext_resource path="res://src/assets/models/wood_016.material" type="Material" id=3]
-[ext_resource path="res://src/assets/models/wood_007.material" type="Material" id=4]
-[ext_resource path="res://src/levels/ship/Arrow.tscn" type="PackedScene" id=5]
-[ext_resource path="res://src/levels/ship/Cannon.cs" type="Script" id=6]
+[ext_resource type="Material" path="res://src/assets/models/black metal.material" id="1"]
+[ext_resource type="Material" path="res://src/assets/models/wood.material" id="2"]
+[ext_resource type="Material" path="res://src/assets/models/wood_016.material" id="3"]
+[ext_resource type="Material" path="res://src/assets/models/wood_007.material" id="4"]
+[ext_resource type="PackedScene" path="res://src/levels/shared/Arrow.tscn" id="5"]
+[ext_resource type="Script" path="res://src/levels/ship/Cannon.cs" id="6"]
+
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "cannon_Cylinder004"

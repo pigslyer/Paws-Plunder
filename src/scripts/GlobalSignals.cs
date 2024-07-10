@@ -26,6 +26,7 @@ public partial class GlobalSignals : Node
 
 	public static void AddScore(int score)
 	{
+		Logger.Debug($"Adding {score} to player score.");
 		GetInstance().EmitSignal(SignalName.AddToPlayerScore, score);
 	}
 }

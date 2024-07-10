@@ -1,19 +1,12 @@
-[gd_scene load_steps=50 format=3 uid="uid://yviereyjsr6d"]
+[gd_scene load_steps=38 format=3 uid="uid://yviereyjsr6d"]
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1"]
-[ext_resource type="Texture2D" uid="uid://b1qf5l4runsfi" path="res://src/assets/crosshair.png" id="2"]
-[ext_resource type="Texture2D" uid="uid://decsgckguwr7k" path="res://src/assets/left_paw.png" id="3"]
+[ext_resource type="PackedScene" path="res://src/levels/shared/YouWon.tscn" id="3_lxkk7"]
 [ext_resource type="PackedScene" path="res://src/bullet/Bullet.tscn" id="4"]
-[ext_resource type="Script" path="res://src/player/CombatLog.cs" id="5"]
-[ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="6"]
-[ext_resource type="PackedScene" uid="uid://b2bqgadgr6r3h" path="res://src/player/DoomPortrait.tscn" id="7"]
-[ext_resource type="Script" path="res://src/player/HealthContainer.cs" id="8"]
-[ext_resource type="Texture2D" uid="uid://ckei03hq1auw4" path="res://src/assets/ui heart.png" id="9"]
-[ext_resource type="Texture2D" uid="uid://cer0gc3j17utn" path="res://src/assets/right_paw.png" id="10"]
-[ext_resource type="Script" path="res://src/player/ScoreDisplay.cs" id="11"]
-[ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/ui/Deus EX Console.ttf" id="12"]
-[ext_resource type="Shader" path="res://src/shaders/damage.gdshader" id="13"]
-[ext_resource type="Texture2D" uid="uid://cf3an8g36pvce" path="res://src/assets/gun effect-Sheet.png" id="14"]
+[ext_resource type="Texture2D" uid="uid://decsgckguwr7k" path="res://src/assets/images/left_paw.png" id="4_qtw2c"]
+[ext_resource type="Texture2D" uid="uid://cer0gc3j17utn" path="res://src/assets/images/right_paw.png" id="5_giola"]
+[ext_resource type="Texture2D" uid="uid://cf3an8g36pvce" path="res://src/assets/images/gun effect-Sheet.png" id="6_bet84"]
+[ext_resource type="PackedScene" uid="uid://bq6otmbhuxosk" path="res://src/player/HUD.tscn" id="7_yd6cs"]
 [ext_resource type="AudioStream" uid="uid://lf35w63ixa1e" path="res://src/assets/sounds/player/pickup.mp3" id="15"]
 [ext_resource type="AudioStream" uid="uid://cs4oqics33op5" path="res://src/assets/sounds/player/player_hurt.mp3" id="16"]
 [ext_resource type="AudioStream" uid="uid://roj3hf31ht5" path="res://src/assets/sounds/player/player_footsteps.mp3" id="17"]
@@ -27,30 +20,28 @@
 [ext_resource type="AudioStream" uid="uid://dprbs5m4tpwjj" path="res://src/assets/sounds/player/jump.mp3" id="25"]
 [ext_resource type="AudioStream" uid="uid://j7pgoujcwdi" path="res://src/assets/sounds/player/swipe.mp3" id="26"]
 [ext_resource type="AudioStream" uid="uid://cixvyjaoew1ud" path="res://src/assets/sounds/player/swipe_hit.mp3" id="27"]
-[ext_resource type="PackedScene" path="res://src/levels/YouWon.tscn" id="28"]
-[ext_resource type="Script" path="res://src/player/EscapeText.gd" id="29"]
 
 [sub_resource type="CapsuleShape3D" id="1"]
 height = 1.3
 
 [sub_resource type="AtlasTexture" id="9"]
-atlas = ExtResource("14")
+atlas = ExtResource("6_bet84")
 region = Rect2(0, 384, 103, 96)
 
 [sub_resource type="AtlasTexture" id="10"]
-atlas = ExtResource("14")
+atlas = ExtResource("6_bet84")
 region = Rect2(0, 288, 103, 96)
 
 [sub_resource type="AtlasTexture" id="11"]
-atlas = ExtResource("14")
+atlas = ExtResource("6_bet84")
 region = Rect2(0, 192, 103, 96)
 
 [sub_resource type="AtlasTexture" id="12"]
-atlas = ExtResource("14")
+atlas = ExtResource("6_bet84")
 region = Rect2(0, 96, 103, 96)
 
 [sub_resource type="AtlasTexture" id="13"]
-atlas = ExtResource("14")
+atlas = ExtResource("6_bet84")
 region = Rect2(0, 0, 103, 96)
 
 [sub_resource type="SpriteFrames" id="14"]
@@ -78,28 +69,6 @@ animations = [{
 
 [sub_resource type="BoxShape3D" id="2"]
 size = Vector3(0.8, 0.8, 5)
-
-[sub_resource type="FontFile" id="25"]
-fallbacks = Array[Font]([ExtResource("12")])
-subpixel_positioning = 0
-msdf_pixel_range = 14
-msdf_size = 128
-cache/0/16/0/ascent = 0.0
-cache/0/16/0/descent = 0.0
-cache/0/16/0/underline_position = 0.0
-cache/0/16/0/underline_thickness = 0.0
-cache/0/16/0/scale = 1.0
-cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
-
-[sub_resource type="Theme" id="26"]
-default_font = SubResource("25")
-
-[sub_resource type="ShaderMaterial" id="4"]
-shader = ExtResource("13")
-shader_parameter/vignette_intensity = 0.4
-shader_parameter/vignette_opacity = 0.5
-shader_parameter/vignette_rgb = Color(0.8, 0, 0, 1)
-shader_parameter/enable = false
 
 [sub_resource type="Animation" id="8"]
 resource_name = "ClawAttack"
@@ -683,26 +652,21 @@ _data = {
 "ShootSingle": SubResource("15")
 }
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_head", "_camera", "_gun", "_debugLabel", "_crosshair", "_meleeDetectionArea", "_pickupDetectionArea", "_bothHandsOrClawAnimationPlayer", "_gunAnimationPlayer", "DoomPortrait", "LogControl", "_healthContainer", "_centerOfMassNode", "_damageEffect", "_sounds") groups=["PLAYER"]]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_head", "_camera", "_gun", "_meleeDetectionArea", "_pickupDetectionArea", "_bothHandsOrClawAnimationPlayer", "_gunAnimationPlayer", "_centerOfMassNode", "_sounds", "Hud") groups=["PLAYER"]]
 collision_layer = 2
 script = ExtResource("1")
 _bulletScene = ExtResource("4")
-_youWonScene = ExtResource("28")
+_youWonScene = ExtResource("3_lxkk7")
 _head = NodePath("Head")
 _camera = NodePath("Head/Camera")
 _gun = NodePath("Head/Camera/Gun")
-_debugLabel = NodePath("CanvasLayer/DebugContainer/PanelContainer/Label")
-_crosshair = NodePath("CanvasLayer/Crosshair")
 _meleeDetectionArea = NodePath("Head/Camera/MeleeTargetDetection")
 _pickupDetectionArea = NodePath("PickupArea")
 _bothHandsOrClawAnimationPlayer = NodePath("BothHandsOrClaw")
 _gunAnimationPlayer = NodePath("Gun")
-DoomPortrait = NodePath("CanvasLayer/DoomPortrait")
-LogControl = NodePath("CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog")
-_healthContainer = NodePath("CanvasLayer/HealthContainer")
 _centerOfMassNode = NodePath("CenterOfMass")
-_damageEffect = NodePath("CanvasLayer/DamageEffect")
 _sounds = NodePath("Sounds")
+Hud = NodePath("HUD")
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.65437, 0)
@@ -721,7 +685,7 @@ transform = Transform3D(0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, 
 pixel_size = 0.008
 no_depth_test = true
 render_priority = 100
-texture = ExtResource("3")
+texture = ExtResource("4_qtw2c")
 hframes = 2
 
 [node name="Gun" type="Sprite3D" parent="Head/Camera"]
@@ -729,7 +693,7 @@ transform = Transform3D(0.150383, -0.0868238, -0.984808, 0.5, 0.866025, -1.05306
 pixel_size = 0.009
 no_depth_test = true
 render_priority = 100
-texture = ExtResource("10")
+texture = ExtResource("5_giola")
 hframes = 2
 
 [node name="MuzzleFlash" type="AnimatedSprite3D" parent="Head/Camera/Gun" groups=["MUZZLE"]]
@@ -795,137 +759,8 @@ shape = SubResource("1")
 [node name="CenterOfMass" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4573, 0)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="DebugContainer" type="VBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_right = 0.1
-
-[node name="CombatLogPanel" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
-visible = false
-layout_mode = 2
-mouse_filter = 2
-theme = SubResource("26")
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel"]
-layout_mode = 2
-
-[node name="CombatLog" type="VBoxContainer" parent="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer"]
-layout_mode = 2
-script = ExtResource("5")
-
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/DebugContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="CanvasLayer/DebugContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="Crosshair" type="TextureRect" parent="CanvasLayer"]
+[node name="HUD" parent="." instance=ExtResource("7_yd6cs")]
 unique_name_in_owner = true
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-mouse_filter = 2
-texture = ExtResource("2")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="HealthContainer" type="VBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.4
-anchor_top = 0.68
-anchor_right = 0.43
-anchor_bottom = 1.0
-grow_vertical = 0
-script = ExtResource("8")
-
-[node name="Health1" type="TextureRect" parent="CanvasLayer/HealthContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("9")
-stretch_mode = 5
-
-[node name="Health2" type="TextureRect" parent="CanvasLayer/HealthContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("9")
-stretch_mode = 5
-
-[node name="Health3" type="TextureRect" parent="CanvasLayer/HealthContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("9")
-stretch_mode = 5
-
-[node name="DoomPortrait" parent="CanvasLayer" instance=ExtResource("7")]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-offset_left = -81.5
-offset_top = -208.0
-offset_right = 81.5
-grow_vertical = 0
-
-[node name="ScoreDisplay" type="Control" parent="CanvasLayer/DoomPortrait" node_paths=PackedStringArray("_label")]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("11")
-_label = NodePath("Number")
-
-[node name="Number" type="Label" parent="CanvasLayer/DoomPortrait/ScoreDisplay"]
-layout_mode = 0
-anchor_right = 1.0
-theme = ExtResource("6")
-text = "25121"
-
-[node name="DamageEffect" type="ColorRect" parent="CanvasLayer"]
-unique_name_in_owner = true
-material = SubResource("4")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color(1, 0.890196, 0, 1)
-
-[node name="DeathLabel" type="Label" parent="CanvasLayer"]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -94.0
-offset_top = -20.5
-offset_right = 94.0
-offset_bottom = 20.5
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("6")
-text = "You died!
-Press [R] to respawn"
-
-[node name="EscapeText" type="Label" parent="CanvasLayer"]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -565.0
-offset_bottom = 23.0
-grow_horizontal = 0
-text = "\"You have pillaged enough goods! Find a cannon and press [E] to escape!\""
-script = ExtResource("29")
-color1 = Color(1, 0, 0, 1)
-color2 = Color(0.945098, 1, 0, 1)
-
-[node name="Timer" type="Timer" parent="CanvasLayer/EscapeText"]
-wait_time = 2.0
-autostart = true
 
 [node name="BothHandsOrClaw" type="AnimationPlayer" parent="."]
 libraries = {
@@ -999,7 +834,3 @@ bus = &"SFX"
 [node name="MeleeMiss" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("26")
 bus = &"SFX"
-
-[connection signal="Emptied" from="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog" to="CanvasLayer/DebugContainer/CombatLogPanel" method="hide"]
-[connection signal="EntryAdded" from="CanvasLayer/DebugContainer/CombatLogPanel/MarginContainer/CombatLog" to="CanvasLayer/DebugContainer/CombatLogPanel" method="show"]
-[connection signal="timeout" from="CanvasLayer/EscapeText/Timer" to="CanvasLayer/EscapeText" method="_on_Timer_timeout"]

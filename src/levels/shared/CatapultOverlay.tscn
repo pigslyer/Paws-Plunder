@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://decqktbl0m08v"]
+
+[ext_resource type="Script" path="res://src/levels/shared/CatapultOverlay.cs" id="1_uw2f7"]
+
+[sub_resource type="Shader" id="7"]
+code = "shader_type canvas_item;
+
+uniform float alpha : hint_range(0.f, 1.f) = 1.0;
+uniform float inner_radius : hint_range(0.f, 1.f) = 0.0;
+uniform float outer_radius : hint_range(0.f, 1.f) = 1.0;
+
+void fragment() 
+{
+	float x = abs(UV.r - .5) * 2.0;
+	float y = abs(UV.g - .5) * 2.0;
+	float q = clamp(1.0 - (1.0 - sqrt(x*x+y*y) /outer_radius) / (1.0-inner_radius), 0, 1);
+	COLOR = vec4(0, 0, 0, q*alpha);
+}"
+
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("7")
+shader_parameter/alpha = 1.0
+shader_parameter/inner_radius = 0.6
+shader_parameter/outer_radius = 1.0
+
+[node name="CatapultOverlay" type="ColorRect"]
+material = SubResource("2")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(1, 0.890196, 0, 1)
+script = ExtResource("1_uw2f7")
