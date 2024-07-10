@@ -204,6 +204,19 @@ public static class Extensions {
         }
     }
 
+    public static void PlayPitched(this AudioStreamPlayer player, Distro distribution, RandomNumberGenerator? rng = null)
+    {
+        if (player.Playing)
+        {
+            return;
+        }
+
+        rng ??= Globals.Rng;
+
+        player.PitchScale = rng.Randfn(distribution);
+        player.Play();
+    }
+
     public static void PlayPitched(this AudioStreamPlayer3D player, Distro distribution, RandomNumberGenerator? rng = null)
     {
         if (player.Playing)

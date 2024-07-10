@@ -15,6 +15,8 @@ public partial class HealthContainer : Control
 
 	public void SetHealth(int health)
 	{
+		health = int.Clamp(health, 0, _health.Length - 1);
+
 		foreach (TextureRect aliveHeart in _health.AsSpan()[..health])
 		{
 			aliveHeart.SelfModulate = Colors.White;

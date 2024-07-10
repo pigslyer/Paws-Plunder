@@ -51,8 +51,8 @@ public partial class SquadController : Node
     private RandomNumberGenerator _rng;
     private Player? _player;
 
-    private CustomTimer? _updatePositionsTimer = null;
-    private CustomTimer? _runAttackRoutine = null;
+    private readonly StatelessTimer _updatePositionsTimer;
+    private readonly StatelessTimer _runAttackTimer;
 
     [Export] private RayCast3D _wallDetection = null!;
 
@@ -101,6 +101,9 @@ public partial class SquadController : Node
         // this causes a break in the fighting, which might be a cool effect
         _queuedMovers = new DelayedQueue<(IMoveable, Vector3)>();
         _queuedAttackers = new DelayedQueue<IPlayerAttacker>();
+
+        _updatePositionsTimer = new(this);
+        _runAttackTimer = new(this);
     }
 
     public override void _Ready()
@@ -243,22 +246,20 @@ public partial class SquadController : Node
     {
         if (GetActiveMoversCount() == 0)
         {
-            _updatePositionsTimer?.Stop();
-            _updatePositionsTimer = null;
+            _updatePositionsTimer.Stop();
             return;
         }
 
-        if (_updatePositionsTimer == null)
+        if (!_updatePositionsTimer.IsRunning())
         {
-            _updatePositionsTimer = CustomTimer.Start(this, _rng.Randfn(_updatePositionsInterval));
-            _updatePositionsTimer.Timeout += OnUpdatePositionsTimeout;
+            float duration = _rng.Randfn(_updatePositionsInterval);
+
+            _updatePositionsTimer.Start(duration, OnUpdatePositionsTimeout);
         }
     }
 
     private void OnUpdatePositionsTimeout()
     {
-        _updatePositionsTimer = null;
-
         if (_player == null)
         {
             return;
@@ -313,22 +314,20 @@ public partial class SquadController : Node
     {
         if (GetActiveAttackersCount() == 0)
         {
-            _runAttackRoutine?.Stop();
-            _runAttackRoutine = null;
+            _runAttackTimer.Stop();
             return;
         }            
 
-        if (_runAttackRoutine == null)
+        if (!_runAttackTimer.IsRunning())
         {
-            _runAttackRoutine = CustomTimer.Start(this, _rng.Randfn(_attackInterval));
-            _runAttackRoutine.Timeout += OnAttackRoutineTimeout;
+            float duration = _rng.Randfn(_attackInterval);
+            
+            _runAttackTimer.Start(duration, OnAttackTimerTimeout);
         }
     }
 
-    private void OnAttackRoutineTimeout()
+    private void OnAttackTimerTimeout()
     {
-        _runAttackRoutine = null;
-
         if (_player == null)
         {
             return;
@@ -433,10 +432,8 @@ public partial class SquadController : Node
         {
             _player = null;
 
-            _updatePositionsTimer?.Stop();
-            _updatePositionsTimer = null;
-            _runAttackRoutine?.Stop();
-            _runAttackRoutine = null;
+            _updatePositionsTimer.Stop();
+            _runAttackTimer.Stop();
         }
     }
 

@@ -77,7 +77,7 @@ public partial class FinalLevel : Node3D
 		_cannonPlayer.Play();		
 		_cannonPlayer.FadeOut(1.1f);
 
-		CustomTimer.Start(this, 1.6f).Timeout += () => {
+		DiscardTimer.Start(this, 1.6f).Timeout += () => {
 			_windPlayer.FadeOut(0.6f);
 		};
 	}
