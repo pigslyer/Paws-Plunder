@@ -22,13 +22,15 @@ public partial class CurrentScene : Node3D
 	private void OnGameStart()
 	{
 		EmitSignal(SignalName.GameStart);
-		_mainMenu.QueueFree();
+		_mainMenu.Visible = false;
+		//_mainMenu.QueueFree(); // TODO: check how much memory credits are consuming
 	}
 
 	public override void _Input(InputEvent @event)
 	{
 		if (Input.IsActionJustPressed("ui_pause"))
 		{
+			if (_mainMenu.Visible) return;
 			_pause.TogglePause(!_pause.Visible);
 		}
 	}
