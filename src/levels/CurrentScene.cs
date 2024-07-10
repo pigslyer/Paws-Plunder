@@ -13,6 +13,11 @@ public partial class CurrentScene : Node3D
 		_mainMenu.StartGame += OnGameStart;
 		GameStart += _level.OnStart;
 	}
+	public override void _ExitTree()
+	{
+		_mainMenu.StartGame -= OnGameStart;
+		GameStart -= _level.OnStart;
+	}
 	private void OnGameStart()
 	{
 		EmitSignal(SignalName.GameStart);

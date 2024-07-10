@@ -1,12 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://ddn2p0fo5whkv"]
+[gd_scene load_steps=16 format=3 uid="uid://ddn2p0fo5whkv"]
 
-[ext_resource type="Theme" uid="uid://b6cctr7ol722x" path="res://src/ui/CombatLogTheme.tres" id="3"]
 [ext_resource type="Theme" uid="uid://cw7d1j3cgjxiv" path="res://src/ui/Styling.tres" id="3_fr8vf"]
 [ext_resource type="Script" path="res://src/ui/MainMenu.cs" id="4"]
-[ext_resource type="Script" path="res://src/scripts/VolumeSlider.cs" id="5"]
+[ext_resource type="FontFile" uid="uid://e118rqpcl26d" path="res://src/assets/fonts/coralines_cat.ttf" id="4_cdvly"]
 [ext_resource type="FontFile" uid="uid://bn7p6wcfoyop4" path="res://src/assets/fonts/Deus EX Console.ttf" id="6"]
-[ext_resource type="Script" path="res://src/scripts/Options.cs" id="7"]
-[ext_resource type="PackedScene" path="res://src/ui/Credits.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://ymtj1s3d8h13" path="res://src/ui/Options.tscn" id="6_qgayg"]
+[ext_resource type="PackedScene" uid="uid://r1g1j1k5juid" path="res://src/ui/Credits.tscn" id="8"]
 [ext_resource type="AudioStream" uid="uid://g0degvjci103" path="res://src/assets/sounds/music/cats at sea.mp3" id="8_wi0rd"]
 
 [sub_resource type="StyleBoxEmpty" id="7"]
@@ -101,7 +100,7 @@ Button/styles/normal = SubResource("6")
 Button/styles/pressed = SubResource("10")
 PanelContainer/styles/panel = SubResource("5")
 
-[node name="MainMenu" type="Control" node_paths=PackedStringArray("_menu", "_options", "_storyPanel", "_storyLabel", "_musicMenu")]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("_menu", "_options", "_saveOptionsButton", "_storyPanel", "_storyLabel", "_musicMenu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,6 +110,7 @@ grow_vertical = 2
 script = ExtResource("4")
 _menu = NodePath("Menu")
 _options = NodePath("Options")
+_saveOptionsButton = NodePath("SaveSettingsButton")
 _storyPanel = NodePath("Menu/StoryPanel")
 _storyLabel = NodePath("Menu/StoryPanel/MarginContainer/VBoxContainer/Intro")
 _musicMenu = NodePath("MusicMenu")
@@ -126,56 +126,70 @@ theme = SubResource("4")
 
 [node name="LogoLabel" type="Label" parent="Menu"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.087
 anchor_right = 0.5
-offset_left = -149.0
-offset_right = 149.0
-offset_bottom = 44.0
+anchor_bottom = 0.1
+offset_left = -394.0
+offset_right = 394.0
+offset_bottom = 104.64
 grow_horizontal = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme = ExtResource("3_fr8vf")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 56
 text = "Paws and Plunder"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SubheaderLabel" type="Label" parent="Menu"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = -1
 anchor_left = 0.5
+anchor_top = 0.2625
 anchor_right = 0.5
-offset_left = -257.5
-offset_right = 257.5
-offset_bottom = 44.0
+anchor_bottom = 0.319445
 grow_horizontal = 2
+theme = ExtResource("3_fr8vf")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_cdvly")
+theme_override_font_sizes/font_size = 18
+text = "A tale of mighty cat pirates"
+
+[node name="VersionLabel" type="Label" parent="Menu"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.983625
+anchor_top = 0.972222
+anchor_right = 0.983625
+anchor_bottom = 0.972222
+offset_left = -191.04
+offset_top = -28.0
+grow_horizontal = 0
+grow_vertical = 0
 theme = ExtResource("3_fr8vf")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
-text = "A tale of mighty cat pirates"
-
-[node name="LogoContainer" type="MarginContainer" parent="Menu"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.11
-anchor_right = 0.521
-anchor_bottom = 0.311
-offset_left = -244.5
-offset_right = 244.5
-offset_bottom = 44.0
-grow_horizontal = 2
-grow_vertical = 2
+theme_override_fonts/font = ExtResource("6")
+theme_override_font_sizes/font_size = 24
+text = "Version: x.x.x"
+metadata/_edit_use_anchors_ = true
 
 [node name="ButtonsContainer" type="MarginContainer" parent="Menu"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.35
-anchor_top = 0.46
+anchor_top = 0.473
 anchor_right = 0.65
 anchor_bottom = 0.927
+offset_top = -0.200012
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Menu/ButtonsContainer"]
 layout_mode = 2
@@ -227,7 +241,7 @@ text = "\"Give the word %NAME% and we'll begin. Just remember, once you're on bo
 layout_mode = 2
 text = "Fire!"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Menu"]
+[node name="CreditsContainer" type="VBoxContainer" parent="Menu"]
 visible = false
 layout_mode = 0
 anchor_left = 0.1
@@ -235,147 +249,56 @@ anchor_top = 0.1
 anchor_right = 0.9
 anchor_bottom = 0.9
 
-[node name="Credits" parent="Menu/VBoxContainer" instance=ExtResource("8")]
+[node name="Credits" parent="Menu/CreditsContainer" instance=ExtResource("8")]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Menu/VBoxContainer"]
+[node name="Button" type="Button" parent="Menu/CreditsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 text = "Exit"
 
-[node name="Options" type="Control" parent="."]
+[node name="Options" parent="." instance=ExtResource("6_qgayg")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("7")
-
-[node name="Container" type="MarginContainer" parent="Options"]
-layout_mode = 0
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
+offset_left = -225.0
+offset_top = -468.0
+offset_right = 225.0
+offset_bottom = -138.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container"]
-layout_mode = 2
-
-[node name="Mouse" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Mouse"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Options/Container/VBoxContainer/Mouse/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3")
-text = "Mouse sensitivity"
-
-[node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Mouse/VBoxContainer"]
-layout_mode = 2
-min_value = 0.001
-max_value = 2.0
-step = 0.0
-value = 1.0
-
-[node name="Master" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Master"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Options/Container/VBoxContainer/Master/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3")
-text = "Master volume"
-
-[node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Master/VBoxContainer"]
-layout_mode = 2
-max_value = 2.0
-step = 0.0
-value = 1.0
-script = ExtResource("5")
-_busName = "Master"
-
-[node name="Music" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Music"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Options/Container/VBoxContainer/Music/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3")
-text = "Music volume"
-
-[node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Music/VBoxContainer"]
-layout_mode = 2
-max_value = 2.0
-step = 0.0
-value = 1.0
-script = ExtResource("5")
-_busName = "Music"
-
-[node name="SFX" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/SFX"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Options/Container/VBoxContainer/SFX/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3")
-text = "SFX volume"
-
-[node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/SFX/VBoxContainer"]
-layout_mode = 2
-max_value = 2.0
-step = 0.0
-value = 1.0
-script = ExtResource("5")
-_busName = "SFX"
-
-[node name="Voice" type="PanelContainer" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Options/Container/VBoxContainer/Voice"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Options/Container/VBoxContainer/Voice/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("3")
-text = "Voice volume"
-
-[node name="Slider" type="HSlider" parent="Options/Container/VBoxContainer/Voice/VBoxContainer"]
-layout_mode = 2
-max_value = 2.0
-step = 0.0
-value = 1.0
-script = ExtResource("5")
-_busName = "Voice"
-
-[node name="BackButton" type="Button" parent="Options/Container/VBoxContainer"]
-layout_mode = 2
+[node name="SaveSettingsButton" type="Button" parent="." groups=["MAIN_BUTTON"]]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -192.0
+offset_top = -119.0
+offset_right = 192.0
+offset_bottom = -62.0
+grow_horizontal = 2
+grow_vertical = 0
 theme = ExtResource("3_fr8vf")
-text = "Back"
+theme_override_font_sizes/font_size = 21
+text = "Save settings"
 
 [node name="MusicMenu" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_wi0rd")
 
-[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/PlayButton" to="." method="_on_PlayButton_pressed"]
-[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/OptionsButton" to="." method="_on_OptionsButton_pressed"]
-[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/CreditsButton" to="Menu/VBoxContainer" method="show"]
-[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/ExitButton" to="Menu/VBoxContainer" method="show"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/PlayButton" to="." method="_OnPlayButtonPressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/OptionsButton" to="." method="_OnOptionsButtonPressed"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/CreditsButton" to="Menu/CreditsContainer" method="show"]
+[connection signal="pressed" from="Menu/ButtonsContainer/VBoxContainer/ExitButton" to="." method="_OnExitButtonPressed"]
 [connection signal="pressed" from="Menu/StoryPanel/MarginContainer/VBoxContainer/Fire" to="." method="OnIntroButtonPressed"]
-[connection signal="pressed" from="Menu/VBoxContainer/Button" to="Menu/VBoxContainer" method="hide"]
-[connection signal="value_changed" from="Options/Container/VBoxContainer/Mouse/VBoxContainer/Slider" to="Options" method="_on_mouse_value_changed"]
-[connection signal="value_changed" from="Options/Container/VBoxContainer/Master/VBoxContainer/Slider" to="Options/Container/VBoxContainer/Master/VBoxContainer/Slider" method="_on_slider_value_changed"]
-[connection signal="value_changed" from="Options/Container/VBoxContainer/Music/VBoxContainer/Slider" to="Options/Container/VBoxContainer/Music/VBoxContainer/Slider" method="_on_slider_value_changed"]
-[connection signal="value_changed" from="Options/Container/VBoxContainer/SFX/VBoxContainer/Slider" to="Options/Container/VBoxContainer/SFX/VBoxContainer/Slider" method="_on_slider_value_changed"]
-[connection signal="value_changed" from="Options/Container/VBoxContainer/Voice/VBoxContainer/Slider" to="Options/Container/VBoxContainer/Voice/VBoxContainer/Slider" method="_on_slider_value_changed"]
-[connection signal="pressed" from="Options/Container/VBoxContainer/BackButton" to="." method="_on_BackButton_pressed"]
+[connection signal="pressed" from="Menu/CreditsContainer/Button" to="Menu/CreditsContainer" method="hide"]
+[connection signal="pressed" from="SaveSettingsButton" to="." method="_OnSaveSettingsButtonPressed"]

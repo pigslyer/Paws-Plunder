@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Paws & Plunder"
+config/version="1.1.0"
 run/main_scene="res://src/levels/CurrentScene.tscn"
 config/features=PackedStringArray("4.2", "C#")
 boot_splash/bg_color=Color(0.478431, 0.878431, 0.894118, 1)
@@ -34,6 +35,11 @@ window/size/height=1080
 [dotnet]
 
 project/assembly_name="Black Cat 2024"
+
+[editor]
+
+naming/default_signal_callback_name="_On{node_name}{signal_name}"
+naming/default_signal_callback_to_self_name="_On{signal_name}"
 
 [file_customization]
 

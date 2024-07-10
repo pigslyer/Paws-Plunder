@@ -6,6 +6,7 @@ public partial class MainMenu : Control
 {
 	[Export] private Control _menu = null!;
 	[Export] private Options _options = null!;
+	[Export] private Button _saveOptionsButton = null!;
 	[Export] private Control _storyPanel = null!;	
 	[Export] private Label _storyLabel = null!;
 	[Export] private AudioStreamPlayer _musicMenu = null!;
@@ -15,6 +16,7 @@ public partial class MainMenu : Control
 
 	public override void _Ready()
 	{
+		GetNode<Label>("%VersionLabel").Text = "Version: " + ProjectSettings.GetSetting("application/config/version").ToString();
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		Logger.Debug("Mouse mode set to visible.");
 		_menu.Visible = true;
@@ -22,7 +24,7 @@ public partial class MainMenu : Control
 		_options.Load();
 	}
 
-	private void _on_PlayButton_pressed()
+	private void _OnPlayButtonPressed()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		Logger.Debug("Mouse mode set to captured.");
@@ -40,29 +42,36 @@ public partial class MainMenu : Control
 		//_storyPanel.Visible = true;
 		//_storyLabel.Text = _storyLabel.Text.Replace("%NAME%", Globals.ProtagonistName);
 
-		OnIntroButtonPressed();
+		_OnIntroButtonPressed();
 	}
 
-	private void OnIntroButtonPressed()
+	private void _OnIntroButtonPressed()
 	{
 		EmitSignal(SignalName.StartGame);
 	}
 	
-	private void _on_OptionsButton_pressed()
+	private void _OnOptionsButtonPressed()
 	{
-		_menu.Visible = false;
-		_options.Show();
+		GetNode<MarginContainer>("%ButtonsContainer").Visible = false;
+		_options.Visible = true;
+		_saveOptionsButton.Visible = true;
+		_options.OnOpen();
+	}
+
+	private void _OnSaveSettingsButtonPressed()
+	{
+		_options.Save();
+		GetNode<MarginContainer>("%ButtonsContainer").Visible = true;
+		_options.Visible = false;
+		_saveOptionsButton.Visible = false;
 	}
 	
-	private void _on_ExitButton_pressed()
+	private void _OnExitButtonPressed()
 	{
 		GetTree().Quit();
 	}
-	
-	private void _on_BackButton_pressed()
-	{
-		_menu.Visible = true;
-		_options.Visible = false;
-		_options.Save();
-	}
 }
+
+
+
+

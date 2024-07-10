@@ -47,6 +47,7 @@ public static class Logger
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = -1) =>
         Print(LogLevel.Warn, message, LogColor.yellow, filePath, lineNumber);
+    // GD.PushWarning(message) - idk if needed yet
     public static void Error(
         string message,
         [CallerFilePath] string filePath = "",

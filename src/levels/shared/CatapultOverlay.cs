@@ -9,8 +9,8 @@ public partial class CatapultOverlay : ColorRect
 	public void Reset()
 	{
 		Material.Set("shader_parameter/alpha", 1f);
-		Material.Set("shader_parameter/inner_radius", 0.9f);
-		Material.Set("shader_parameter/outer_radius", 0.9f);
+		Material.Set("shader_parameter/inner_radius", 0.628f);
+		Material.Set("shader_parameter/outer_radius", 1f);
 	}
 
 	public void FadeOut(ref Tween tween)

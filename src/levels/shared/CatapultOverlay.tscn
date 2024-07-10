@@ -20,8 +20,8 @@ void fragment()
 [sub_resource type="ShaderMaterial" id="2"]
 shader = SubResource("7")
 shader_parameter/alpha = 1.0
-shader_parameter/inner_radius = 0.868
-shader_parameter/outer_radius = 0.821
+shader_parameter/inner_radius = 0.6
+shader_parameter/outer_radius = 1.0
 
 [node name="CatapultOverlay" type="ColorRect"]
 material = SubResource("2")
