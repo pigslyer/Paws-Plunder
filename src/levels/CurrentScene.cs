@@ -26,4 +26,12 @@ public partial class CurrentScene : Node3D
 		_mainMenu.QueueFree();
 		EmitSignal(nameof(GameStart));
 	}
+
+	public override void _Input(InputEvent @event)
+	{
+		if (Input.IsActionJustPressed("ui_quit"))
+		{
+//			GetTree().Quit();
+		}
+	}
 }
