@@ -269,7 +269,7 @@ public partial class ArenaSquadController : Node
 
         // maybe make them prioritize moving towards the player if they're close, maybe make them prioritize moving into the player's view
         // can't determine without testing
-        int movedGrunts = GetNormClamped(_percentageOfMovingRatGrunts, _gruntTracker.ActiveEnemies.Length);
+        int movedGrunts = GetNormClamped(_percentageOfMovingRatGrunts, _gruntTracker.ActiveEnemies.Count);
         for (int i = 0; i < movedGrunts; i++)
         {
             RatGrunt grunt = _gruntMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
@@ -281,7 +281,7 @@ public partial class ArenaSquadController : Node
             _queuedMovers.AddElement((grunt, newPosition));
         }
 
-        int movedGunners = GetNormClamped(_percentageOfMovingGunners, _gunnerTracker.ActiveEnemies.Length);
+        int movedGunners = GetNormClamped(_percentageOfMovingGunners, _gunnerTracker.ActiveEnemies.Count);
         for (int i = 0; i < movedGunners; i++)
         {
             Gunner gunner = _gunnerMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
@@ -293,7 +293,7 @@ public partial class ArenaSquadController : Node
             _queuedMovers.AddElement((gunner, newPosition));
         }
 
-        int movedTraders = GetNormClamped(_percentageOfMovingTraders, _traderTracker.ActiveEnemies.Length);
+        int movedTraders = GetNormClamped(_percentageOfMovingTraders, _traderTracker.ActiveEnemies.Count);
         for (int i = 0; i < movedTraders; i++)
         {
             TraderMouse trader = _traderMovementQueue.NextElement() ?? throw new System.Diagnostics.UnreachableException();
@@ -333,30 +333,26 @@ public partial class ArenaSquadController : Node
             return;
         }
 
-        // TODO: avoid array allocations
-        int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Length);
-        Span<RatGrunt> attackingGruntsStorage = new RatGrunt[gruntAttackers];
-        gruntAttackers = _rng.RandEls(_gruntTracker.ActiveEnemies, attackingGruntsStorage, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass));
+        int gruntAttackers = GetNormClamped(_percentageAttackingGrunts, _gruntTracker.ActiveEnemies.Count);
+        IReadOnlyList<RatGrunt> attackingGrunts = _rng.RandEls(_gruntTracker.ActiveEnemies, gruntAttackers, grunt => CanPointBeSeen(grunt.CenterOfMass, _player.CenterOfMass));
 
-        foreach (RatGrunt grunt in attackingGruntsStorage[..gruntAttackers])
+        foreach (RatGrunt grunt in attackingGrunts) 
         {
             _queuedAttackers.AddElement(grunt);
         }
 
-        int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Length);
-        Span<Sniper> attackingSniperStorage = new Sniper[sniperAttackers];
-        sniperAttackers = _rng.RandEls(_sniperTracker.ActiveEnemies, attackingSniperStorage, sniper => CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass));
+        int sniperAttackers = GetNormClamped(_percentageAttackingSnipers, _sniperTracker.ActiveEnemies.Count);
+        IReadOnlyList<Sniper> attackingSnipers = _rng.RandEls(_sniperTracker.ActiveEnemies, sniperAttackers, sniper => CanPointBeSeen(sniper.CenterOfMass, _player.CenterOfMass));
 
-        foreach (Sniper sniper in attackingSniperStorage[..sniperAttackers])
+        foreach (Sniper sniper in attackingSnipers)
         {
             _queuedAttackers.AddElement(sniper);
         }
 
-        int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Length);
-        Span<Gunner> attackingGunnerStorage = new Gunner[gunnerAttackers];
-        gunnerAttackers = _rng.RandEls(_gunnerTracker.ActiveEnemies, attackingGunnerStorage, gunner => CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)); 
+        int gunnerAttackers = GetNormClamped(_percentageAttackingGunners, _gunnerTracker.ActiveEnemies.Count);
+        IReadOnlyList<Gunner> attackingGunners = _rng.RandEls(_gunnerTracker.ActiveEnemies, sniperAttackers, gunner => CanPointBeSeen(gunner.CenterOfMass, _player.CenterOfMass)); 
 
-        foreach (Gunner gunner in attackingGunnerStorage[..gunnerAttackers]) 
+        foreach (Gunner gunner in attackingGunners) 
         {
             _queuedAttackers.AddElement(gunner);
         }
@@ -389,18 +385,18 @@ public partial class ArenaSquadController : Node
     private int GetActiveMoversCount()
     {
         return 
-            _gruntTracker.ActiveEnemies.Length + 
-            _gunnerTracker.ActiveEnemies.Length + 
-            _traderTracker.ActiveEnemies.Length;
+            _gruntTracker.ActiveEnemies.Count + 
+            _gunnerTracker.ActiveEnemies.Count + 
+            _traderTracker.ActiveEnemies.Count;
     }
     
 
     private int GetActiveAttackersCount()
     {
         return 
-            _gruntTracker.ActiveEnemies.Length + 
-            _gunnerTracker.ActiveEnemies.Length + 
-            _sniperTracker.ActiveEnemies.Length;
+            _gruntTracker.ActiveEnemies.Count + 
+            _gunnerTracker.ActiveEnemies.Count + 
+            _sniperTracker.ActiveEnemies.Count;
     }
 
     private int GetNormClamped(Distro distro, int max)
@@ -448,11 +444,11 @@ public partial class ArenaSquadController : Node
         private readonly List<T> _justEnteredCombat = [];
 
         // these lists are guarnateed to never be recreated and will only shift their contents with UpdateVisibility and Add/RemoveEnemy
-        public ReadOnlySpan<T> InactiveEnemies => _inactiveEnemies.AsSpan();
-        public ReadOnlySpan<T> ActiveEnemies => _activeEnemies.AsSpan();
+        public IReadOnlyList<T> InactiveEnemies => _inactiveEnemies;
+        public IReadOnlyList<T> ActiveEnemies => _activeEnemies;
 
-        public ReadOnlySpan<T> JustLeftCombat => _justLeftCombat.AsSpan();
-        public ReadOnlySpan<T> JustEnteredCombat => _justEnteredCombat.AsSpan();
+        public IReadOnlyList<T> JustLeftCombat => _justLeftCombat;
+        public IReadOnlyList<T> JustEnteredCombat => _justEnteredCombat;
 
         public DetectionTracker(Predicate<T> canSeeTarget, Predicate<T> cantSeeTarget)
         {

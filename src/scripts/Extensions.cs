@@ -86,72 +86,39 @@ public static class Extensions {
         return list[rng.RandiRange(0, list.Length - 1)];
     }
 
-    public static int RandEls<T>(this RandomNumberGenerator rng, ReadOnlySpan<T> elements, Span<T> returnedStorage, Predicate<T>? allowedElements = null)
-    {
-        int[] naturals = GetNaturalNumbers(elements.Length).ToArray(); 
-
-        rng.Shuffle(naturals.AsSpan());
-
-        int takenElements = 0;
-        int index = 0;
-        while (true)
-        {
-            if (index >= elements.Length)
-            {
-                break;
-            }   
-
-            if (takenElements >= returnedStorage.Length)
-            {
-                break;
-            }
-
-            if (allowedElements?.Invoke(elements[index]) == false)
-            {
-                index += 1;
-                continue;
-            }
-
-            returnedStorage[takenElements] = elements[index];
-            
-            takenElements += 1;
-            index += 1;
-        }
-
-        return takenElements;
-    }
-
-    public static IEnumerable<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> elements, int count, Predicate<T>? allowedElements = null)
+    public static List<T> RandEls<T>(this RandomNumberGenerator rng, IReadOnlyList<T> elements, int count, Predicate<T>? allowedElements = null)
     {
         int[] naturals = GetNaturalNumbers(elements.Count).ToArray(); 
 
         rng.Shuffle(naturals.AsSpan());
+        int naturalsIndex = 0;
 
-        int takenElements = 0;
-        int index = 0;
+        List<T> randomElements = [];
         while (true)
         {
-            if (index >= elements.Count)
+            if (naturalsIndex >= naturals.Length)
             {
                 break;
             }   
 
-            if (takenElements >= count)
+            if (randomElements.Count >= count)
             {
                 break;
             }
 
-            if (allowedElements?.Invoke(elements[index]) == false)
+            T currentElement = elements[naturals[naturalsIndex]];
+
+            if (allowedElements?.Invoke(currentElement) == false)
             {
-                index += 1;
+                naturalsIndex += 1;
                 continue;
             }
 
-            yield return elements[index];
-            
-            takenElements += 1;
-            index += 1;
+            randomElements.Add(currentElement);
+            naturalsIndex += 1;
         }
+
+        return randomElements;
     }
 
     public static int FrameCount(this AnimatedSprite3D sprite)

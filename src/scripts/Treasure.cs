@@ -49,4 +49,9 @@ public partial class Treasure : Node3D, IItem
         Sprite3D sprite = GetNode<Sprite3D>("Sprite3D");
         sprite.Frame = (int)_type;
     }
+
+    void IItem.PickedUp()
+    {
+        QueueFree();
+    }
 }

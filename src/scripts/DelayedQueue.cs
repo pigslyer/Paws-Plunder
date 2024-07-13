@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace PawsPlunder;
@@ -7,59 +8,55 @@ namespace PawsPlunder;
 public class DelayedQueue<T>
 {
     private readonly List<T> _elements = [];
-    private readonly List<float> _times = [];
+    private float[] _times = [];
     private float _currentTime;
     private int _startingIndex;
 
     public void AddElement(T element)
     {
-        _elements.Add(element);
+        _elements.Add(element);    
     }
 
     public Span<T> PopElements(float delta)
     {
         _currentTime += delta;
-        int startIndex = _startingIndex;
 
-        int lastIndex = _startingIndex;
+        int nextTimeIndex = _times.AsSpan()[_startingIndex..].BinarySearch(_currentTime);
 
-        while (true)
+        if (~nextTimeIndex == _times.Length)
         {
-            if (!(lastIndex < _times.Count))
-            {
-                break;
-            }
-
-            if (!(_currentTime < _times[lastIndex]))
-            {
-                break;
-            }
-
-            lastIndex += 1;
+            _startingIndex = _times.Length;
+            return [];
         }
 
-        _startingIndex = lastIndex;
-        return _elements.AsSpan()[startIndex..lastIndex];
+        if (nextTimeIndex < 0)
+        {
+            nextTimeIndex = ~nextTimeIndex;            
+        }
+
+        Span<T> slice = _elements.AsSpan()[_startingIndex..(_startingIndex + nextTimeIndex)];
+        _startingIndex = nextTimeIndex;        
+
+        return slice;
     }
     
     public void RedistributeOver(RandomNumberGenerator rng, float time)
     {
-        _currentTime = 0;
-
         _elements.RemoveRange(0, _startingIndex);
-        _times.Clear();
+        _times = Enumerable.Range(0, _elements.Count)
+            .Select(_ => rng.Randf() * time)
+            .Order()
+            .ToArray();
 
-        for (int i = 0; i < _elements.Count; i++)
-        {
-            _times.Add(rng.Randf() * time);
-        }
-        
-        rng.Shuffle(_times.AsSpan());
+        _currentTime = 0;
+        _startingIndex = 0;
     }
 
     public void Clear()
     {
         _elements.Clear();
-        _times.Clear();   
+        _times = [];
+        _startingIndex = 0;
+        _currentTime = 0;
     }
 }

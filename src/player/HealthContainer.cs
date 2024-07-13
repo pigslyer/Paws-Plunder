@@ -15,7 +15,7 @@ public partial class HealthContainer : Control
 
 	public void SetHealth(int health)
 	{
-		health = int.Clamp(health, 0, _health.Length - 1);
+		health = int.Clamp(health, 0, _health.Length);
 
 		foreach (TextureRect aliveHeart in _health.AsSpan()[..health])
 		{

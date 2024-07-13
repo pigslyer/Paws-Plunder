@@ -386,7 +386,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 				GlobalSignals.AddScore(item.AssociatedScore);
 			}
 			Hud.PushLog($"Picked up a {item.DisplayName}!");
-			((Node)item).QueueFree();
+			item.PickedUp();
 		}
 
 		// TODO: extract inner logic to method?
@@ -491,7 +491,7 @@ public partial class Player : CharacterBody3D, IBulletHittable, IDeathPlaneEnter
 
 		UpdateHealthDisplays();
 
-		if (Health > 0)
+		if (true || Health > 0)
 		{
 			Hud.TakeDamage();
 			_invulTimer.Start(InvulPeriod, () => {

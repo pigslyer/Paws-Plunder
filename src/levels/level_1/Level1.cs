@@ -25,7 +25,7 @@ public partial class Level1 : Level
 	public override void OnStart()
 	{
 		Logger.Debug("Level1: OnStart() called");
-		// TODO: lock movement, not moving camera
+		// TODO: don't instantiate player until we're ready to fuck shit up 
 		_player.LockInPlace = true;
 		_musicGameplay.Play();
 		_SpawnPlayer();
