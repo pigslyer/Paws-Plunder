@@ -28,3 +28,11 @@ When cloning the repo for the first time, make sure to open the project in Godot
 Godot support is now automatically integrated in the IDE and by opening the `.sln` file, you should get Godot Player and Editor profile automatically.
 
 Follow the same instructions as for VS2022 to set up paths.
+
+## Visual Studio Code
+Install `C# Tools for Godot` extension from the marketplace. [Link](https://marketplace.visualstudio.com/items?itemName=neikeq.godot-csharp-vscode)
+
+Set up `godot.csharp.executablePath` setting with the path to Godot engine executable.
+![executablePath](https://i.ibb.co/1LTtc99/Screenshot-2024-08-04-174448.png)
+
+In Run & Debug, click `create a launch.json file` and select `C# Godot` template. `launch.json` and `tasks.json` will be created, which you must edit to provide Godot Engine executable path.
