@@ -11,7 +11,7 @@ Project is targeting .NET 8, make sure to install the SDK.
 		"Godot": {
 			"commandName": "Executable",
 			"executablePath": "D:\\Godot_v4.2.2-stable_mono_win64.exe",
-			"commandLineArgs": "--path, --verbose",
+			"commandLineArgs": "--path $(ProjectDir) --verbose",
 			"workingDirectory": ".",
 			"nativeDebugging": true
 		}
