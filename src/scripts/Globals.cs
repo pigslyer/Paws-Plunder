@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace PawsPlunder;
@@ -73,7 +74,7 @@ public partial class Globals : Node
 
     public Globals()
     {
-        _randomOrderedCatNames = new RandomOrderQueue<string>(CatNames, _rng);
+        _randomOrderedCatNames = new RandomOrderQueue<string>(CatNames.ToList(), _rng);
         
         _rng.Randomize();
 

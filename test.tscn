@@ -1,0 +1,172 @@
+[gd_scene load_steps=6 format=3 uid="uid://b16nxpl0an66m"]
+
+[ext_resource type="Script" path="res://src/scripts/ArenaSquadController.cs" id="1_p7g74"]
+[ext_resource type="PackedScene" uid="uid://cg00j01nnvmu2" path="res://src/ratgrunt/RatGrunt.tscn" id="2_rm4yr"]
+[ext_resource type="PackedScene" uid="uid://yviereyjsr6d" path="res://src/player/Player.tscn" id="3_lxn3m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_31x8u"]
+size = Vector3(48.1553, 12.4845, 32.3765)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_cgb73"]
+vertices = PackedVector3Array(-10.3717, 1, -18.0013, -10.3717, 1, 18.9987, 34.8783, 1, 18.9987, 34.8783, 1, -18.0013)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+geometry_parsed_geometry_type = 1
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Area3D" type="Area3D" parent="." node_paths=PackedStringArray("_player", "_navigationRegion")]
+collision_mask = 2
+script = ExtResource("1_p7g74")
+_player = NodePath("../Player")
+_navigationRegion = NodePath("../NavigationRegion3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.96152, 5.74225, -1.34536)
+shape = SubResource("BoxShape3D_31x8u")
+
+[node name="RatGrunt" parent="Area3D" instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+
+[node name="RatGrunt2" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt3" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt4" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt5" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt6" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt7" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt8" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt9" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt10" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt11" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt12" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt13" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt14" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt15" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt16" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt17" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt18" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt19" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt20" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt21" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt22" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="RatGrunt23" parent="Area3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds") instance=ExtResource("2_rm4yr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75252, 0.832009, 2.64395)
+_sprite = NodePath("../RatGrunt/AnimatedSprite3D")
+_centerOfMass = NodePath("../RatGrunt/CenterOfMass")
+_sounds = NodePath("../RatGrunt/Sounds")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_cgb73")
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.2187, 0, 0.455109)
+use_collision = true
+size = Vector3(46.1808, 1, 37.9128)
+
+[node name="Player" parent="." instance=ExtResource("3_lxn3m")]
+transform = Transform3D(-0.298741, 0, -0.954334, 0, 1, 0, 0.954334, 0, -0.298741, 1.22046, 15.0836, 1.92002)
+_initializeOnStartup = true

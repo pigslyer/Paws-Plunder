@@ -40,7 +40,11 @@ public struct Range
     }
 }
 
-public static class Extensions {
+public static class Extensions 
+{
+    public static string StrJoin<T>(this IEnumerable<T> seq, string sep = ", ")
+        => string.Join(sep, seq);
+
     // swizzles
     public static Vector3 X0Z(this Vector3 vec) => new(vec.X, 0, vec.Z); 
     public static Vector3 X00(this Vector3 vec) => new(vec.X, 0, 0);

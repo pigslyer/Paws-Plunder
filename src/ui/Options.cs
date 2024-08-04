@@ -31,7 +31,7 @@ public partial class Options : Control
 		}
 		else if (loadError != Error.Ok)
 		{
-			Logger.Error($"Got load error {loadError} while trying to read settings file");
+			Logger.Err($"Got load error {loadError} while trying to read settings file");
 			return;
 		}
 		Logger.Info($"Settings file loaded from {Constants.SETTINGS_PATH}");
@@ -58,7 +58,7 @@ public partial class Options : Control
 		Error saveError = _configFile.Save(Constants.SETTINGS_PATH);
 		if (saveError != Error.Ok)
 		{
-			Logger.Error($"Got save error {saveError} while trying to read settings file");
+			Logger.Err($"Got save error {saveError} while trying to read settings file");
 			return;
 		}
 		Logger.Info($"Settings file saved to {Constants.SETTINGS_PATH}");

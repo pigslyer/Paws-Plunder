@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 namespace PawsPlunder;
@@ -12,10 +13,14 @@ public partial class TraderMouse : CharacterBody3D,
     public event Action? Died;
     private const float Speed = 30.0f;
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
+
+    Vector3 IMoveable.FeetPosition => GlobalPosition;
+
     private static readonly Distro _footstepsDistro = (1.4f, 0.2f);
     private static readonly Distro _deathDistro = (1.6f, 0.2f);
 
-    private bool _hasMoveTarget = false;
+    private Vector3[]? _path = null;
+    private int _reachedIndex = 0;
 
     [Export] private NavigationAgent3D _agent = null!;
     [Export] private AnimatedSprite3D _sprite = null!;
@@ -36,27 +41,30 @@ public partial class TraderMouse : CharacterBody3D,
 
     private void FollowPath(float delta)
     {
-        if (!_hasMoveTarget)
+        if (_path == null)
         {
             return;
         }
 
-        Vector3 nextPosition = _agent.GetNextPathPosition();
+        Vector3 nextPosition = _path[_reachedIndex]; 
         GlobalPosition = GlobalPosition.MoveToward(nextPosition, Speed * delta);
 
-        _hasMoveTarget = !_agent.IsNavigationFinished();
+        if (GlobalPosition.DistanceSquaredTo(nextPosition) < 0.0001f) {
+            _reachedIndex += 1;
 
-        if (!_hasMoveTarget)
-        {
-            _sounds.Footsteps.Stop();
-            _sprite.Play("Idle");
+            if (_reachedIndex == _path.Length) {
+                _path = null;
+
+                _sounds.Footsteps.Stop();
+                _sprite.Play("Idle");
+            }
         }
     }
 
-    public void GoTo(Vector3 point)
+    public void GoTo(Vector3[] path)
     {
-        _hasMoveTarget = true;
-        _agent.TargetPosition = point;
+        _path = path;
+        _reachedIndex = 0;
 
         _sounds.Footsteps.PlayPitched(_footstepsDistro);
         _sprite.Play("Walk");
@@ -78,7 +86,7 @@ public partial class TraderMouse : CharacterBody3D,
 
         CollisionLayer = 0;
         CollisionMask = 0;
-        _hasMoveTarget = false;
+        _path = null;
 
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);

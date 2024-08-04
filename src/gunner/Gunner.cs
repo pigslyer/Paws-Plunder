@@ -22,17 +22,18 @@ public partial class Gunner : CharacterBody3D,
     private static readonly Distro _deathDistro = (0.7f, 0.2f);
 
     public Vector3 CenterOfMass => _centerOfMassNode.GlobalPosition;
+    Vector3 IMoveable.FeetPosition => GlobalPosition;
     
     private const float WalkSpeed = 8.0f;
     [Export] private PackedScene _bulletScene = null!;
     [Export] private PackedScene _droppedGunScene = null!;
 
     [Export] private AnimatedSprite3D _sprite = null!;
-    [Export] private NavigationAgent3D _agent = null!;
     [Export] private Node3D _centerOfMassNode = null!;
     [Export] private GunnerSounds _sounds = null!;
 
-    private bool _hasMoveOrder = false;
+    private Vector3[]? _path = null;
+    private int _reachedIndex = 0;
 
     private Vector3? _queuedAttackDirection = null;
 
@@ -49,7 +50,7 @@ public partial class Gunner : CharacterBody3D,
 
     private void FollowPath(float delta)
     {
-        if (!_hasMoveOrder)
+        if (_path == null)
         {
             _sounds.Footsteps.Stop();
             return;
@@ -61,22 +62,27 @@ public partial class Gunner : CharacterBody3D,
             return;
         }
 
-        Vector3 nextPosition = _agent.GetNextPathPosition();
+        Vector3 nextPosition = _path[_reachedIndex];
         GlobalPosition = GlobalPosition.MoveToward(nextPosition, WalkSpeed * delta);
 
-        _hasMoveOrder = !_agent.IsNavigationFinished();
-
-        if (!_hasMoveOrder)
+        if (GlobalPosition.DistanceSquaredTo(nextPosition) < 0.0001f)
         {
-            _sprite.Play("Idle");
-            _sounds.Footsteps.Stop();
+            _reachedIndex += 1;
+
+            if (_reachedIndex == _path.Length)
+            {
+                _path = null;
+
+                _sprite.Play("Idle");
+                _sounds.Footsteps.Stop();
+            }
         }
     }
 
-    public void GoTo(Vector3 point)
+    public void GoTo(Vector3[] path)
     {
-        _agent.TargetPosition = point;
-        _hasMoveOrder = true;
+        _path = path;
+        _reachedIndex = 0;
         
         _sprite.Play("Walk");
         _sounds.Footsteps.PlayPitched(_footstepsDistro);
@@ -108,7 +114,7 @@ public partial class Gunner : CharacterBody3D,
         if (_sprite.Animation == "Shoot")
         {
             _queuedAttackDirection = null;            
-            if (_hasMoveOrder)
+            if (_path != null)
             {
                 _sprite.Play("Walk");
                 _sounds.Footsteps.PlayPitched(_footstepsDistro);
@@ -155,7 +161,7 @@ public partial class Gunner : CharacterBody3D,
 
         CollisionLayer = 0;
         CollisionMask = 0;
-        _hasMoveOrder = false;
+        _path = null;
     
         _sprite.Play("Death");
         _sounds.Death.PlayPitched(_deathDistro);

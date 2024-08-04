@@ -5,24 +5,27 @@ using Godot;
 
 namespace PawsPlunder;
 
-public class RandomOrderQueue<T>(RandomNumberGenerator rng)
+public class RandomOrderQueue<T>
 {
-    private readonly RandomNumberGenerator _rng = rng;
-    private List<T> _unretrievedElements = [];
-    private List<T> _retrievedElements = [];
+    private readonly RandomNumberGenerator _rng;
+    private List<T> _unretrievedElements = new List<T>();
+    private List<T> _retrievedElements = new List<T>();
 
-    public RandomOrderQueue(IEnumerable<T> elements, RandomNumberGenerator rng) : this(rng)
+    public RandomOrderQueue(RandomNumberGenerator rng)
     {
-        _unretrievedElements = elements.ToList();
+        _rng = rng;
+    }
 
-        _rng.Shuffle(_unretrievedElements.AsSpan());
+    public RandomOrderQueue(List<T> startingElements, RandomNumberGenerator rng)
+    {
+        (_unretrievedElements, _rng) = (startingElements, rng);
     }
 
     public void AddElement(T element)
     {
         int index = _rng.RandiRange(0, Math.Max(_unretrievedElements.Count - 1, 0));
         _unretrievedElements.Insert(index, element);
-    }   
+    }
 
     public void RemoveElement(T element)
     {
@@ -36,7 +39,7 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
             _rng.Shuffle(_unretrievedElements.AsSpan());
         }
-    }   
+    }
 
     public T? NextElement()
     {
@@ -44,16 +47,17 @@ public class RandomOrderQueue<T>(RandomNumberGenerator rng)
         {
             return default;
         }
-        
-        T nextElement = _unretrievedElements.Pop();
-        _retrievedElements.Add(nextElement);
+
+        T returnedElement = _unretrievedElements.Last();
+        _unretrievedElements.RemoveAt(_unretrievedElements.Count - 1);
+        _retrievedElements.Add(returnedElement);
 
         if (_unretrievedElements.Count == 0)
         {
             (_unretrievedElements, _retrievedElements) = (_retrievedElements, _unretrievedElements);
             _rng.Shuffle(_unretrievedElements.AsSpan());
-        }   
+        }
 
-        return nextElement;
-    }  
+        return returnedElement;
+    }
 }

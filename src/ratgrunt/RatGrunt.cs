@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 
 namespace PawsPlunder;
@@ -27,18 +28,22 @@ public partial class RatGrunt : CharacterBody3D,
 	private static readonly Distro _firePitchDistro = (1.0f, 0.2f);
 	private static readonly Distro _deathPitchDistro = (1.0f, 0.2f);
 
-	[Export] private NavigationAgent3D _agent = null!;
 	[Export] private AnimatedSprite3D _sprite = null!;
 	[Export] private Node3D _centerOfMass = null!;
 	[Export] private RatGruntSounds _sounds = null!;
 
 	public Vector3 CenterOfMass => _centerOfMass.GlobalPosition;
+	Vector3 IMoveable.FeetPosition => GlobalPosition;
 
-	private bool _hasMoveTarget = false;
-	private Vector3? _queuedAttackDirection = null;
+	private Vector3[]? _path = null;
+	private int _reachedIndex = 0;
+	
+	private Vector3? _queuedAttackDirection;
 
 	public override void _Ready()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+
 		_sprite.Play("Idle");
 		_sprite.Frame = Globals.Rng.RandiRange(0, _sprite.FrameCount() - 1);
 	}
@@ -50,7 +55,7 @@ public partial class RatGrunt : CharacterBody3D,
 
 	private void FollowPath(double delta)
 	{
-		if (!_hasMoveTarget)
+		if (_path == null)
 		{
 			return;
 		}
@@ -60,27 +65,39 @@ public partial class RatGrunt : CharacterBody3D,
 			return;
 		}
 
-		Vector3 nextPosition = _agent.GetNextPathPosition();
-		Vector3 targetPosition = _agent.TargetPosition;
+		Vector3 nextPosition = _path[_reachedIndex];  
+		Vector3 targetPosition = _path[^1];
 
 		bool isNearby = GlobalPosition.DistanceTo(targetPosition) < WhatIsNearby;
 
 		float speed = isNearby ? NearbySpeed : FarAwaySpeed; 
 		GlobalPosition = GlobalPosition.MoveToward(nextPosition, speed * (float)delta);
 
-		_hasMoveTarget = !_agent.IsNavigationFinished();
-
-		if (!_hasMoveTarget)
+		Debug(GlobalPosition.DistanceTo(nextPosition));
+		if (GlobalPosition.DistanceSquaredTo(nextPosition) < 1)
 		{
-			_sounds.Footsteps.Stop();
-			_sprite.Play("Idle");
+			Debug($"hi there 2 {nextPosition}");
+			_reachedIndex += 1;
+
+			if (_reachedIndex == _path.Length) {
+				Debug($"hi there uwu ");
+				_path = null;
+
+				_sounds.Footsteps.Stop();
+				_sprite.Play("Idle");
+			}
 		}
 	}
 
-	public void GoTo(Vector3 point)
+	public void GoTo(Vector3[] path)
 	{
-		_hasMoveTarget = true;
-		_agent.TargetPosition = point;
+		if (path.Length == 0)
+		{
+			return;
+		}
+		
+		_path = path[1..];
+		_reachedIndex = 0; 
 
 		_sounds.Footsteps.PlayPitched(_footstepsPitchDistro);
 		_sprite.Play("Walk");
@@ -123,7 +140,7 @@ public partial class RatGrunt : CharacterBody3D,
 		{
 			_queuedAttackDirection = null;
 
-			if (_hasMoveTarget)
+			if (_path != null)
 			{
 				_sprite.Play("Walk");
 				_sounds.Footsteps.PlayPitched(_footstepsPitchDistro);
@@ -159,7 +176,7 @@ public partial class RatGrunt : CharacterBody3D,
 
 		CollisionLayer = 0;
 		CollisionMask = 0;
-		_hasMoveTarget = false;
+		_path = null;
 		_queuedAttackDirection = null;
 
 		Node3D droppedGun = _droppedGunScene.Instantiate<Node3D>();

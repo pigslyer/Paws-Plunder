@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Godot;
 
 namespace PawsPlunder;
 
 public interface IMoveable
 {
-    void GoTo(Vector3 point);
+    Vector3 FeetPosition { get; }
+    void GoTo(Vector3[] path);
 }
 
 public interface IPlayerAttacker
@@ -49,12 +51,13 @@ public partial class ArenaSquadController : Node
     private readonly Distro _percentageAttackingGunners = (0.3f, 0.1f);
 
     private RandomNumberGenerator _rng;
-    private Player? _player;
+    [Export] private Player? _player;
 
     private readonly StatelessTimer _updatePositionsTimer;
     private readonly StatelessTimer _runAttackTimer;
 
-    [Export] private RayCast3D _wallDetection = null!;
+    private RayCast3D _wallDetection = null!;
+    [Export] private NavigationRegion3D _navigationRegion = null!;
 
     public ArenaSquadController()
     {
@@ -362,9 +365,29 @@ public partial class ArenaSquadController : Node
 
     private void RunQueuedMovers(float delta)
     {
+        IReadOnlyList<(IMoveable, Vector3)> popped = _queuedMovers.PopElements(delta);
+
+        if (popped.Count == 0) {
+            return;
+        }
+
+        Rid rid =  NavigationServer3D.RegionGetMap(_navigationRegion.GetRid());
+
+        NavigationPathQueryParameters3D pathParams = new() {
+            PathfindingAlgorithm = NavigationPathQueryParameters3D.PathfindingAlgorithmEnum.Astar,
+            PathPostprocessing = NavigationPathQueryParameters3D.PathPostProcessing.Corridorfunnel,
+            Map = rid,
+        };
+        NavigationPathQueryResult3D pathResult = new();
+
         foreach ((IMoveable movable, Vector3 targetPosition) in _queuedMovers.PopElements(delta))
         {
-            movable.GoTo(targetPosition);
+            pathParams.StartPosition = movable.FeetPosition;
+            pathParams.TargetPosition = targetPosition;
+
+            NavigationServer3D.QueryPath(pathParams, pathResult);            
+
+            movable.GoTo(pathResult.Path);
         }        
     }
 
@@ -401,7 +424,7 @@ public partial class ArenaSquadController : Node
 
     private int GetNormClamped(Distro distro, int max)
     {
-        float percentage = _rng.Randfn(distro);
+        float percentage = float.Clamp(_rng.Randfn(distro), 0, 1);
         return int.Clamp(Mathf.CeilToInt(percentage * max), 0, max);
     }
 
@@ -457,10 +480,14 @@ public partial class ArenaSquadController : Node
 
         public void UpdateVisibility()
         {
+            if (_inactiveEnemies.Count + _activeEnemies.Count == 0)
+            {
+                return;
+            }
+
             _justEnteredCombat.Clear();
             _justLeftCombat.Clear();
 
-            // stackalloc/rent array here
             List<(bool isEntering, T enemy)> enteringCombat = [];
 
             foreach (T enemy in _inactiveEnemies)

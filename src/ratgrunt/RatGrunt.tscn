@@ -153,7 +153,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("33_kqooq")
 }],
-"loop": true,
+"loop": false,
 "name": &"Shoot",
 "speed": 5.0
 }, {
@@ -169,12 +169,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="RatGrunt" type="CharacterBody3D" node_paths=PackedStringArray("_agent", "_sprite", "_centerOfMass", "_sounds")]
+[node name="RatGrunt" type="CharacterBody3D" node_paths=PackedStringArray("_sprite", "_centerOfMass", "_sounds")]
 collision_layer = 4
 script = ExtResource("3")
 _bulletScene = ExtResource("4")
 _droppedGunScene = ExtResource("40")
-_agent = NodePath("NavigationAgent")
 _sprite = NodePath("AnimatedSprite3D")
 _centerOfMass = NodePath("CenterOfMass")
 _sounds = NodePath("Sounds")
@@ -187,12 +186,12 @@ shape = SubResource("1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.516, 0)
 pixel_size = 0.1
 billboard = 2
+alpha_cut = 1
 texture_filter = 4
 sprite_frames = SubResource("2")
-animation = &"Idle"
-
-[node name="NavigationAgent" type="NavigationAgent3D" parent="."]
-target_desired_distance = 2.0
+animation = &"IdleSwordSwing"
+frame = 9
+frame_progress = 1.0
 
 [node name="CenterOfMass" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.26232, 0)
